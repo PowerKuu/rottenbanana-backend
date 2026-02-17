@@ -41,9 +41,9 @@ model Session {
   token     String
   ipAddress String?
   userAgent String?
-  userId    String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,9 +64,9 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  userId                String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -128,9 +128,9 @@ model Item {
   metadata     Json
   url          String
   slot         ItemSlot
-  vendorId     String
 
-  vendor      Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  vendorId String
+  vendor   Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
   outfitItems OutfitItem[]
 
   createdAt DateTime @default(now())
@@ -144,10 +144,10 @@ model Outfit {
   name        String
   description String?
   official    Boolean
-  ownerId     String?
 
-  // Optional owner — outfit survives user deletion via SetNull
-  owner                User?                 @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId String?
+  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
   outfitItems          OutfitItem[]
   tryOnOutfits         TryOnOutfit[]
   posts                Post[]
@@ -172,22 +172,15 @@ model OutfitItem {
   @@index([itemId])
 }
 
-enum TryOnStatus {
-  PENDING
-  SUCCESS
-  REJECTED
-  FAILED
-}
-
 model TryOnOutfit {
   id             String      @id @default(cuid())
   refrenceImages String[]
   resultImages   String[]
-  status         TryOnStatus @default(PENDING)
-  outfitId       String
-  userId         String
 
-  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  outfitId String
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+
+  userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -195,16 +188,16 @@ model TryOnOutfit {
 
   @@index([outfitId])
   @@index([userId])
-  @@index([userId, status])
 }
 
 model Post {
-  id       String   @id @default(cuid())
-  caption  String?
-  images   String[]
-  outfitId String
+  id      String   @id @default(cuid())
+  caption String?
+  images  String[]
 
-  outfit    Outfit     @relation(fields: [outfitId], references: [id], onDelete: Restrict)
+  outfitId String
+  outfit   Outfit     @relation(fields: [outfitId], references: [id], onDelete: Restrict)
+
   postLikes PostLike[]
 
   createdAt DateTime @default(now())
@@ -215,10 +208,10 @@ model Post {
 
 model PostLike {
   userId String
-  postId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -227,12 +220,13 @@ model PostLike {
 }
 
 model UserPreferenceTag {
-  userId          String
-  PreferenceTagId String
-  score           Int    @default(0)
+  score Int @default(0)
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  preferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  PreferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -243,11 +237,11 @@ model UserPreferenceTag {
 }
 
 model OutfitPreferenceTag {
-  outfitId        String
-  PreferenceTagId String
+  outfitId String
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
-  outfit        Outfit        @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-  preferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  PreferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
