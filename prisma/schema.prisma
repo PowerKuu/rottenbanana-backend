@@ -14,22 +14,22 @@ datasource db {
 // Managed by better-auth. Only domain back-reference fields added to User.
 
 model User {
-  id            String    @id
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String    @default("USER")
-  sessions      Session[]
-  accounts      Account[]
+  role          String  @default("USER")
 
-  // Custom  fields
+  sessions       Session[]
+  accounts       Account[]
   tryOnOutfits   TryOnOutfit[]
   postLikes      PostLike[]
   PreferenceTags UserPreferenceTag[]
   ownedOutfits   Outfit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([email])
   @@map("user")
@@ -39,12 +39,14 @@ model Session {
   id        String   @id
   expiresAt DateTime
   token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([token])
   @@index([userId])
@@ -55,8 +57,6 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -64,8 +64,12 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  userId                String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@map("account")
@@ -76,32 +80,35 @@ model Verification {
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([identifier])
   @@map("verification")
 }
 
 model PreferenceTag {
-  id        String   @id @default(cuid())
-  tag       String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id  String @id @default(cuid())
+  tag String @unique
 
   userPreferenceTags   UserPreferenceTag[]
   outfitPreferenceTags OutfitPreferenceTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Vendor {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   name      String
   url       String
   logoImage String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   items Item[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ItemSlot {
@@ -120,47 +127,46 @@ model Item {
   description  String
   metadata     Json
   url          String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  slot         ItemSlot
+  vendorId     String
 
-  slot ItemSlot
-
-  vendorId String
-  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Restrict)
-
+  vendor      Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
   outfitItems OutfitItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([vendorId])
 }
 
 model Outfit {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  official   Boolean
+  official    Boolean
+  ownerId     String?
 
   // Optional owner — outfit survives user deletion via SetNull
-  ownerId String?
-  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-
+  owner                User?                 @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   outfitItems          OutfitItem[]
   tryOnOutfits         TryOnOutfit[]
   posts                Post[]
   outfitPreferenceTags OutfitPreferenceTag[]
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([ownerId])
 }
 
 model OutfitItem {
-  outfitId  String
-  itemId    String
-  createdAt DateTime @default(now())
+  outfitId String
+  itemId   String
 
   outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
   item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@id([outfitId, itemId])
   @@index([itemId])
@@ -178,14 +184,14 @@ model TryOnOutfit {
   refrenceImages String[]
   resultImages   String[]
   status         TryOnStatus @default(PENDING)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  outfitId       String
+  userId         String
 
-  outfitId String
-  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-
-  userId String
+  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([outfitId])
   @@index([userId])
@@ -193,28 +199,28 @@ model TryOnOutfit {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  caption   String?
+  id       String   @id @default(cuid())
+  caption  String?
+  images   String[]
+  outfitId String
+
+  outfit    Outfit     @relation(fields: [outfitId], references: [id], onDelete: Restrict)
+  postLikes PostLike[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  images String[]
-
-  outfitId String
-  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Restrict)
-
-  postLikes PostLike[]
 
   @@index([outfitId])
 }
 
 model PostLike {
-  userId    String
-  postId    String
-  createdAt DateTime @default(now())
+  userId String
+  postId String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@id([userId, postId])
   @@index([postId])
@@ -223,12 +229,13 @@ model PostLike {
 model UserPreferenceTag {
   userId          String
   PreferenceTagId String
-  score           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  score           Int    @default(0)
 
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  PreferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  preferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([userId, PreferenceTagId])
   @@index([PreferenceTagId])
@@ -238,10 +245,11 @@ model UserPreferenceTag {
 model OutfitPreferenceTag {
   outfitId        String
   PreferenceTagId String
-  createdAt       DateTime @default(now())
 
   outfit        Outfit        @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-  PreferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  preferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@id([outfitId, PreferenceTagId])
   @@index([PreferenceTagId])
