@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "./generated/prisma"
@@ -13,34 +10,8 @@ datasource db {
   provider = "postgresql"
 }
 
-model PrefrenceTag {
-  id  String @id @default(cuid())
-  tag String
-
-}
-
-model Vendor {
-  id   String @id @default(cuid())
-  name String
-}
-
-model Item {
-  id   String @id @default(cuid())
-  name String
-}
-
-model Outfit {
-  id String @id @default(cuid())
-
-}
-
-model TryOnOutfit {
-  id String @id @default(cuid())
-}
-
-model Post {
-  id String @id @default(cuid())
-}
+// ── AUTH MODELS — DO NOT MODIFY ────────────────────────────────────────────
+// Managed by better-auth. Only domain back-reference fields added to User.
 
 model User {
   id            String    @id
@@ -53,6 +24,12 @@ model User {
   role          String    @default("USER")
   sessions      Session[]
   accounts      Account[]
+
+  // Custom  fields
+  tryOnOutfits   TryOnOutfit[]
+  postLikes      PostLike[]
+  PreferenceTags UserPreferenceTag[]
+  ownedOutfits   Outfit[]
 
   @@unique([email])
   @@map("user")
@@ -104,4 +81,168 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model PreferenceTag {
+  id        String   @id @default(cuid())
+  tag       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userPreferenceTags   UserPreferenceTag[]
+  outfitPreferenceTags OutfitPreferenceTag[]
+}
+
+model Vendor {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  logoImage String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items Item[]
+}
+
+enum ItemSlot {
+  TOP
+  BOTTOM
+  SHOES
+  ACCESSORY
+}
+
+model Item {
+  id           String   @id @default(cuid())
+  name         String
+  price        Float
+  primaryImage String
+  images       String[]
+  description  String
+  metadata     Json
+  url          String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  slot ItemSlot
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+
+  outfitItems OutfitItem[]
+
+  @@index([vendorId])
+}
+
+model Outfit {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  official   Boolean
+
+  // Optional owner — outfit survives user deletion via SetNull
+  ownerId String?
+  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  outfitItems          OutfitItem[]
+  tryOnOutfits         TryOnOutfit[]
+  posts                Post[]
+  outfitPreferenceTags OutfitPreferenceTag[]
+
+  @@index([ownerId])
+}
+
+model OutfitItem {
+  outfitId  String
+  itemId    String
+  createdAt DateTime @default(now())
+
+  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([outfitId, itemId])
+  @@index([itemId])
+}
+
+enum TryOnStatus {
+  PENDING
+  SUCCESS
+  REJECTED
+  FAILED
+}
+
+model TryOnOutfit {
+  id             String      @id @default(cuid())
+  refrenceImages String[]
+  resultImages   String[]
+  status         TryOnStatus @default(PENDING)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  outfitId String
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([outfitId])
+  @@index([userId])
+  @@index([userId, status])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  caption   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  images String[]
+
+  outfitId String
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Restrict)
+
+  postLikes PostLike[]
+
+  @@index([outfitId])
+}
+
+model PostLike {
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+  @@index([postId])
+}
+
+model UserPreferenceTag {
+  userId          String
+  PreferenceTagId String
+  score           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  PreferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+
+  @@id([userId, PreferenceTagId])
+  @@index([PreferenceTagId])
+  @@index([userId, score(sort: Desc)])
+}
+
+model OutfitPreferenceTag {
+  outfitId        String
+  PreferenceTagId String
+  createdAt       DateTime @default(now())
+
+  outfit        Outfit        @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  PreferenceTag PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+
+  @@id([outfitId, PreferenceTagId])
+  @@index([PreferenceTagId])
 }
