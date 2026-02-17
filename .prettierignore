@@ -1,0 +1,15 @@
+# Prisma
+prisma/migrations/
+prisma/generated/
+
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Misc
+.git/
