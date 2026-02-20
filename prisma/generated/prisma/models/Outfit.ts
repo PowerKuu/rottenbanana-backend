@@ -26,28 +26,64 @@ export type AggregateOutfit = {
 
 export type OutfitMinAggregateOutputType = {
   id: string | null
+  name: string | null
+  description: string | null
+  official: boolean | null
+  ownerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type OutfitMaxAggregateOutputType = {
   id: string | null
+  name: string | null
+  description: string | null
+  official: boolean | null
+  ownerId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type OutfitCountAggregateOutputType = {
   id: number
+  name: number
+  description: number
+  official: number
+  ownerId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
 
 export type OutfitMinAggregateInputType = {
   id?: true
+  name?: true
+  description?: true
+  official?: true
+  ownerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type OutfitMaxAggregateInputType = {
   id?: true
+  name?: true
+  description?: true
+  official?: true
+  ownerId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type OutfitCountAggregateInputType = {
   id?: true
+  name?: true
+  description?: true
+  official?: true
+  ownerId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -125,6 +161,12 @@ export type OutfitGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type OutfitGroupByOutputType = {
   id: string
+  name: string
+  description: string | null
+  official: boolean
+  ownerId: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: OutfitCountAggregateOutputType | null
   _min: OutfitMinAggregateOutputType | null
   _max: OutfitMaxAggregateOutputType | null
@@ -150,10 +192,32 @@ export type OutfitWhereInput = {
   OR?: Prisma.OutfitWhereInput[]
   NOT?: Prisma.OutfitWhereInput | Prisma.OutfitWhereInput[]
   id?: Prisma.StringFilter<"Outfit"> | string
+  name?: Prisma.StringFilter<"Outfit"> | string
+  description?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  official?: Prisma.BoolFilter<"Outfit"> | boolean
+  ownerId?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  outfitItems?: Prisma.OutfitItemListRelationFilter
+  tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
 }
 
 export type OutfitOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  official?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  owner?: Prisma.UserOrderByWithRelationInput
+  outfitItems?: Prisma.OutfitItemOrderByRelationAggregateInput
+  tryOnOutfits?: Prisma.TryOnOutfitOrderByRelationAggregateInput
+  posts?: Prisma.PostOrderByRelationAggregateInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagOrderByRelationAggregateInput
 }
 
 export type OutfitWhereUniqueInput = Prisma.AtLeast<{
@@ -161,10 +225,27 @@ export type OutfitWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OutfitWhereInput | Prisma.OutfitWhereInput[]
   OR?: Prisma.OutfitWhereInput[]
   NOT?: Prisma.OutfitWhereInput | Prisma.OutfitWhereInput[]
+  name?: Prisma.StringFilter<"Outfit"> | string
+  description?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  official?: Prisma.BoolFilter<"Outfit"> | boolean
+  ownerId?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  outfitItems?: Prisma.OutfitItemListRelationFilter
+  tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
+  posts?: Prisma.PostListRelationFilter
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
 }, "id">
 
 export type OutfitOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  official?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.OutfitCountOrderByAggregateInput
   _max?: Prisma.OutfitMaxOrderByAggregateInput
   _min?: Prisma.OutfitMinOrderByAggregateInput
@@ -175,73 +256,762 @@ export type OutfitScalarWhereWithAggregatesInput = {
   OR?: Prisma.OutfitScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OutfitScalarWhereWithAggregatesInput | Prisma.OutfitScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Outfit"> | string
+  name?: Prisma.StringWithAggregatesFilter<"Outfit"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"Outfit"> | string | null
+  official?: Prisma.BoolWithAggregatesFilter<"Outfit"> | boolean
+  ownerId?: Prisma.StringNullableWithAggregatesFilter<"Outfit"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Outfit"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Outfit"> | Date | string
 }
 
 export type OutfitCreateInput = {
   id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
+  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
 }
 
 export type OutfitUncheckedCreateInput = {
   id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
 }
 
 export type OutfitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
+  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
 }
 
 export type OutfitUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
 }
 
 export type OutfitCreateManyInput = {
   id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OutfitUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OutfitUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OutfitListRelationFilter = {
+  every?: Prisma.OutfitWhereInput
+  some?: Prisma.OutfitWhereInput
+  none?: Prisma.OutfitWhereInput
+}
+
+export type OutfitOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type OutfitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  official?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type OutfitMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  official?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type OutfitMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  official?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
+export type OutfitScalarRelationFilter = {
+  is?: Prisma.OutfitWhereInput
+  isNot?: Prisma.OutfitWhereInput
+}
+
+export type OutfitCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput> | Prisma.OutfitCreateWithoutOwnerInput[] | Prisma.OutfitUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOwnerInput | Prisma.OutfitCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.OutfitCreateManyOwnerInputEnvelope
+  connect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+}
+
+export type OutfitUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput> | Prisma.OutfitCreateWithoutOwnerInput[] | Prisma.OutfitUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOwnerInput | Prisma.OutfitCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.OutfitCreateManyOwnerInputEnvelope
+  connect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+}
+
+export type OutfitUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput> | Prisma.OutfitCreateWithoutOwnerInput[] | Prisma.OutfitUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOwnerInput | Prisma.OutfitCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.OutfitUpsertWithWhereUniqueWithoutOwnerInput | Prisma.OutfitUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.OutfitCreateManyOwnerInputEnvelope
+  set?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  disconnect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  delete?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  connect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  update?: Prisma.OutfitUpdateWithWhereUniqueWithoutOwnerInput | Prisma.OutfitUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.OutfitUpdateManyWithWhereWithoutOwnerInput | Prisma.OutfitUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.OutfitScalarWhereInput | Prisma.OutfitScalarWhereInput[]
+}
+
+export type OutfitUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput> | Prisma.OutfitCreateWithoutOwnerInput[] | Prisma.OutfitUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOwnerInput | Prisma.OutfitCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.OutfitUpsertWithWhereUniqueWithoutOwnerInput | Prisma.OutfitUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.OutfitCreateManyOwnerInputEnvelope
+  set?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  disconnect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  delete?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  connect?: Prisma.OutfitWhereUniqueInput | Prisma.OutfitWhereUniqueInput[]
+  update?: Prisma.OutfitUpdateWithWhereUniqueWithoutOwnerInput | Prisma.OutfitUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.OutfitUpdateManyWithWhereWithoutOwnerInput | Prisma.OutfitUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.OutfitScalarWhereInput | Prisma.OutfitScalarWhereInput[]
+}
+
+export type OutfitCreateNestedOneWithoutOutfitItemsInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitItemsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+}
+
+export type OutfitUpdateOneRequiredWithoutOutfitItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitItemsInput
+  upsert?: Prisma.OutfitUpsertWithoutOutfitItemsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutOutfitItemsInput, Prisma.OutfitUpdateWithoutOutfitItemsInput>, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
+}
+
+export type OutfitCreateNestedOneWithoutTryOnOutfitsInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedCreateWithoutTryOnOutfitsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutTryOnOutfitsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+}
+
+export type OutfitUpdateOneRequiredWithoutTryOnOutfitsNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedCreateWithoutTryOnOutfitsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutTryOnOutfitsInput
+  upsert?: Prisma.OutfitUpsertWithoutTryOnOutfitsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutTryOnOutfitsInput, Prisma.OutfitUpdateWithoutTryOnOutfitsInput>, Prisma.OutfitUncheckedUpdateWithoutTryOnOutfitsInput>
+}
+
+export type OutfitCreateNestedOneWithoutPostsInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutPostsInput, Prisma.OutfitUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutPostsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+}
+
+export type OutfitUpdateOneRequiredWithoutPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutPostsInput, Prisma.OutfitUncheckedCreateWithoutPostsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutPostsInput
+  upsert?: Prisma.OutfitUpsertWithoutPostsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutPostsInput, Prisma.OutfitUpdateWithoutPostsInput>, Prisma.OutfitUncheckedUpdateWithoutPostsInput>
+}
+
+export type OutfitCreateNestedOneWithoutOutfitPreferenceTagsInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitPreferenceTagsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+}
+
+export type OutfitUpdateOneRequiredWithoutOutfitPreferenceTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitPreferenceTagsInput
+  upsert?: Prisma.OutfitUpsertWithoutOutfitPreferenceTagsInput
+  connect?: Prisma.OutfitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutOutfitPreferenceTagsInput, Prisma.OutfitUpdateWithoutOutfitPreferenceTagsInput>, Prisma.OutfitUncheckedUpdateWithoutOutfitPreferenceTagsInput>
+}
+
+export type OutfitCreateWithoutOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitUncheckedCreateWithoutOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput>
+}
+
+export type OutfitCreateManyOwnerInputEnvelope = {
+  data: Prisma.OutfitCreateManyOwnerInput | Prisma.OutfitCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type OutfitUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutOwnerInput, Prisma.OutfitUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOwnerInput, Prisma.OutfitUncheckedCreateWithoutOwnerInput>
+}
+
+export type OutfitUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutOwnerInput, Prisma.OutfitUncheckedUpdateWithoutOwnerInput>
+}
+
+export type OutfitUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.OutfitScalarWhereInput
+  data: Prisma.XOR<Prisma.OutfitUpdateManyMutationInput, Prisma.OutfitUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type OutfitScalarWhereInput = {
+  AND?: Prisma.OutfitScalarWhereInput | Prisma.OutfitScalarWhereInput[]
+  OR?: Prisma.OutfitScalarWhereInput[]
+  NOT?: Prisma.OutfitScalarWhereInput | Prisma.OutfitScalarWhereInput[]
+  id?: Prisma.StringFilter<"Outfit"> | string
+  name?: Prisma.StringFilter<"Outfit"> | string
+  description?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  official?: Prisma.BoolFilter<"Outfit"> | boolean
+  ownerId?: Prisma.StringNullableFilter<"Outfit"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
+}
+
+export type OutfitCreateWithoutOutfitItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
+  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitUncheckedCreateWithoutOutfitItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitCreateOrConnectWithoutOutfitItemsInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+}
+
+export type OutfitUpsertWithoutOutfitItemsInput = {
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitItemsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+  where?: Prisma.OutfitWhereInput
+}
+
+export type OutfitUpdateToOneWithWhereWithoutOutfitItemsInput = {
+  where?: Prisma.OutfitWhereInput
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitItemsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
+}
+
+export type OutfitUpdateWithoutOutfitItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateWithoutOutfitItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitCreateWithoutTryOnOutfitsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
+  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitUncheckedCreateWithoutTryOnOutfitsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitCreateOrConnectWithoutTryOnOutfitsInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedCreateWithoutTryOnOutfitsInput>
+}
+
+export type OutfitUpsertWithoutTryOnOutfitsInput = {
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedUpdateWithoutTryOnOutfitsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedCreateWithoutTryOnOutfitsInput>
+  where?: Prisma.OutfitWhereInput
+}
+
+export type OutfitUpdateToOneWithWhereWithoutTryOnOutfitsInput = {
+  where?: Prisma.OutfitWhereInput
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutTryOnOutfitsInput, Prisma.OutfitUncheckedUpdateWithoutTryOnOutfitsInput>
+}
+
+export type OutfitUpdateWithoutTryOnOutfitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
+  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateWithoutTryOnOutfitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitCreateWithoutPostsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
+  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitUncheckedCreateWithoutPostsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitCreateOrConnectWithoutPostsInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutPostsInput, Prisma.OutfitUncheckedCreateWithoutPostsInput>
+}
+
+export type OutfitUpsertWithoutPostsInput = {
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutPostsInput, Prisma.OutfitUncheckedUpdateWithoutPostsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutPostsInput, Prisma.OutfitUncheckedCreateWithoutPostsInput>
+  where?: Prisma.OutfitWhereInput
+}
+
+export type OutfitUpdateToOneWithWhereWithoutPostsInput = {
+  where?: Prisma.OutfitWhereInput
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutPostsInput, Prisma.OutfitUncheckedUpdateWithoutPostsInput>
+}
+
+export type OutfitUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
+  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateWithoutPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitCreateWithoutOutfitPreferenceTagsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
+  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  ownerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
+}
+
+export type OutfitCreateOrConnectWithoutOutfitPreferenceTagsInput = {
+  where: Prisma.OutfitWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput>
+}
+
+export type OutfitUpsertWithoutOutfitPreferenceTagsInput = {
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitPreferenceTagsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput>
+  where?: Prisma.OutfitWhereInput
+}
+
+export type OutfitUpdateToOneWithWhereWithoutOutfitPreferenceTagsInput = {
+  where?: Prisma.OutfitWhereInput
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitPreferenceTagsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitPreferenceTagsInput>
+}
+
+export type OutfitUpdateWithoutOutfitPreferenceTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
+  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateWithoutOutfitPreferenceTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitCreateManyOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  official: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OutfitUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
+  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
+}
+
+export type OutfitUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  official?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type OutfitCountOutputType
+ */
+
+export type OutfitCountOutputType = {
+  outfitItems: number
+  tryOnOutfits: number
+  posts: number
+  outfitPreferenceTags: number
+}
+
+export type OutfitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  outfitItems?: boolean | OutfitCountOutputTypeCountOutfitItemsArgs
+  tryOnOutfits?: boolean | OutfitCountOutputTypeCountTryOnOutfitsArgs
+  posts?: boolean | OutfitCountOutputTypeCountPostsArgs
+  outfitPreferenceTags?: boolean | OutfitCountOutputTypeCountOutfitPreferenceTagsArgs
+}
+
+/**
+ * OutfitCountOutputType without action
+ */
+export type OutfitCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OutfitCountOutputType
+   */
+  select?: Prisma.OutfitCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * OutfitCountOutputType without action
+ */
+export type OutfitCountOutputTypeCountOutfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OutfitItemWhereInput
+}
+
+/**
+ * OutfitCountOutputType without action
+ */
+export type OutfitCountOutputTypeCountTryOnOutfitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TryOnOutfitWhereInput
+}
+
+/**
+ * OutfitCountOutputType without action
+ */
+export type OutfitCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostWhereInput
+}
+
+/**
+ * OutfitCountOutputType without action
+ */
+export type OutfitCountOutputTypeCountOutfitPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OutfitPreferenceTagWhereInput
+}
 
 
 export type OutfitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
+  description?: boolean
+  official?: boolean
+  ownerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
+  outfitItems?: boolean | Prisma.Outfit$outfitItemsArgs<ExtArgs>
+  tryOnOutfits?: boolean | Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>
+  posts?: boolean | Prisma.Outfit$postsArgs<ExtArgs>
+  outfitPreferenceTags?: boolean | Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>
+  _count?: boolean | Prisma.OutfitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["outfit"]>
 
 export type OutfitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
+  description?: boolean
+  official?: boolean
+  ownerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["outfit"]>
 
 export type OutfitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
+  description?: boolean
+  official?: boolean
+  ownerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["outfit"]>
 
 export type OutfitSelectScalar = {
   id?: boolean
+  name?: boolean
+  description?: boolean
+  official?: boolean
+  ownerId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type OutfitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id", ExtArgs["result"]["outfit"]>
+export type OutfitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "official" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["outfit"]>
+export type OutfitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
+  outfitItems?: boolean | Prisma.Outfit$outfitItemsArgs<ExtArgs>
+  tryOnOutfits?: boolean | Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>
+  posts?: boolean | Prisma.Outfit$postsArgs<ExtArgs>
+  outfitPreferenceTags?: boolean | Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>
+  _count?: boolean | Prisma.OutfitCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type OutfitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
+}
+export type OutfitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
+}
 
 export type $OutfitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Outfit"
-  objects: {}
+  objects: {
+    owner: Prisma.$UserPayload<ExtArgs> | null
+    outfitItems: Prisma.$OutfitItemPayload<ExtArgs>[]
+    tryOnOutfits: Prisma.$TryOnOutfitPayload<ExtArgs>[]
+    posts: Prisma.$PostPayload<ExtArgs>[]
+    outfitPreferenceTags: Prisma.$OutfitPreferenceTagPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    name: string
+    description: string | null
+    official: boolean
+    ownerId: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["outfit"]>
   composites: {}
 }
@@ -636,6 +1406,11 @@ readonly fields: OutfitFieldRefs;
  */
 export interface Prisma__OutfitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  owner<T extends Prisma.Outfit$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  outfitItems<T extends Prisma.Outfit$outfitItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$outfitItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tryOnOutfits<T extends Prisma.Outfit$tryOnOutfitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TryOnOutfitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  posts<T extends Prisma.Outfit$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  outfitPreferenceTags<T extends Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -666,6 +1441,12 @@ export interface Prisma__OutfitClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface OutfitFieldRefs {
   readonly id: Prisma.FieldRef<"Outfit", 'String'>
+  readonly name: Prisma.FieldRef<"Outfit", 'String'>
+  readonly description: Prisma.FieldRef<"Outfit", 'String'>
+  readonly official: Prisma.FieldRef<"Outfit", 'Boolean'>
+  readonly ownerId: Prisma.FieldRef<"Outfit", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Outfit", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Outfit", 'DateTime'>
 }
     
 
@@ -682,6 +1463,10 @@ export type OutfitFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Outfit
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
   /**
    * Filter, which Outfit to fetch.
    */
@@ -701,6 +1486,10 @@ export type OutfitFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
+  /**
    * Filter, which Outfit to fetch.
    */
   where: Prisma.OutfitWhereUniqueInput
@@ -718,6 +1507,10 @@ export type OutfitFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Outfit
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
   /**
    * Filter, which Outfit to fetch.
    */
@@ -767,6 +1560,10 @@ export type OutfitFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
+  /**
    * Filter, which Outfit to fetch.
    */
   where?: Prisma.OutfitWhereInput
@@ -815,6 +1612,10 @@ export type OutfitFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
+  /**
    * Filter, which Outfits to fetch.
    */
   where?: Prisma.OutfitWhereInput
@@ -858,9 +1659,13 @@ export type OutfitCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
+  /**
    * The data needed to create a Outfit.
    */
-  data?: Prisma.XOR<Prisma.OutfitCreateInput, Prisma.OutfitUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.OutfitCreateInput, Prisma.OutfitUncheckedCreateInput>
 }
 
 /**
@@ -891,6 +1696,10 @@ export type OutfitCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    */
   data: Prisma.OutfitCreateManyInput | Prisma.OutfitCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -905,6 +1714,10 @@ export type OutfitUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Outfit
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
   /**
    * The data needed to update a Outfit.
    */
@@ -957,6 +1770,10 @@ export type OutfitUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many Outfits to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -971,6 +1788,10 @@ export type OutfitUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Outfit
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
   /**
    * The filter to search for the Outfit to update in case it exists.
    */
@@ -998,6 +1819,10 @@ export type OutfitDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
+  /**
    * Filter which Outfit to delete.
    */
   where: Prisma.OutfitWhereUniqueInput
@@ -1018,6 +1843,121 @@ export type OutfitDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * Outfit.owner
+ */
+export type Outfit$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Outfit.outfitItems
+ */
+export type Outfit$outfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OutfitItem
+   */
+  select?: Prisma.OutfitItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OutfitItem
+   */
+  omit?: Prisma.OutfitItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitItemInclude<ExtArgs> | null
+  where?: Prisma.OutfitItemWhereInput
+  orderBy?: Prisma.OutfitItemOrderByWithRelationInput | Prisma.OutfitItemOrderByWithRelationInput[]
+  cursor?: Prisma.OutfitItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OutfitItemScalarFieldEnum | Prisma.OutfitItemScalarFieldEnum[]
+}
+
+/**
+ * Outfit.tryOnOutfits
+ */
+export type Outfit$tryOnOutfitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TryOnOutfit
+   */
+  select?: Prisma.TryOnOutfitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TryOnOutfit
+   */
+  omit?: Prisma.TryOnOutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TryOnOutfitInclude<ExtArgs> | null
+  where?: Prisma.TryOnOutfitWhereInput
+  orderBy?: Prisma.TryOnOutfitOrderByWithRelationInput | Prisma.TryOnOutfitOrderByWithRelationInput[]
+  cursor?: Prisma.TryOnOutfitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TryOnOutfitScalarFieldEnum | Prisma.TryOnOutfitScalarFieldEnum[]
+}
+
+/**
+ * Outfit.posts
+ */
+export type Outfit$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Post
+   */
+  select?: Prisma.PostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Post
+   */
+  omit?: Prisma.PostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PostInclude<ExtArgs> | null
+  where?: Prisma.PostWhereInput
+  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
+  cursor?: Prisma.PostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * Outfit.outfitPreferenceTags
+ */
+export type Outfit$outfitPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OutfitPreferenceTag
+   */
+  select?: Prisma.OutfitPreferenceTagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OutfitPreferenceTag
+   */
+  omit?: Prisma.OutfitPreferenceTagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitPreferenceTagInclude<ExtArgs> | null
+  where?: Prisma.OutfitPreferenceTagWhereInput
+  orderBy?: Prisma.OutfitPreferenceTagOrderByWithRelationInput | Prisma.OutfitPreferenceTagOrderByWithRelationInput[]
+  cursor?: Prisma.OutfitPreferenceTagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OutfitPreferenceTagScalarFieldEnum | Prisma.OutfitPreferenceTagScalarFieldEnum[]
+}
+
+/**
  * Outfit without action
  */
 export type OutfitDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1029,4 +1969,8 @@ export type OutfitDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Outfit
    */
   omit?: Prisma.OutfitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutfitInclude<ExtArgs> | null
 }

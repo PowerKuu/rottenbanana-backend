@@ -10,9 +10,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 // ── AUTH MODELS — DO NOT MODIFY ────────────────────────────────────────────
 // Managed by better-auth. Only domain back-reference fields added to User.
-
 model User {
   id            String  @id
   name          String
@@ -27,6 +31,10 @@ model User {
   postLikes      PostLike[]
   PreferenceTags UserPreferenceTag[]
   ownedOutfits   Outfit[]
+
+  gender Gender
+  refrenceImage String
+  aiNormalizedRefrenceImage String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -99,44 +107,49 @@ model PreferenceTag {
   updatedAt DateTime @updatedAt
 }
 
-model Vendor {
+model Store {
   id        String @id @default(cuid())
   name      String
   url       String
   logoImage String
 
-  items Item[]
+  products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-enum ItemSlot {
+enum ProductSlot {
   TOP
+  MIDDLE
   BOTTOM
-  SHOES
+  FOOTWEAR
   ACCESSORY
 }
 
-model Item {
-  id           String   @id @default(cuid())
+model Product {
+  id           String      @id @default(cuid())
   name         String
   price        Float
   primaryImage String
   images       String[]
+  
+  productImage String
+  aiNormalizedProductImage String
+
   description  String
   metadata     Json
   url          String
-  slot         ItemSlot
+  slot         ProductSlot
 
-  vendorId String
-  vendor   Vendor       @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  storeId String
+  store   Store        @relation(fields: [storeId], references: [id], onDelete: Restrict)
   outfitItems OutfitItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([vendorId])
+  @@index([storeId])
 }
 
 model Outfit {
@@ -160,16 +173,16 @@ model Outfit {
 }
 
 model OutfitItem {
-  outfitId String
-  itemId   String
+  outfitId  String
+  productId String
 
-  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  outfit  Outfit  @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  @@id([outfitId, itemId])
-  @@index([itemId])
+  @@id([outfitId, productId])
+  @@index([productId])
 }
 
 model TryOnOutfit {

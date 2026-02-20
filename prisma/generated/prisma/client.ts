@@ -29,8 +29,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more PrefrenceTags
- * const prefrenceTags = await prisma.prefrenceTag.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -40,25 +40,50 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model PrefrenceTag
+ * Model User
  * 
  */
-export type PrefrenceTag = Prisma.PrefrenceTagModel
+export type User = Prisma.UserModel
 /**
- * Model Vendor
+ * Model Session
  * 
  */
-export type Vendor = Prisma.VendorModel
+export type Session = Prisma.SessionModel
 /**
- * Model Item
+ * Model Account
  * 
  */
-export type Item = Prisma.ItemModel
+export type Account = Prisma.AccountModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel
+/**
+ * Model PreferenceTag
+ * 
+ */
+export type PreferenceTag = Prisma.PreferenceTagModel
+/**
+ * Model Store
+ * 
+ */
+export type Store = Prisma.StoreModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
 /**
  * Model Outfit
  * 
  */
 export type Outfit = Prisma.OutfitModel
+/**
+ * Model OutfitItem
+ * 
+ */
+export type OutfitItem = Prisma.OutfitItemModel
 /**
  * Model TryOnOutfit
  * 
@@ -69,3 +94,18 @@ export type TryOnOutfit = Prisma.TryOnOutfitModel
  * 
  */
 export type Post = Prisma.PostModel
+/**
+ * Model PostLike
+ * 
+ */
+export type PostLike = Prisma.PostLikeModel
+/**
+ * Model UserPreferenceTag
+ * 
+ */
+export type UserPreferenceTag = Prisma.UserPreferenceTagModel
+/**
+ * Model OutfitPreferenceTag
+ * 
+ */
+export type OutfitPreferenceTag = Prisma.OutfitPreferenceTagModel
