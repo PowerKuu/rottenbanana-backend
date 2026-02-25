@@ -90,6 +90,9 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   role: 'role',
+  gender: 'gender',
+  refrenceImage: 'refrenceImage',
+  aiNormalizedRefrenceImage: 'aiNormalizedRefrenceImage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -170,6 +173,8 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   primaryImage: 'primaryImage',
   images: 'images',
+  productImage: 'productImage',
+  aiNormalizedProductImage: 'aiNormalizedProductImage',
   description: 'description',
   metadata: 'metadata',
   url: 'url',

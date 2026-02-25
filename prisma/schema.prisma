@@ -22,7 +22,7 @@ model User {
   name          String
   email         String
   emailVerified Boolean @default(false)
-  image         String?
+  image      String?
   role          String  @default("USER")
 
   sessions       Session[]
@@ -33,8 +33,8 @@ model User {
   ownedOutfits   Outfit[]
 
   gender Gender
-  refrenceImage String
-  aiNormalizedRefrenceImage String
+  referenceImageUrl String
+  aiNormalizedReferenceImageUrl String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,11 +107,13 @@ model PreferenceTag {
   updatedAt DateTime @updatedAt
 }
 
+
+
 model Store {
-  id        String @id @default(cuid())
-  name      String
-  url       String
-  logoImage String
+  id           String @id @default(cuid())
+  name         String
+  websiteUrl          String
+  imageUrl String
 
   products Product[]
 
@@ -128,14 +130,11 @@ enum ProductSlot {
 }
 
 model Product {
-  id           String      @id @default(cuid())
-  name         String
-  price        Float
-  primaryImage String
-  images       String[]
-  
-  productImage String
-  aiNormalizedProductImage String
+  id                String      @id @default(cuid())
+  name              String
+  price             Float
+  primaryImageUrl   String  
+  imageUrls         String[]
 
   description  String
   metadata     Json
@@ -144,7 +143,7 @@ model Product {
 
   storeId String
   store   Store        @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  outfitItems OutfitItem[]
+  outfitItems OutfitProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -161,7 +160,7 @@ model Outfit {
   ownerId String?
   owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
-  outfitItems          OutfitItem[]
+  products          OutfitProduct[]
   tryOnOutfits         TryOnOutfit[]
   posts                Post[]
   outfitPreferenceTags OutfitPreferenceTag[]
@@ -172,7 +171,7 @@ model Outfit {
   @@index([ownerId])
 }
 
-model OutfitItem {
+model OutfitProduct {
   outfitId  String
   productId String
 
@@ -186,9 +185,9 @@ model OutfitItem {
 }
 
 model TryOnOutfit {
-  id             String      @id @default(cuid())
-  refrenceImages String[]
-  resultImages   String[]
+  id                  String      @id @default(cuid())
+  referenceImageUrl   String
+  resultImageUrls     String[]
 
   outfitId String
   outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
@@ -204,9 +203,9 @@ model TryOnOutfit {
 }
 
 model Post {
-  id      String   @id @default(cuid())
-  caption String?
-  images  String[]
+  id        String   @id @default(cuid())
+  caption   String?
+  imageUrls String[]
 
   outfitId String
   outfit   Outfit     @relation(fields: [outfitId], references: [id], onDelete: Restrict)
@@ -238,14 +237,14 @@ model UserPreferenceTag {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  PreferenceTagId String
-  preferenceTag   PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  preferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [preferenceTagId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, PreferenceTagId])
-  @@index([PreferenceTagId])
+  @@id([userId, preferenceTagId])
+  @@index([preferenceTagId])
   @@index([userId, score(sort: Desc)])
 }
 
@@ -253,11 +252,11 @@ model OutfitPreferenceTag {
   outfitId String
   outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
-  PreferenceTagId String
-  preferenceTag   PreferenceTag @relation(fields: [PreferenceTagId], references: [id], onDelete: Cascade)
+  preferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [preferenceTagId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  @@id([outfitId, PreferenceTagId])
-  @@index([PreferenceTagId])
+  @@id([outfitId, preferenceTagId])
+  @@index([preferenceTagId])
 }
