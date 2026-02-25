@@ -128,7 +128,7 @@ enum ProductSlot {
   PANTS
   SOCKS
   SHOES
-  
+
   GLASSES
   BELT
   HAT
