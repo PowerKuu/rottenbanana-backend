@@ -30,7 +30,6 @@ model User {
   tryOnOutfits   TryOnOutfit[]
   postLikes      PostLike[]
   PreferenceTags UserPreferenceTag[]
-  ownedOutfits   Outfit[]
 
   gender                        Gender
   referenceImageUrl             String
@@ -149,7 +148,6 @@ model Product {
 
   storeId          String
   store            Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  outfitItems      OutfitProduct[]
   tryOnOutfitItems TryOnOutfitProduct[]
 
   createdAt DateTime @default(now())
@@ -158,46 +156,11 @@ model Product {
   @@index([storeId])
 }
 
-model Outfit {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  official    Boolean
-
-  ownerId String?
-  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-
-  products             OutfitProduct[]
-  tryOnOutfits         TryOnOutfit[]
-  posts                Post[]
-  outfitPreferenceTags OutfitPreferenceTag[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([ownerId])
-}
-
-model OutfitProduct {
-  outfitId  String
-  productId String
-
-  outfit  Outfit  @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@id([outfitId, productId])
-  @@index([productId])
-}
-
 model TryOnOutfit {
   id                String   @id @default(cuid())
   referenceImageUrl String
   resultImageUrls   String[]
 
-  outfitId String
-  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -207,7 +170,6 @@ model TryOnOutfit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([outfitId])
   @@index([userId])
 }
 
@@ -231,7 +193,6 @@ model Post {
   imageUrls String[]
 
   outfitId String
-  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Restrict)
 
   postLikes PostLike[]
 
