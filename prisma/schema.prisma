@@ -100,7 +100,7 @@ model PreferenceTag {
   tag String @unique
 
   userPreferenceTags   UserPreferenceTag[]
-  outfitPreferenceTags OutfitPreferenceTag[]
+  postPreferenceTags PostPreferenceTag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -195,6 +195,7 @@ model Post {
   outfitId String
 
   postLikes PostLike[]
+  preferenceTags PostPreferenceTag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -232,15 +233,15 @@ model UserPreferenceTag {
   @@index([userId, score(sort: Desc)])
 }
 
-model OutfitPreferenceTag {
-  outfitId String
-  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+model PostPreferenceTag {
+  postId String
+  post  Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   preferenceTagId String
   preferenceTag   PreferenceTag @relation(fields: [preferenceTagId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  @@id([outfitId, preferenceTagId])
+  @@id([postId, preferenceTagId])
   @@index([preferenceTagId])
 }
