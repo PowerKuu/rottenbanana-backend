@@ -80,15 +80,20 @@ export type Product = Prisma.ProductModel
  */
 export type Outfit = Prisma.OutfitModel
 /**
- * Model OutfitItem
+ * Model OutfitProduct
  * 
  */
-export type OutfitItem = Prisma.OutfitItemModel
+export type OutfitProduct = Prisma.OutfitProductModel
 /**
  * Model TryOnOutfit
  * 
  */
 export type TryOnOutfit = Prisma.TryOnOutfitModel
+/**
+ * Model TryOnOutfitProduct
+ * 
+ */
+export type TryOnOutfitProduct = Prisma.TryOnOutfitProductModel
 /**
  * Model Post
  * 

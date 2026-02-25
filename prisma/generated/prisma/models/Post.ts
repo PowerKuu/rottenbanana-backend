@@ -43,7 +43,7 @@ export type PostMaxAggregateOutputType = {
 export type PostCountAggregateOutputType = {
   id: number
   caption: number
-  images: number
+  imageUrls: number
   outfitId: number
   createdAt: number
   updatedAt: number
@@ -70,7 +70,7 @@ export type PostMaxAggregateInputType = {
 export type PostCountAggregateInputType = {
   id?: true
   caption?: true
-  images?: true
+  imageUrls?: true
   outfitId?: true
   createdAt?: true
   updatedAt?: true
@@ -152,7 +152,7 @@ export type PostGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type PostGroupByOutputType = {
   id: string
   caption: string | null
-  images: string[]
+  imageUrls: string[]
   outfitId: string
   createdAt: Date
   updatedAt: Date
@@ -182,7 +182,7 @@ export type PostWhereInput = {
   NOT?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
   id?: Prisma.StringFilter<"Post"> | string
   caption?: Prisma.StringNullableFilter<"Post"> | string | null
-  images?: Prisma.StringNullableListFilter<"Post">
+  imageUrls?: Prisma.StringNullableListFilter<"Post">
   outfitId?: Prisma.StringFilter<"Post"> | string
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -193,7 +193,7 @@ export type PostWhereInput = {
 export type PostOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   caption?: Prisma.SortOrderInput | Prisma.SortOrder
-  images?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   outfitId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -207,7 +207,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PostWhereInput[]
   NOT?: Prisma.PostWhereInput | Prisma.PostWhereInput[]
   caption?: Prisma.StringNullableFilter<"Post"> | string | null
-  images?: Prisma.StringNullableListFilter<"Post">
+  imageUrls?: Prisma.StringNullableListFilter<"Post">
   outfitId?: Prisma.StringFilter<"Post"> | string
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -218,7 +218,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
 export type PostOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   caption?: Prisma.SortOrderInput | Prisma.SortOrder
-  images?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   outfitId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -233,7 +233,7 @@ export type PostScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PostScalarWhereWithAggregatesInput | Prisma.PostScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Post"> | string
   caption?: Prisma.StringNullableWithAggregatesFilter<"Post"> | string | null
-  images?: Prisma.StringNullableListFilter<"Post">
+  imageUrls?: Prisma.StringNullableListFilter<"Post">
   outfitId?: Prisma.StringWithAggregatesFilter<"Post"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
@@ -242,7 +242,7 @@ export type PostScalarWhereWithAggregatesInput = {
 export type PostCreateInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   outfit: Prisma.OutfitCreateNestedOneWithoutPostsInput
@@ -252,7 +252,7 @@ export type PostCreateInput = {
 export type PostUncheckedCreateInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   outfitId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -262,7 +262,7 @@ export type PostUncheckedCreateInput = {
 export type PostUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outfit?: Prisma.OutfitUpdateOneRequiredWithoutPostsNestedInput
@@ -272,7 +272,7 @@ export type PostUpdateInput = {
 export type PostUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -282,7 +282,7 @@ export type PostUncheckedUpdateInput = {
 export type PostCreateManyInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   outfitId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -291,7 +291,7 @@ export type PostCreateManyInput = {
 export type PostUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -299,7 +299,7 @@ export type PostUpdateManyMutationInput = {
 export type PostUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,7 +318,7 @@ export type PostOrderByRelationAggregateInput = {
 export type PostCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   caption?: Prisma.SortOrder
-  images?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   outfitId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -387,11 +387,11 @@ export type PostUncheckedUpdateManyWithoutOutfitNestedInput = {
   deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
-export type PostCreateimagesInput = {
+export type PostCreateimageUrlsInput = {
   set: string[]
 }
 
-export type PostUpdateimagesInput = {
+export type PostUpdateimageUrlsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -413,7 +413,7 @@ export type PostUpdateOneRequiredWithoutPostLikesNestedInput = {
 export type PostCreateWithoutOutfitInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
@@ -422,7 +422,7 @@ export type PostCreateWithoutOutfitInput = {
 export type PostUncheckedCreateWithoutOutfitInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
@@ -460,7 +460,7 @@ export type PostScalarWhereInput = {
   NOT?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
   id?: Prisma.StringFilter<"Post"> | string
   caption?: Prisma.StringNullableFilter<"Post"> | string | null
-  images?: Prisma.StringNullableListFilter<"Post">
+  imageUrls?: Prisma.StringNullableListFilter<"Post">
   outfitId?: Prisma.StringFilter<"Post"> | string
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
@@ -469,7 +469,7 @@ export type PostScalarWhereInput = {
 export type PostCreateWithoutPostLikesInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   outfit: Prisma.OutfitCreateNestedOneWithoutPostsInput
@@ -478,7 +478,7 @@ export type PostCreateWithoutPostLikesInput = {
 export type PostUncheckedCreateWithoutPostLikesInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   outfitId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -503,7 +503,7 @@ export type PostUpdateToOneWithWhereWithoutPostLikesInput = {
 export type PostUpdateWithoutPostLikesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outfit?: Prisma.OutfitUpdateOneRequiredWithoutPostsNestedInput
@@ -512,7 +512,7 @@ export type PostUpdateWithoutPostLikesInput = {
 export type PostUncheckedUpdateWithoutPostLikesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -521,7 +521,7 @@ export type PostUncheckedUpdateWithoutPostLikesInput = {
 export type PostCreateManyOutfitInput = {
   id?: string
   caption?: string | null
-  images?: Prisma.PostCreateimagesInput | string[]
+  imageUrls?: Prisma.PostCreateimageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -529,7 +529,7 @@ export type PostCreateManyOutfitInput = {
 export type PostUpdateWithoutOutfitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   postLikes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
@@ -538,7 +538,7 @@ export type PostUpdateWithoutOutfitInput = {
 export type PostUncheckedUpdateWithoutOutfitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
@@ -547,7 +547,7 @@ export type PostUncheckedUpdateWithoutOutfitInput = {
 export type PostUncheckedUpdateManyWithoutOutfitInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.PostUpdateimagesInput | string[]
+  imageUrls?: Prisma.PostUpdateimageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -586,7 +586,7 @@ export type PostCountOutputTypeCountPostLikesArgs<ExtArgs extends runtime.Types.
 export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   caption?: boolean
-  images?: boolean
+  imageUrls?: boolean
   outfitId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -598,7 +598,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   caption?: boolean
-  images?: boolean
+  imageUrls?: boolean
   outfitId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -608,7 +608,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   caption?: boolean
-  images?: boolean
+  imageUrls?: boolean
   outfitId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -618,13 +618,13 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type PostSelectScalar = {
   id?: boolean
   caption?: boolean
-  images?: boolean
+  imageUrls?: boolean
   outfitId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "caption" | "images" | "outfitId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "caption" | "imageUrls" | "outfitId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   postLikes?: boolean | Prisma.Post$postLikesArgs<ExtArgs>
@@ -646,7 +646,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     caption: string | null
-    images: string[]
+    imageUrls: string[]
     outfitId: string
     createdAt: Date
     updatedAt: Date
@@ -1077,7 +1077,7 @@ export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface PostFieldRefs {
   readonly id: Prisma.FieldRef<"Post", 'String'>
   readonly caption: Prisma.FieldRef<"Post", 'String'>
-  readonly images: Prisma.FieldRef<"Post", 'String[]'>
+  readonly imageUrls: Prisma.FieldRef<"Post", 'String[]'>
   readonly outfitId: Prisma.FieldRef<"Post", 'String'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Post", 'DateTime'>

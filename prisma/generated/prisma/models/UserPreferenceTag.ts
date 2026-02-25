@@ -37,7 +37,7 @@ export type UserPreferenceTagSumAggregateOutputType = {
 export type UserPreferenceTagMinAggregateOutputType = {
   score: number | null
   userId: string | null
-  PreferenceTagId: string | null
+  preferenceTagId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -45,7 +45,7 @@ export type UserPreferenceTagMinAggregateOutputType = {
 export type UserPreferenceTagMaxAggregateOutputType = {
   score: number | null
   userId: string | null
-  PreferenceTagId: string | null
+  preferenceTagId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,7 +53,7 @@ export type UserPreferenceTagMaxAggregateOutputType = {
 export type UserPreferenceTagCountAggregateOutputType = {
   score: number
   userId: number
-  PreferenceTagId: number
+  preferenceTagId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -71,7 +71,7 @@ export type UserPreferenceTagSumAggregateInputType = {
 export type UserPreferenceTagMinAggregateInputType = {
   score?: true
   userId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -79,7 +79,7 @@ export type UserPreferenceTagMinAggregateInputType = {
 export type UserPreferenceTagMaxAggregateInputType = {
   score?: true
   userId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -87,7 +87,7 @@ export type UserPreferenceTagMaxAggregateInputType = {
 export type UserPreferenceTagCountAggregateInputType = {
   score?: true
   userId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -182,7 +182,7 @@ export type UserPreferenceTagGroupByArgs<ExtArgs extends runtime.Types.Extension
 export type UserPreferenceTagGroupByOutputType = {
   score: number
   userId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt: Date
   updatedAt: Date
   _count: UserPreferenceTagCountAggregateOutputType | null
@@ -213,7 +213,7 @@ export type UserPreferenceTagWhereInput = {
   NOT?: Prisma.UserPreferenceTagWhereInput | Prisma.UserPreferenceTagWhereInput[]
   score?: Prisma.IntFilter<"UserPreferenceTag"> | number
   userId?: Prisma.StringFilter<"UserPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -223,7 +223,7 @@ export type UserPreferenceTagWhereInput = {
 export type UserPreferenceTagOrderByWithRelationInput = {
   score?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -231,23 +231,23 @@ export type UserPreferenceTagOrderByWithRelationInput = {
 }
 
 export type UserPreferenceTagWhereUniqueInput = Prisma.AtLeast<{
-  userId_PreferenceTagId?: Prisma.UserPreferenceTagUserIdPreferenceTagIdCompoundUniqueInput
+  userId_preferenceTagId?: Prisma.UserPreferenceTagUserIdPreferenceTagIdCompoundUniqueInput
   AND?: Prisma.UserPreferenceTagWhereInput | Prisma.UserPreferenceTagWhereInput[]
   OR?: Prisma.UserPreferenceTagWhereInput[]
   NOT?: Prisma.UserPreferenceTagWhereInput | Prisma.UserPreferenceTagWhereInput[]
   score?: Prisma.IntFilter<"UserPreferenceTag"> | number
   userId?: Prisma.StringFilter<"UserPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   preferenceTag?: Prisma.XOR<Prisma.PreferenceTagScalarRelationFilter, Prisma.PreferenceTagWhereInput>
-}, "userId_PreferenceTagId">
+}, "userId_preferenceTagId">
 
 export type UserPreferenceTagOrderByWithAggregationInput = {
   score?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserPreferenceTagCountOrderByAggregateInput
@@ -263,7 +263,7 @@ export type UserPreferenceTagScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserPreferenceTagScalarWhereWithAggregatesInput | Prisma.UserPreferenceTagScalarWhereWithAggregatesInput[]
   score?: Prisma.IntWithAggregatesFilter<"UserPreferenceTag"> | number
   userId?: Prisma.StringWithAggregatesFilter<"UserPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringWithAggregatesFilter<"UserPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringWithAggregatesFilter<"UserPreferenceTag"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserPreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserPreferenceTag"> | Date | string
 }
@@ -279,7 +279,7 @@ export type UserPreferenceTagCreateInput = {
 export type UserPreferenceTagUncheckedCreateInput = {
   score?: number
   userId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -295,7 +295,7 @@ export type UserPreferenceTagUpdateInput = {
 export type UserPreferenceTagUncheckedUpdateInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -303,7 +303,7 @@ export type UserPreferenceTagUncheckedUpdateInput = {
 export type UserPreferenceTagCreateManyInput = {
   score?: number
   userId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -317,7 +317,7 @@ export type UserPreferenceTagUpdateManyMutationInput = {
 export type UserPreferenceTagUncheckedUpdateManyInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -334,13 +334,13 @@ export type UserPreferenceTagOrderByRelationAggregateInput = {
 
 export type UserPreferenceTagUserIdPreferenceTagIdCompoundUniqueInput = {
   userId: string
-  PreferenceTagId: string
+  preferenceTagId: string
 }
 
 export type UserPreferenceTagCountOrderByAggregateInput = {
   score?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -352,7 +352,7 @@ export type UserPreferenceTagAvgOrderByAggregateInput = {
 export type UserPreferenceTagMaxOrderByAggregateInput = {
   score?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -360,7 +360,7 @@ export type UserPreferenceTagMaxOrderByAggregateInput = {
 export type UserPreferenceTagMinOrderByAggregateInput = {
   score?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -470,7 +470,7 @@ export type UserPreferenceTagCreateWithoutUserInput = {
 
 export type UserPreferenceTagUncheckedCreateWithoutUserInput = {
   score?: number
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -507,7 +507,7 @@ export type UserPreferenceTagScalarWhereInput = {
   NOT?: Prisma.UserPreferenceTagScalarWhereInput | Prisma.UserPreferenceTagScalarWhereInput[]
   score?: Prisma.IntFilter<"UserPreferenceTag"> | number
   userId?: Prisma.StringFilter<"UserPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"UserPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPreferenceTag"> | Date | string
 }
@@ -554,7 +554,7 @@ export type UserPreferenceTagUpdateManyWithWhereWithoutPreferenceTagInput = {
 
 export type UserPreferenceTagCreateManyUserInput = {
   score?: number
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -568,14 +568,14 @@ export type UserPreferenceTagUpdateWithoutUserInput = {
 
 export type UserPreferenceTagUncheckedUpdateWithoutUserInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserPreferenceTagUncheckedUpdateManyWithoutUserInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -613,7 +613,7 @@ export type UserPreferenceTagUncheckedUpdateManyWithoutPreferenceTagInput = {
 export type UserPreferenceTagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   score?: boolean
   userId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -623,7 +623,7 @@ export type UserPreferenceTagSelect<ExtArgs extends runtime.Types.Extensions.Int
 export type UserPreferenceTagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   score?: boolean
   userId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -633,7 +633,7 @@ export type UserPreferenceTagSelectCreateManyAndReturn<ExtArgs extends runtime.T
 export type UserPreferenceTagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   score?: boolean
   userId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -643,12 +643,12 @@ export type UserPreferenceTagSelectUpdateManyAndReturn<ExtArgs extends runtime.T
 export type UserPreferenceTagSelectScalar = {
   score?: boolean
   userId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserPreferenceTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"score" | "userId" | "PreferenceTagId" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreferenceTag"]>
+export type UserPreferenceTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"score" | "userId" | "preferenceTagId" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreferenceTag"]>
 export type UserPreferenceTagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   preferenceTag?: boolean | Prisma.PreferenceTagDefaultArgs<ExtArgs>
@@ -671,7 +671,7 @@ export type $UserPreferenceTagPayload<ExtArgs extends runtime.Types.Extensions.I
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     score: number
     userId: string
-    PreferenceTagId: string
+    preferenceTagId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userPreferenceTag"]>
@@ -1101,7 +1101,7 @@ export interface Prisma__UserPreferenceTagClient<T, Null = never, ExtArgs extend
 export interface UserPreferenceTagFieldRefs {
   readonly score: Prisma.FieldRef<"UserPreferenceTag", 'Int'>
   readonly userId: Prisma.FieldRef<"UserPreferenceTag", 'String'>
-  readonly PreferenceTagId: Prisma.FieldRef<"UserPreferenceTag", 'String'>
+  readonly preferenceTagId: Prisma.FieldRef<"UserPreferenceTag", 'String'>
   readonly createdAt: Prisma.FieldRef<"UserPreferenceTag", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserPreferenceTag", 'DateTime'>
 }

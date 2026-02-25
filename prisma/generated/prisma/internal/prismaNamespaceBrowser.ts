@@ -59,8 +59,9 @@ export const ModelName = {
   Store: 'Store',
   Product: 'Product',
   Outfit: 'Outfit',
-  OutfitItem: 'OutfitItem',
+  OutfitProduct: 'OutfitProduct',
   TryOnOutfit: 'TryOnOutfit',
+  TryOnOutfitProduct: 'TryOnOutfitProduct',
   Post: 'Post',
   PostLike: 'PostLike',
   UserPreferenceTag: 'UserPreferenceTag',
@@ -91,8 +92,8 @@ export const UserScalarFieldEnum = {
   image: 'image',
   role: 'role',
   gender: 'gender',
-  refrenceImage: 'refrenceImage',
-  aiNormalizedRefrenceImage: 'aiNormalizedRefrenceImage',
+  referenceImageUrl: 'referenceImageUrl',
+  aiNormalizedReferenceImageUrl: 'aiNormalizedReferenceImageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -158,8 +159,8 @@ export type PreferenceTagScalarFieldEnum = (typeof PreferenceTagScalarFieldEnum)
 export const StoreScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  url: 'url',
-  logoImage: 'logoImage',
+  websiteUrl: 'websiteUrl',
+  imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -171,10 +172,8 @@ export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
   price: 'price',
-  primaryImage: 'primaryImage',
-  images: 'images',
-  productImage: 'productImage',
-  aiNormalizedProductImage: 'aiNormalizedProductImage',
+  primaryImageUrl: 'primaryImageUrl',
+  imageUrls: 'imageUrls',
   description: 'description',
   metadata: 'metadata',
   url: 'url',
@@ -200,19 +199,19 @@ export const OutfitScalarFieldEnum = {
 export type OutfitScalarFieldEnum = (typeof OutfitScalarFieldEnum)[keyof typeof OutfitScalarFieldEnum]
 
 
-export const OutfitItemScalarFieldEnum = {
+export const OutfitProductScalarFieldEnum = {
   outfitId: 'outfitId',
   productId: 'productId',
   createdAt: 'createdAt'
 } as const
 
-export type OutfitItemScalarFieldEnum = (typeof OutfitItemScalarFieldEnum)[keyof typeof OutfitItemScalarFieldEnum]
+export type OutfitProductScalarFieldEnum = (typeof OutfitProductScalarFieldEnum)[keyof typeof OutfitProductScalarFieldEnum]
 
 
 export const TryOnOutfitScalarFieldEnum = {
   id: 'id',
-  refrenceImages: 'refrenceImages',
-  resultImages: 'resultImages',
+  referenceImageUrl: 'referenceImageUrl',
+  resultImageUrls: 'resultImageUrls',
   outfitId: 'outfitId',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -222,10 +221,19 @@ export const TryOnOutfitScalarFieldEnum = {
 export type TryOnOutfitScalarFieldEnum = (typeof TryOnOutfitScalarFieldEnum)[keyof typeof TryOnOutfitScalarFieldEnum]
 
 
+export const TryOnOutfitProductScalarFieldEnum = {
+  tryOnOutfitId: 'tryOnOutfitId',
+  productId: 'productId',
+  createdAt: 'createdAt'
+} as const
+
+export type TryOnOutfitProductScalarFieldEnum = (typeof TryOnOutfitProductScalarFieldEnum)[keyof typeof TryOnOutfitProductScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   caption: 'caption',
-  images: 'images',
+  imageUrls: 'imageUrls',
   outfitId: 'outfitId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -246,7 +254,7 @@ export type PostLikeScalarFieldEnum = (typeof PostLikeScalarFieldEnum)[keyof typ
 export const UserPreferenceTagScalarFieldEnum = {
   score: 'score',
   userId: 'userId',
-  PreferenceTagId: 'PreferenceTagId',
+  preferenceTagId: 'preferenceTagId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -256,7 +264,7 @@ export type UserPreferenceTagScalarFieldEnum = (typeof UserPreferenceTagScalarFi
 
 export const OutfitPreferenceTagScalarFieldEnum = {
   outfitId: 'outfitId',
-  PreferenceTagId: 'PreferenceTagId',
+  preferenceTagId: 'preferenceTagId',
   createdAt: 'createdAt'
 } as const
 

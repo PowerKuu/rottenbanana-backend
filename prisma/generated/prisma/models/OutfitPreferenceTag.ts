@@ -26,19 +26,19 @@ export type AggregateOutfitPreferenceTag = {
 
 export type OutfitPreferenceTagMinAggregateOutputType = {
   outfitId: string | null
-  PreferenceTagId: string | null
+  preferenceTagId: string | null
   createdAt: Date | null
 }
 
 export type OutfitPreferenceTagMaxAggregateOutputType = {
   outfitId: string | null
-  PreferenceTagId: string | null
+  preferenceTagId: string | null
   createdAt: Date | null
 }
 
 export type OutfitPreferenceTagCountAggregateOutputType = {
   outfitId: number
-  PreferenceTagId: number
+  preferenceTagId: number
   createdAt: number
   _all: number
 }
@@ -46,19 +46,19 @@ export type OutfitPreferenceTagCountAggregateOutputType = {
 
 export type OutfitPreferenceTagMinAggregateInputType = {
   outfitId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
 }
 
 export type OutfitPreferenceTagMaxAggregateInputType = {
   outfitId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
 }
 
 export type OutfitPreferenceTagCountAggregateInputType = {
   outfitId?: true
-  PreferenceTagId?: true
+  preferenceTagId?: true
   createdAt?: true
   _all?: true
 }
@@ -137,7 +137,7 @@ export type OutfitPreferenceTagGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type OutfitPreferenceTagGroupByOutputType = {
   outfitId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt: Date
   _count: OutfitPreferenceTagCountAggregateOutputType | null
   _min: OutfitPreferenceTagMinAggregateOutputType | null
@@ -164,7 +164,7 @@ export type OutfitPreferenceTagWhereInput = {
   OR?: Prisma.OutfitPreferenceTagWhereInput[]
   NOT?: Prisma.OutfitPreferenceTagWhereInput | Prisma.OutfitPreferenceTagWhereInput[]
   outfitId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"OutfitPreferenceTag"> | Date | string
   outfit?: Prisma.XOR<Prisma.OutfitScalarRelationFilter, Prisma.OutfitWhereInput>
   preferenceTag?: Prisma.XOR<Prisma.PreferenceTagScalarRelationFilter, Prisma.PreferenceTagWhereInput>
@@ -172,27 +172,27 @@ export type OutfitPreferenceTagWhereInput = {
 
 export type OutfitPreferenceTagOrderByWithRelationInput = {
   outfitId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   outfit?: Prisma.OutfitOrderByWithRelationInput
   preferenceTag?: Prisma.PreferenceTagOrderByWithRelationInput
 }
 
 export type OutfitPreferenceTagWhereUniqueInput = Prisma.AtLeast<{
-  outfitId_PreferenceTagId?: Prisma.OutfitPreferenceTagOutfitIdPreferenceTagIdCompoundUniqueInput
+  outfitId_preferenceTagId?: Prisma.OutfitPreferenceTagOutfitIdPreferenceTagIdCompoundUniqueInput
   AND?: Prisma.OutfitPreferenceTagWhereInput | Prisma.OutfitPreferenceTagWhereInput[]
   OR?: Prisma.OutfitPreferenceTagWhereInput[]
   NOT?: Prisma.OutfitPreferenceTagWhereInput | Prisma.OutfitPreferenceTagWhereInput[]
   outfitId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"OutfitPreferenceTag"> | Date | string
   outfit?: Prisma.XOR<Prisma.OutfitScalarRelationFilter, Prisma.OutfitWhereInput>
   preferenceTag?: Prisma.XOR<Prisma.PreferenceTagScalarRelationFilter, Prisma.PreferenceTagWhereInput>
-}, "outfitId_PreferenceTagId">
+}, "outfitId_preferenceTagId">
 
 export type OutfitPreferenceTagOrderByWithAggregationInput = {
   outfitId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OutfitPreferenceTagCountOrderByAggregateInput
   _max?: Prisma.OutfitPreferenceTagMaxOrderByAggregateInput
@@ -204,7 +204,7 @@ export type OutfitPreferenceTagScalarWhereWithAggregatesInput = {
   OR?: Prisma.OutfitPreferenceTagScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OutfitPreferenceTagScalarWhereWithAggregatesInput | Prisma.OutfitPreferenceTagScalarWhereWithAggregatesInput[]
   outfitId?: Prisma.StringWithAggregatesFilter<"OutfitPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringWithAggregatesFilter<"OutfitPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringWithAggregatesFilter<"OutfitPreferenceTag"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OutfitPreferenceTag"> | Date | string
 }
 
@@ -216,7 +216,7 @@ export type OutfitPreferenceTagCreateInput = {
 
 export type OutfitPreferenceTagUncheckedCreateInput = {
   outfitId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
 }
 
@@ -228,13 +228,13 @@ export type OutfitPreferenceTagUpdateInput = {
 
 export type OutfitPreferenceTagUncheckedUpdateInput = {
   outfitId?: Prisma.StringFieldUpdateOperationsInput | string
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OutfitPreferenceTagCreateManyInput = {
   outfitId: string
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
 }
 
@@ -244,7 +244,7 @@ export type OutfitPreferenceTagUpdateManyMutationInput = {
 
 export type OutfitPreferenceTagUncheckedUpdateManyInput = {
   outfitId?: Prisma.StringFieldUpdateOperationsInput | string
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -260,24 +260,24 @@ export type OutfitPreferenceTagOrderByRelationAggregateInput = {
 
 export type OutfitPreferenceTagOutfitIdPreferenceTagIdCompoundUniqueInput = {
   outfitId: string
-  PreferenceTagId: string
+  preferenceTagId: string
 }
 
 export type OutfitPreferenceTagCountOrderByAggregateInput = {
   outfitId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type OutfitPreferenceTagMaxOrderByAggregateInput = {
   outfitId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type OutfitPreferenceTagMinOrderByAggregateInput = {
   outfitId?: Prisma.SortOrder
-  PreferenceTagId?: Prisma.SortOrder
+  preferenceTagId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -406,7 +406,7 @@ export type OutfitPreferenceTagScalarWhereInput = {
   OR?: Prisma.OutfitPreferenceTagScalarWhereInput[]
   NOT?: Prisma.OutfitPreferenceTagScalarWhereInput | Prisma.OutfitPreferenceTagScalarWhereInput[]
   outfitId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
-  PreferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
+  preferenceTagId?: Prisma.StringFilter<"OutfitPreferenceTag"> | string
   createdAt?: Prisma.DateTimeFilter<"OutfitPreferenceTag"> | Date | string
 }
 
@@ -416,7 +416,7 @@ export type OutfitPreferenceTagCreateWithoutOutfitInput = {
 }
 
 export type OutfitPreferenceTagUncheckedCreateWithoutOutfitInput = {
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
 }
 
@@ -467,7 +467,7 @@ export type OutfitPreferenceTagUncheckedUpdateManyWithoutPreferenceTagInput = {
 }
 
 export type OutfitPreferenceTagCreateManyOutfitInput = {
-  PreferenceTagId: string
+  preferenceTagId: string
   createdAt?: Date | string
 }
 
@@ -477,12 +477,12 @@ export type OutfitPreferenceTagUpdateWithoutOutfitInput = {
 }
 
 export type OutfitPreferenceTagUncheckedUpdateWithoutOutfitInput = {
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitInput = {
-  PreferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
+  preferenceTagId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -490,7 +490,7 @@ export type OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitInput = {
 
 export type OutfitPreferenceTagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   outfitId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   preferenceTag?: boolean | Prisma.PreferenceTagDefaultArgs<ExtArgs>
@@ -498,7 +498,7 @@ export type OutfitPreferenceTagSelect<ExtArgs extends runtime.Types.Extensions.I
 
 export type OutfitPreferenceTagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   outfitId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   preferenceTag?: boolean | Prisma.PreferenceTagDefaultArgs<ExtArgs>
@@ -506,7 +506,7 @@ export type OutfitPreferenceTagSelectCreateManyAndReturn<ExtArgs extends runtime
 
 export type OutfitPreferenceTagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   outfitId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
   outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   preferenceTag?: boolean | Prisma.PreferenceTagDefaultArgs<ExtArgs>
@@ -514,11 +514,11 @@ export type OutfitPreferenceTagSelectUpdateManyAndReturn<ExtArgs extends runtime
 
 export type OutfitPreferenceTagSelectScalar = {
   outfitId?: boolean
-  PreferenceTagId?: boolean
+  preferenceTagId?: boolean
   createdAt?: boolean
 }
 
-export type OutfitPreferenceTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"outfitId" | "PreferenceTagId" | "createdAt", ExtArgs["result"]["outfitPreferenceTag"]>
+export type OutfitPreferenceTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"outfitId" | "preferenceTagId" | "createdAt", ExtArgs["result"]["outfitPreferenceTag"]>
 export type OutfitPreferenceTagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   preferenceTag?: boolean | Prisma.PreferenceTagDefaultArgs<ExtArgs>
@@ -540,7 +540,7 @@ export type $OutfitPreferenceTagPayload<ExtArgs extends runtime.Types.Extensions
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     outfitId: string
-    PreferenceTagId: string
+    preferenceTagId: string
     createdAt: Date
   }, ExtArgs["result"]["outfitPreferenceTag"]>
   composites: {}
@@ -968,7 +968,7 @@ export interface Prisma__OutfitPreferenceTagClient<T, Null = never, ExtArgs exte
  */
 export interface OutfitPreferenceTagFieldRefs {
   readonly outfitId: Prisma.FieldRef<"OutfitPreferenceTag", 'String'>
-  readonly PreferenceTagId: Prisma.FieldRef<"OutfitPreferenceTag", 'String'>
+  readonly preferenceTagId: Prisma.FieldRef<"OutfitPreferenceTag", 'String'>
   readonly createdAt: Prisma.FieldRef<"OutfitPreferenceTag", 'DateTime'>
 }
     

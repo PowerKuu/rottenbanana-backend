@@ -392,8 +392,9 @@ export const ModelName = {
   Store: 'Store',
   Product: 'Product',
   Outfit: 'Outfit',
-  OutfitItem: 'OutfitItem',
+  OutfitProduct: 'OutfitProduct',
   TryOnOutfit: 'TryOnOutfit',
+  TryOnOutfitProduct: 'TryOnOutfitProduct',
   Post: 'Post',
   PostLike: 'PostLike',
   UserPreferenceTag: 'UserPreferenceTag',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "preferenceTag" | "store" | "product" | "outfit" | "outfitItem" | "tryOnOutfit" | "post" | "postLike" | "userPreferenceTag" | "outfitPreferenceTag"
+    modelProps: "user" | "session" | "account" | "verification" | "preferenceTag" | "store" | "product" | "outfit" | "outfitProduct" | "tryOnOutfit" | "tryOnOutfitProduct" | "post" | "postLike" | "userPreferenceTag" | "outfitPreferenceTag"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1009,77 +1010,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    OutfitItem: {
-      payload: Prisma.$OutfitItemPayload<ExtArgs>
-      fields: Prisma.OutfitItemFieldRefs
+    OutfitProduct: {
+      payload: Prisma.$OutfitProductPayload<ExtArgs>
+      fields: Prisma.OutfitProductFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.OutfitItemFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload> | null
+          args: Prisma.OutfitProductFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.OutfitItemFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         findFirst: {
-          args: Prisma.OutfitItemFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload> | null
+          args: Prisma.OutfitProductFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.OutfitItemFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         findMany: {
-          args: Prisma.OutfitItemFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>[]
+          args: Prisma.OutfitProductFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>[]
         }
         create: {
-          args: Prisma.OutfitItemCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         createMany: {
-          args: Prisma.OutfitItemCreateManyArgs<ExtArgs>
+          args: Prisma.OutfitProductCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.OutfitItemCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>[]
+          args: Prisma.OutfitProductCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>[]
         }
         delete: {
-          args: Prisma.OutfitItemDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         update: {
-          args: Prisma.OutfitItemUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         deleteMany: {
-          args: Prisma.OutfitItemDeleteManyArgs<ExtArgs>
+          args: Prisma.OutfitProductDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.OutfitItemUpdateManyArgs<ExtArgs>
+          args: Prisma.OutfitProductUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.OutfitItemUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>[]
+          args: Prisma.OutfitProductUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>[]
         }
         upsert: {
-          args: Prisma.OutfitItemUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitItemPayload>
+          args: Prisma.OutfitProductUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutfitProductPayload>
         }
         aggregate: {
-          args: Prisma.OutfitItemAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateOutfitItem>
+          args: Prisma.OutfitProductAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOutfitProduct>
         }
         groupBy: {
-          args: Prisma.OutfitItemGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.OutfitItemGroupByOutputType>[]
+          args: Prisma.OutfitProductGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OutfitProductGroupByOutputType>[]
         }
         count: {
-          args: Prisma.OutfitItemCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.OutfitItemCountAggregateOutputType> | number
+          args: Prisma.OutfitProductCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OutfitProductCountAggregateOutputType> | number
         }
       }
     }
@@ -1154,6 +1155,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TryOnOutfitCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TryOnOutfitCountAggregateOutputType> | number
+        }
+      }
+    }
+    TryOnOutfitProduct: {
+      payload: Prisma.$TryOnOutfitProductPayload<ExtArgs>
+      fields: Prisma.TryOnOutfitProductFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TryOnOutfitProductFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TryOnOutfitProductFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        findFirst: {
+          args: Prisma.TryOnOutfitProductFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TryOnOutfitProductFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        findMany: {
+          args: Prisma.TryOnOutfitProductFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>[]
+        }
+        create: {
+          args: Prisma.TryOnOutfitProductCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        createMany: {
+          args: Prisma.TryOnOutfitProductCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TryOnOutfitProductCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>[]
+        }
+        delete: {
+          args: Prisma.TryOnOutfitProductDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        update: {
+          args: Prisma.TryOnOutfitProductUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        deleteMany: {
+          args: Prisma.TryOnOutfitProductDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TryOnOutfitProductUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TryOnOutfitProductUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>[]
+        }
+        upsert: {
+          args: Prisma.TryOnOutfitProductUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TryOnOutfitProductPayload>
+        }
+        aggregate: {
+          args: Prisma.TryOnOutfitProductAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTryOnOutfitProduct>
+        }
+        groupBy: {
+          args: Prisma.TryOnOutfitProductGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TryOnOutfitProductGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TryOnOutfitProductCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TryOnOutfitProductCountAggregateOutputType> | number
         }
       }
     }
@@ -1500,8 +1575,8 @@ export const UserScalarFieldEnum = {
   image: 'image',
   role: 'role',
   gender: 'gender',
-  refrenceImage: 'refrenceImage',
-  aiNormalizedRefrenceImage: 'aiNormalizedRefrenceImage',
+  referenceImageUrl: 'referenceImageUrl',
+  aiNormalizedReferenceImageUrl: 'aiNormalizedReferenceImageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1567,8 +1642,8 @@ export type PreferenceTagScalarFieldEnum = (typeof PreferenceTagScalarFieldEnum)
 export const StoreScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  url: 'url',
-  logoImage: 'logoImage',
+  websiteUrl: 'websiteUrl',
+  imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1580,10 +1655,8 @@ export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
   price: 'price',
-  primaryImage: 'primaryImage',
-  images: 'images',
-  productImage: 'productImage',
-  aiNormalizedProductImage: 'aiNormalizedProductImage',
+  primaryImageUrl: 'primaryImageUrl',
+  imageUrls: 'imageUrls',
   description: 'description',
   metadata: 'metadata',
   url: 'url',
@@ -1609,19 +1682,19 @@ export const OutfitScalarFieldEnum = {
 export type OutfitScalarFieldEnum = (typeof OutfitScalarFieldEnum)[keyof typeof OutfitScalarFieldEnum]
 
 
-export const OutfitItemScalarFieldEnum = {
+export const OutfitProductScalarFieldEnum = {
   outfitId: 'outfitId',
   productId: 'productId',
   createdAt: 'createdAt'
 } as const
 
-export type OutfitItemScalarFieldEnum = (typeof OutfitItemScalarFieldEnum)[keyof typeof OutfitItemScalarFieldEnum]
+export type OutfitProductScalarFieldEnum = (typeof OutfitProductScalarFieldEnum)[keyof typeof OutfitProductScalarFieldEnum]
 
 
 export const TryOnOutfitScalarFieldEnum = {
   id: 'id',
-  refrenceImages: 'refrenceImages',
-  resultImages: 'resultImages',
+  referenceImageUrl: 'referenceImageUrl',
+  resultImageUrls: 'resultImageUrls',
   outfitId: 'outfitId',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -1631,10 +1704,19 @@ export const TryOnOutfitScalarFieldEnum = {
 export type TryOnOutfitScalarFieldEnum = (typeof TryOnOutfitScalarFieldEnum)[keyof typeof TryOnOutfitScalarFieldEnum]
 
 
+export const TryOnOutfitProductScalarFieldEnum = {
+  tryOnOutfitId: 'tryOnOutfitId',
+  productId: 'productId',
+  createdAt: 'createdAt'
+} as const
+
+export type TryOnOutfitProductScalarFieldEnum = (typeof TryOnOutfitProductScalarFieldEnum)[keyof typeof TryOnOutfitProductScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   caption: 'caption',
-  images: 'images',
+  imageUrls: 'imageUrls',
   outfitId: 'outfitId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1655,7 +1737,7 @@ export type PostLikeScalarFieldEnum = (typeof PostLikeScalarFieldEnum)[keyof typ
 export const UserPreferenceTagScalarFieldEnum = {
   score: 'score',
   userId: 'userId',
-  PreferenceTagId: 'PreferenceTagId',
+  preferenceTagId: 'preferenceTagId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1665,7 +1747,7 @@ export type UserPreferenceTagScalarFieldEnum = (typeof UserPreferenceTagScalarFi
 
 export const OutfitPreferenceTagScalarFieldEnum = {
   outfitId: 'outfitId',
-  PreferenceTagId: 'PreferenceTagId',
+  preferenceTagId: 'preferenceTagId',
   createdAt: 'createdAt'
 } as const
 
@@ -1925,8 +2007,9 @@ export type GlobalOmitConfig = {
   store?: Prisma.StoreOmit
   product?: Prisma.ProductOmit
   outfit?: Prisma.OutfitOmit
-  outfitItem?: Prisma.OutfitItemOmit
+  outfitProduct?: Prisma.OutfitProductOmit
   tryOnOutfit?: Prisma.TryOnOutfitOmit
+  tryOnOutfitProduct?: Prisma.TryOnOutfitProductOmit
   post?: Prisma.PostOmit
   postLike?: Prisma.PostLikeOmit
   userPreferenceTag?: Prisma.UserPreferenceTagOmit

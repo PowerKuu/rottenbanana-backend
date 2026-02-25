@@ -18,11 +18,18 @@ export type Gender = (typeof Gender)[keyof typeof Gender]
 
 
 export const ProductSlot = {
-  TOP: 'TOP',
-  MIDDLE: 'MIDDLE',
-  BOTTOM: 'BOTTOM',
-  FOOTWEAR: 'FOOTWEAR',
-  ACCESSORY: 'ACCESSORY'
+  UNDERSHIRT: 'UNDERSHIRT',
+  SHIRT: 'SHIRT',
+  OVERSHIRT: 'OVERSHIRT',
+  JACKET: 'JACKET',
+  UNDERPANTS: 'UNDERPANTS',
+  PANTS: 'PANTS',
+  SOCKS: 'SOCKS',
+  SHOES: 'SHOES',
+  GLASSES: 'GLASSES',
+  BELT: 'BELT',
+  HAT: 'HAT',
+  OTHER: 'OTHER'
 } as const
 
 export type ProductSlot = (typeof ProductSlot)[keyof typeof ProductSlot]

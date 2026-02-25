@@ -199,7 +199,7 @@ export type OutfitWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  outfitItems?: Prisma.OutfitItemListRelationFilter
+  products?: Prisma.OutfitProductListRelationFilter
   tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
   posts?: Prisma.PostListRelationFilter
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
@@ -214,7 +214,7 @@ export type OutfitOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
-  outfitItems?: Prisma.OutfitItemOrderByRelationAggregateInput
+  products?: Prisma.OutfitProductOrderByRelationAggregateInput
   tryOnOutfits?: Prisma.TryOnOutfitOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagOrderByRelationAggregateInput
@@ -232,7 +232,7 @@ export type OutfitWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-  outfitItems?: Prisma.OutfitItemListRelationFilter
+  products?: Prisma.OutfitProductListRelationFilter
   tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
   posts?: Prisma.PostListRelationFilter
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
@@ -272,7 +272,7 @@ export type OutfitCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
@@ -286,7 +286,7 @@ export type OutfitUncheckedCreateInput = {
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
@@ -300,7 +300,7 @@ export type OutfitUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
@@ -314,7 +314,7 @@ export type OutfitUncheckedUpdateInput = {
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUncheckedUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
@@ -436,18 +436,18 @@ export type OutfitUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.OutfitScalarWhereInput | Prisma.OutfitScalarWhereInput[]
 }
 
-export type OutfitCreateNestedOneWithoutOutfitItemsInput = {
-  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
-  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitItemsInput
+export type OutfitCreateNestedOneWithoutProductsInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutProductsInput, Prisma.OutfitUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutProductsInput
   connect?: Prisma.OutfitWhereUniqueInput
 }
 
-export type OutfitUpdateOneRequiredWithoutOutfitItemsNestedInput = {
-  create?: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
-  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutOutfitItemsInput
-  upsert?: Prisma.OutfitUpsertWithoutOutfitItemsInput
+export type OutfitUpdateOneRequiredWithoutProductsNestedInput = {
+  create?: Prisma.XOR<Prisma.OutfitCreateWithoutProductsInput, Prisma.OutfitUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.OutfitCreateOrConnectWithoutProductsInput
+  upsert?: Prisma.OutfitUpsertWithoutProductsInput
   connect?: Prisma.OutfitWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutOutfitItemsInput, Prisma.OutfitUpdateWithoutOutfitItemsInput>, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OutfitUpdateToOneWithWhereWithoutProductsInput, Prisma.OutfitUpdateWithoutProductsInput>, Prisma.OutfitUncheckedUpdateWithoutProductsInput>
 }
 
 export type OutfitCreateNestedOneWithoutTryOnOutfitsInput = {
@@ -499,7 +499,7 @@ export type OutfitCreateWithoutOwnerInput = {
   official: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
@@ -512,7 +512,7 @@ export type OutfitUncheckedCreateWithoutOwnerInput = {
   official: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
@@ -557,7 +557,7 @@ export type OutfitScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Outfit"> | Date | string
 }
 
-export type OutfitCreateWithoutOutfitItemsInput = {
+export type OutfitCreateWithoutProductsInput = {
   id?: string
   name: string
   description?: string | null
@@ -570,7 +570,7 @@ export type OutfitCreateWithoutOutfitItemsInput = {
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
 }
 
-export type OutfitUncheckedCreateWithoutOutfitItemsInput = {
+export type OutfitUncheckedCreateWithoutProductsInput = {
   id?: string
   name: string
   description?: string | null
@@ -583,23 +583,23 @@ export type OutfitUncheckedCreateWithoutOutfitItemsInput = {
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
 }
 
-export type OutfitCreateOrConnectWithoutOutfitItemsInput = {
+export type OutfitCreateOrConnectWithoutProductsInput = {
   where: Prisma.OutfitWhereUniqueInput
-  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutProductsInput, Prisma.OutfitUncheckedCreateWithoutProductsInput>
 }
 
-export type OutfitUpsertWithoutOutfitItemsInput = {
-  update: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitItemsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
-  create: Prisma.XOR<Prisma.OutfitCreateWithoutOutfitItemsInput, Prisma.OutfitUncheckedCreateWithoutOutfitItemsInput>
+export type OutfitUpsertWithoutProductsInput = {
+  update: Prisma.XOR<Prisma.OutfitUpdateWithoutProductsInput, Prisma.OutfitUncheckedUpdateWithoutProductsInput>
+  create: Prisma.XOR<Prisma.OutfitCreateWithoutProductsInput, Prisma.OutfitUncheckedCreateWithoutProductsInput>
   where?: Prisma.OutfitWhereInput
 }
 
-export type OutfitUpdateToOneWithWhereWithoutOutfitItemsInput = {
+export type OutfitUpdateToOneWithWhereWithoutProductsInput = {
   where?: Prisma.OutfitWhereInput
-  data: Prisma.XOR<Prisma.OutfitUpdateWithoutOutfitItemsInput, Prisma.OutfitUncheckedUpdateWithoutOutfitItemsInput>
+  data: Prisma.XOR<Prisma.OutfitUpdateWithoutProductsInput, Prisma.OutfitUncheckedUpdateWithoutProductsInput>
 }
 
-export type OutfitUpdateWithoutOutfitItemsInput = {
+export type OutfitUpdateWithoutProductsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -612,7 +612,7 @@ export type OutfitUpdateWithoutOutfitItemsInput = {
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
 }
 
-export type OutfitUncheckedUpdateWithoutOutfitItemsInput = {
+export type OutfitUncheckedUpdateWithoutProductsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -633,7 +633,7 @@ export type OutfitCreateWithoutTryOnOutfitsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
 }
@@ -646,7 +646,7 @@ export type OutfitUncheckedCreateWithoutTryOnOutfitsInput = {
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
 }
@@ -675,7 +675,7 @@ export type OutfitUpdateWithoutTryOnOutfitsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
 }
@@ -688,7 +688,7 @@ export type OutfitUncheckedUpdateWithoutTryOnOutfitsInput = {
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUncheckedUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
 }
@@ -701,7 +701,7 @@ export type OutfitCreateWithoutPostsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutOutfitInput
 }
@@ -714,7 +714,7 @@ export type OutfitUncheckedCreateWithoutPostsInput = {
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutOutfitInput
 }
@@ -743,7 +743,7 @@ export type OutfitUpdateWithoutPostsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
 }
@@ -756,7 +756,7 @@ export type OutfitUncheckedUpdateWithoutPostsInput = {
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUncheckedUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
 }
@@ -769,7 +769,7 @@ export type OutfitCreateWithoutOutfitPreferenceTagsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedOutfitsInput
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostCreateNestedManyWithoutOutfitInput
 }
@@ -782,7 +782,7 @@ export type OutfitUncheckedCreateWithoutOutfitPreferenceTagsInput = {
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutOutfitInput
+  products?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutOutfitInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutOutfitInput
 }
@@ -811,7 +811,7 @@ export type OutfitUpdateWithoutOutfitPreferenceTagsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedOutfitsNestedInput
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
 }
@@ -824,7 +824,7 @@ export type OutfitUncheckedUpdateWithoutOutfitPreferenceTagsInput = {
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUncheckedUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
 }
@@ -845,7 +845,7 @@ export type OutfitUpdateWithoutOwnerInput = {
   official?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutOutfitNestedInput
@@ -858,7 +858,7 @@ export type OutfitUncheckedUpdateWithoutOwnerInput = {
   official?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutOutfitNestedInput
+  products?: Prisma.OutfitProductUncheckedUpdateManyWithoutOutfitNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutOutfitNestedInput
   outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutOutfitNestedInput
@@ -879,14 +879,14 @@ export type OutfitUncheckedUpdateManyWithoutOwnerInput = {
  */
 
 export type OutfitCountOutputType = {
-  outfitItems: number
+  products: number
   tryOnOutfits: number
   posts: number
   outfitPreferenceTags: number
 }
 
 export type OutfitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  outfitItems?: boolean | OutfitCountOutputTypeCountOutfitItemsArgs
+  products?: boolean | OutfitCountOutputTypeCountProductsArgs
   tryOnOutfits?: boolean | OutfitCountOutputTypeCountTryOnOutfitsArgs
   posts?: boolean | OutfitCountOutputTypeCountPostsArgs
   outfitPreferenceTags?: boolean | OutfitCountOutputTypeCountOutfitPreferenceTagsArgs
@@ -905,8 +905,8 @@ export type OutfitCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
 /**
  * OutfitCountOutputType without action
  */
-export type OutfitCountOutputTypeCountOutfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OutfitItemWhereInput
+export type OutfitCountOutputTypeCountProductsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OutfitProductWhereInput
 }
 
 /**
@@ -940,7 +940,7 @@ export type OutfitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
-  outfitItems?: boolean | Prisma.Outfit$outfitItemsArgs<ExtArgs>
+  products?: boolean | Prisma.Outfit$productsArgs<ExtArgs>
   tryOnOutfits?: boolean | Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>
   posts?: boolean | Prisma.Outfit$postsArgs<ExtArgs>
   outfitPreferenceTags?: boolean | Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>
@@ -982,7 +982,7 @@ export type OutfitSelectScalar = {
 export type OutfitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "official" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["outfit"]>
 export type OutfitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.Outfit$ownerArgs<ExtArgs>
-  outfitItems?: boolean | Prisma.Outfit$outfitItemsArgs<ExtArgs>
+  products?: boolean | Prisma.Outfit$productsArgs<ExtArgs>
   tryOnOutfits?: boolean | Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>
   posts?: boolean | Prisma.Outfit$postsArgs<ExtArgs>
   outfitPreferenceTags?: boolean | Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>
@@ -999,7 +999,7 @@ export type $OutfitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Outfit"
   objects: {
     owner: Prisma.$UserPayload<ExtArgs> | null
-    outfitItems: Prisma.$OutfitItemPayload<ExtArgs>[]
+    products: Prisma.$OutfitProductPayload<ExtArgs>[]
     tryOnOutfits: Prisma.$TryOnOutfitPayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
     outfitPreferenceTags: Prisma.$OutfitPreferenceTagPayload<ExtArgs>[]
@@ -1407,7 +1407,7 @@ readonly fields: OutfitFieldRefs;
 export interface Prisma__OutfitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   owner<T extends Prisma.Outfit$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  outfitItems<T extends Prisma.Outfit$outfitItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$outfitItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  products<T extends Prisma.Outfit$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tryOnOutfits<T extends Prisma.Outfit$tryOnOutfitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$tryOnOutfitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TryOnOutfitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.Outfit$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   outfitPreferenceTags<T extends Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outfit$outfitPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1862,27 +1862,27 @@ export type Outfit$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 /**
- * Outfit.outfitItems
+ * Outfit.products
  */
-export type Outfit$outfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Outfit$productsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the OutfitItem
+   * Select specific fields to fetch from the OutfitProduct
    */
-  select?: Prisma.OutfitItemSelect<ExtArgs> | null
+  select?: Prisma.OutfitProductSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the OutfitItem
+   * Omit specific fields from the OutfitProduct
    */
-  omit?: Prisma.OutfitItemOmit<ExtArgs> | null
+  omit?: Prisma.OutfitProductOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.OutfitItemInclude<ExtArgs> | null
-  where?: Prisma.OutfitItemWhereInput
-  orderBy?: Prisma.OutfitItemOrderByWithRelationInput | Prisma.OutfitItemOrderByWithRelationInput[]
-  cursor?: Prisma.OutfitItemWhereUniqueInput
+  include?: Prisma.OutfitProductInclude<ExtArgs> | null
+  where?: Prisma.OutfitProductWhereInput
+  orderBy?: Prisma.OutfitProductOrderByWithRelationInput | Prisma.OutfitProductOrderByWithRelationInput[]
+  cursor?: Prisma.OutfitProductWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.OutfitItemScalarFieldEnum | Prisma.OutfitItemScalarFieldEnum[]
+  distinct?: Prisma.OutfitProductScalarFieldEnum | Prisma.OutfitProductScalarFieldEnum[]
 }
 
 /**

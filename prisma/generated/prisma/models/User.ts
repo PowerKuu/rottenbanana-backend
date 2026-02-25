@@ -32,8 +32,8 @@ export type UserMinAggregateOutputType = {
   image: string | null
   role: string | null
   gender: $Enums.Gender | null
-  refrenceImage: string | null
-  aiNormalizedRefrenceImage: string | null
+  referenceImageUrl: string | null
+  aiNormalizedReferenceImageUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,8 +46,8 @@ export type UserMaxAggregateOutputType = {
   image: string | null
   role: string | null
   gender: $Enums.Gender | null
-  refrenceImage: string | null
-  aiNormalizedRefrenceImage: string | null
+  referenceImageUrl: string | null
+  aiNormalizedReferenceImageUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,8 +60,8 @@ export type UserCountAggregateOutputType = {
   image: number
   role: number
   gender: number
-  refrenceImage: number
-  aiNormalizedRefrenceImage: number
+  referenceImageUrl: number
+  aiNormalizedReferenceImageUrl: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -76,8 +76,8 @@ export type UserMinAggregateInputType = {
   image?: true
   role?: true
   gender?: true
-  refrenceImage?: true
-  aiNormalizedRefrenceImage?: true
+  referenceImageUrl?: true
+  aiNormalizedReferenceImageUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,8 +90,8 @@ export type UserMaxAggregateInputType = {
   image?: true
   role?: true
   gender?: true
-  refrenceImage?: true
-  aiNormalizedRefrenceImage?: true
+  referenceImageUrl?: true
+  aiNormalizedReferenceImageUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -104,8 +104,8 @@ export type UserCountAggregateInputType = {
   image?: true
   role?: true
   gender?: true
-  refrenceImage?: true
-  aiNormalizedRefrenceImage?: true
+  referenceImageUrl?: true
+  aiNormalizedReferenceImageUrl?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -191,8 +191,8 @@ export type UserGroupByOutputType = {
   image: string | null
   role: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -226,8 +226,8 @@ export type UserWhereInput = {
   image?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   gender?: Prisma.EnumGenderFilter<"User"> | $Enums.Gender
-  refrenceImage?: Prisma.StringFilter<"User"> | string
-  aiNormalizedRefrenceImage?: Prisma.StringFilter<"User"> | string
+  referenceImageUrl?: Prisma.StringFilter<"User"> | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -246,8 +246,8 @@ export type UserOrderByWithRelationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  refrenceImage?: Prisma.SortOrder
-  aiNormalizedRefrenceImage?: Prisma.SortOrder
+  referenceImageUrl?: Prisma.SortOrder
+  aiNormalizedReferenceImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
@@ -269,8 +269,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringFilter<"User"> | string
   gender?: Prisma.EnumGenderFilter<"User"> | $Enums.Gender
-  refrenceImage?: Prisma.StringFilter<"User"> | string
-  aiNormalizedRefrenceImage?: Prisma.StringFilter<"User"> | string
+  referenceImageUrl?: Prisma.StringFilter<"User"> | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -289,8 +289,8 @@ export type UserOrderByWithAggregationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  refrenceImage?: Prisma.SortOrder
-  aiNormalizedRefrenceImage?: Prisma.SortOrder
+  referenceImageUrl?: Prisma.SortOrder
+  aiNormalizedReferenceImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -309,8 +309,8 @@ export type UserScalarWhereWithAggregatesInput = {
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.StringWithAggregatesFilter<"User"> | string
   gender?: Prisma.EnumGenderWithAggregatesFilter<"User"> | $Enums.Gender
-  refrenceImage?: Prisma.StringWithAggregatesFilter<"User"> | string
-  aiNormalizedRefrenceImage?: Prisma.StringWithAggregatesFilter<"User"> | string
+  referenceImageUrl?: Prisma.StringWithAggregatesFilter<"User"> | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -323,8 +323,8 @@ export type UserCreateInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -343,8 +343,8 @@ export type UserUncheckedCreateInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -363,8 +363,8 @@ export type UserUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -383,8 +383,8 @@ export type UserUncheckedUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -403,8 +403,8 @@ export type UserCreateManyInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -417,8 +417,8 @@ export type UserUpdateManyMutationInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -431,8 +431,8 @@ export type UserUncheckedUpdateManyInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -445,8 +445,8 @@ export type UserCountOrderByAggregateInput = {
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  refrenceImage?: Prisma.SortOrder
-  aiNormalizedRefrenceImage?: Prisma.SortOrder
+  referenceImageUrl?: Prisma.SortOrder
+  aiNormalizedReferenceImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -459,8 +459,8 @@ export type UserMaxOrderByAggregateInput = {
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  refrenceImage?: Prisma.SortOrder
-  aiNormalizedRefrenceImage?: Prisma.SortOrder
+  referenceImageUrl?: Prisma.SortOrder
+  aiNormalizedReferenceImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,8 +473,8 @@ export type UserMinOrderByAggregateInput = {
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  refrenceImage?: Prisma.SortOrder
-  aiNormalizedRefrenceImage?: Prisma.SortOrder
+  referenceImageUrl?: Prisma.SortOrder
+  aiNormalizedReferenceImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -603,8 +603,8 @@ export type UserCreateWithoutSessionsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -622,8 +622,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -657,8 +657,8 @@ export type UserUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -676,8 +676,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -695,8 +695,8 @@ export type UserCreateWithoutAccountsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -714,8 +714,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -749,8 +749,8 @@ export type UserUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -768,8 +768,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -787,8 +787,8 @@ export type UserCreateWithoutOwnedOutfitsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -806,8 +806,8 @@ export type UserUncheckedCreateWithoutOwnedOutfitsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -841,8 +841,8 @@ export type UserUpdateWithoutOwnedOutfitsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -860,8 +860,8 @@ export type UserUncheckedUpdateWithoutOwnedOutfitsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -879,8 +879,8 @@ export type UserCreateWithoutTryOnOutfitsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -898,8 +898,8 @@ export type UserUncheckedCreateWithoutTryOnOutfitsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -933,8 +933,8 @@ export type UserUpdateWithoutTryOnOutfitsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -952,8 +952,8 @@ export type UserUncheckedUpdateWithoutTryOnOutfitsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -971,8 +971,8 @@ export type UserCreateWithoutPostLikesInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -990,8 +990,8 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1025,8 +1025,8 @@ export type UserUpdateWithoutPostLikesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1044,8 +1044,8 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1063,8 +1063,8 @@ export type UserCreateWithoutPreferenceTagsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1082,8 +1082,8 @@ export type UserUncheckedCreateWithoutPreferenceTagsInput = {
   image?: string | null
   role?: string
   gender: $Enums.Gender
-  refrenceImage: string
-  aiNormalizedRefrenceImage: string
+  referenceImageUrl: string
+  aiNormalizedReferenceImageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1117,8 +1117,8 @@ export type UserUpdateWithoutPreferenceTagsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1136,8 +1136,8 @@ export type UserUncheckedUpdateWithoutPreferenceTagsInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  refrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedRefrenceImage?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1231,8 +1231,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   image?: boolean
   role?: boolean
   gender?: boolean
-  refrenceImage?: boolean
-  aiNormalizedRefrenceImage?: boolean
+  referenceImageUrl?: boolean
+  aiNormalizedReferenceImageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
@@ -1252,8 +1252,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   role?: boolean
   gender?: boolean
-  refrenceImage?: boolean
-  aiNormalizedRefrenceImage?: boolean
+  referenceImageUrl?: boolean
+  aiNormalizedReferenceImageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1266,8 +1266,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   image?: boolean
   role?: boolean
   gender?: boolean
-  refrenceImage?: boolean
-  aiNormalizedRefrenceImage?: boolean
+  referenceImageUrl?: boolean
+  aiNormalizedReferenceImageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1280,13 +1280,13 @@ export type UserSelectScalar = {
   image?: boolean
   role?: boolean
   gender?: boolean
-  refrenceImage?: boolean
-  aiNormalizedRefrenceImage?: boolean
+  referenceImageUrl?: boolean
+  aiNormalizedReferenceImageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "gender" | "refrenceImage" | "aiNormalizedRefrenceImage" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "gender" | "referenceImageUrl" | "aiNormalizedReferenceImageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1317,8 +1317,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     image: string | null
     role: string
     gender: $Enums.Gender
-    refrenceImage: string
-    aiNormalizedRefrenceImage: string
+    referenceImageUrl: string
+    aiNormalizedReferenceImageUrl: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1757,8 +1757,8 @@ export interface UserFieldRefs {
   readonly image: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly gender: Prisma.FieldRef<"User", 'Gender'>
-  readonly refrenceImage: Prisma.FieldRef<"User", 'String'>
-  readonly aiNormalizedRefrenceImage: Prisma.FieldRef<"User", 'String'>
+  readonly referenceImageUrl: Prisma.FieldRef<"User", 'String'>
+  readonly aiNormalizedReferenceImageUrl: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

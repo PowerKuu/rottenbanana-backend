@@ -22,7 +22,7 @@ model User {
   name          String
   email         String
   emailVerified Boolean @default(false)
-  image      String?
+  image         String?
   role          String  @default("USER")
 
   sessions       Session[]
@@ -32,8 +32,8 @@ model User {
   PreferenceTags UserPreferenceTag[]
   ownedOutfits   Outfit[]
 
-  gender Gender
-  referenceImageUrl String
+  gender                        Gender
+  referenceImageUrl             String
   aiNormalizedReferenceImageUrl String
 
   createdAt DateTime @default(now())
@@ -107,13 +107,11 @@ model PreferenceTag {
   updatedAt DateTime @updatedAt
 }
 
-
-
 model Store {
-  id           String @id @default(cuid())
-  name         String
-  websiteUrl          String
-  imageUrl String
+  id         String @id @default(cuid())
+  name       String
+  websiteUrl String
+  imageUrl   String
 
   products Product[]
 
@@ -122,28 +120,37 @@ model Store {
 }
 
 enum ProductSlot {
-  TOP
-  MIDDLE
-  BOTTOM
-  FOOTWEAR
-  ACCESSORY
+  UNDERSHIRT
+  SHIRT
+  OVERSHIRT
+  JACKET
+  UNDERPANTS
+  PANTS
+  SOCKS
+  SHOES
+  
+  GLASSES
+  BELT
+  HAT
+  OTHER
 }
 
 model Product {
-  id                String      @id @default(cuid())
-  name              String
-  price             Float
-  primaryImageUrl   String  
-  imageUrls         String[]
+  id              String   @id @default(cuid())
+  name            String
+  price           Float
+  primaryImageUrl String
+  imageUrls       String[]
 
-  description  String
-  metadata     Json
-  url          String
-  slot         ProductSlot
+  description String
+  metadata    Json
+  url         String
+  slot        ProductSlot
 
-  storeId String
-  store   Store        @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  outfitItems OutfitProduct[]
+  storeId          String
+  store            Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  outfitItems      OutfitProduct[]
+  tryOnOutfitItems TryOnOutfitProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -160,7 +167,7 @@ model Outfit {
   ownerId String?
   owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
-  products          OutfitProduct[]
+  products             OutfitProduct[]
   tryOnOutfits         TryOnOutfit[]
   posts                Post[]
   outfitPreferenceTags OutfitPreferenceTag[]
@@ -185,15 +192,17 @@ model OutfitProduct {
 }
 
 model TryOnOutfit {
-  id                  String      @id @default(cuid())
-  referenceImageUrl   String
-  resultImageUrls     String[]
+  id                String   @id @default(cuid())
+  referenceImageUrl String
+  resultImageUrls   String[]
 
   outfitId String
   outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  products TryOnOutfitProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -202,13 +211,27 @@ model TryOnOutfit {
   @@index([userId])
 }
 
+model TryOnOutfitProduct {
+  tryOnOutfitId String
+  productId     String
+
+  tryOnOutfit TryOnOutfit @relation(fields: [tryOnOutfitId], references: [id], onDelete: Cascade)
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([tryOnOutfitId, productId])
+  @@index([productId])
+  @@index([tryOnOutfitId])
+}
+
 model Post {
   id        String   @id @default(cuid())
   caption   String?
   imageUrls String[]
 
   outfitId String
-  outfit   Outfit     @relation(fields: [outfitId], references: [id], onDelete: Restrict)
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Restrict)
 
   postLikes PostLike[]
 

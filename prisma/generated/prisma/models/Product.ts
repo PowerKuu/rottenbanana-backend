@@ -38,9 +38,7 @@ export type ProductMinAggregateOutputType = {
   id: string | null
   name: string | null
   price: number | null
-  primaryImage: string | null
-  productImage: string | null
-  aiNormalizedProductImage: string | null
+  primaryImageUrl: string | null
   description: string | null
   url: string | null
   slot: $Enums.ProductSlot | null
@@ -53,9 +51,7 @@ export type ProductMaxAggregateOutputType = {
   id: string | null
   name: string | null
   price: number | null
-  primaryImage: string | null
-  productImage: string | null
-  aiNormalizedProductImage: string | null
+  primaryImageUrl: string | null
   description: string | null
   url: string | null
   slot: $Enums.ProductSlot | null
@@ -68,10 +64,8 @@ export type ProductCountAggregateOutputType = {
   id: number
   name: number
   price: number
-  primaryImage: number
-  images: number
-  productImage: number
-  aiNormalizedProductImage: number
+  primaryImageUrl: number
+  imageUrls: number
   description: number
   metadata: number
   url: number
@@ -95,9 +89,7 @@ export type ProductMinAggregateInputType = {
   id?: true
   name?: true
   price?: true
-  primaryImage?: true
-  productImage?: true
-  aiNormalizedProductImage?: true
+  primaryImageUrl?: true
   description?: true
   url?: true
   slot?: true
@@ -110,9 +102,7 @@ export type ProductMaxAggregateInputType = {
   id?: true
   name?: true
   price?: true
-  primaryImage?: true
-  productImage?: true
-  aiNormalizedProductImage?: true
+  primaryImageUrl?: true
   description?: true
   url?: true
   slot?: true
@@ -125,10 +115,8 @@ export type ProductCountAggregateInputType = {
   id?: true
   name?: true
   price?: true
-  primaryImage?: true
-  images?: true
-  productImage?: true
-  aiNormalizedProductImage?: true
+  primaryImageUrl?: true
+  imageUrls?: true
   description?: true
   metadata?: true
   url?: true
@@ -229,10 +217,8 @@ export type ProductGroupByOutputType = {
   id: string
   name: string
   price: number
-  primaryImage: string
-  images: string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls: string[]
   description: string
   metadata: runtime.JsonValue
   url: string
@@ -269,10 +255,8 @@ export type ProductWhereInput = {
   id?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.FloatFilter<"Product"> | number
-  primaryImage?: Prisma.StringFilter<"Product"> | string
-  images?: Prisma.StringNullableListFilter<"Product">
-  productImage?: Prisma.StringFilter<"Product"> | string
-  aiNormalizedProductImage?: Prisma.StringFilter<"Product"> | string
+  primaryImageUrl?: Prisma.StringFilter<"Product"> | string
+  imageUrls?: Prisma.StringNullableListFilter<"Product">
   description?: Prisma.StringFilter<"Product"> | string
   metadata?: Prisma.JsonFilter<"Product">
   url?: Prisma.StringFilter<"Product"> | string
@@ -281,17 +265,16 @@ export type ProductWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
-  outfitItems?: Prisma.OutfitItemListRelationFilter
+  outfitItems?: Prisma.OutfitProductListRelationFilter
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductListRelationFilter
 }
 
 export type ProductOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
-  primaryImage?: Prisma.SortOrder
-  images?: Prisma.SortOrder
-  productImage?: Prisma.SortOrder
-  aiNormalizedProductImage?: Prisma.SortOrder
+  primaryImageUrl?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   description?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   url?: Prisma.SortOrder
@@ -300,7 +283,8 @@ export type ProductOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   store?: Prisma.StoreOrderByWithRelationInput
-  outfitItems?: Prisma.OutfitItemOrderByRelationAggregateInput
+  outfitItems?: Prisma.OutfitProductOrderByRelationAggregateInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductOrderByRelationAggregateInput
 }
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -310,10 +294,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   name?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.FloatFilter<"Product"> | number
-  primaryImage?: Prisma.StringFilter<"Product"> | string
-  images?: Prisma.StringNullableListFilter<"Product">
-  productImage?: Prisma.StringFilter<"Product"> | string
-  aiNormalizedProductImage?: Prisma.StringFilter<"Product"> | string
+  primaryImageUrl?: Prisma.StringFilter<"Product"> | string
+  imageUrls?: Prisma.StringNullableListFilter<"Product">
   description?: Prisma.StringFilter<"Product"> | string
   metadata?: Prisma.JsonFilter<"Product">
   url?: Prisma.StringFilter<"Product"> | string
@@ -322,17 +304,16 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
-  outfitItems?: Prisma.OutfitItemListRelationFilter
+  outfitItems?: Prisma.OutfitProductListRelationFilter
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductListRelationFilter
 }, "id">
 
 export type ProductOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
-  primaryImage?: Prisma.SortOrder
-  images?: Prisma.SortOrder
-  productImage?: Prisma.SortOrder
-  aiNormalizedProductImage?: Prisma.SortOrder
+  primaryImageUrl?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   description?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   url?: Prisma.SortOrder
@@ -354,10 +335,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Product"> | string
   name?: Prisma.StringWithAggregatesFilter<"Product"> | string
   price?: Prisma.FloatWithAggregatesFilter<"Product"> | number
-  primaryImage?: Prisma.StringWithAggregatesFilter<"Product"> | string
-  images?: Prisma.StringNullableListFilter<"Product">
-  productImage?: Prisma.StringWithAggregatesFilter<"Product"> | string
-  aiNormalizedProductImage?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  primaryImageUrl?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  imageUrls?: Prisma.StringNullableListFilter<"Product">
   description?: Prisma.StringWithAggregatesFilter<"Product"> | string
   metadata?: Prisma.JsonWithAggregatesFilter<"Product">
   url?: Prisma.StringWithAggregatesFilter<"Product"> | string
@@ -371,10 +350,8 @@ export type ProductCreateInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -382,17 +359,16 @@ export type ProductCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   store: Prisma.StoreCreateNestedOneWithoutProductsInput
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutProductInput
+  outfitItems?: Prisma.OutfitProductCreateNestedManyWithoutProductInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -400,17 +376,16 @@ export type ProductUncheckedCreateInput = {
   storeId: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutProductInput
+  outfitItems?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutProductInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -418,17 +393,16 @@ export type ProductUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   store?: Prisma.StoreUpdateOneRequiredWithoutProductsNestedInput
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutProductNestedInput
+  outfitItems?: Prisma.OutfitProductUpdateManyWithoutProductNestedInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -436,17 +410,16 @@ export type ProductUncheckedUpdateInput = {
   storeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutProductNestedInput
+  outfitItems?: Prisma.OutfitProductUncheckedUpdateManyWithoutProductNestedInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -460,10 +433,8 @@ export type ProductUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -476,10 +447,8 @@ export type ProductUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -511,10 +480,8 @@ export type ProductCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
-  primaryImage?: Prisma.SortOrder
-  images?: Prisma.SortOrder
-  productImage?: Prisma.SortOrder
-  aiNormalizedProductImage?: Prisma.SortOrder
+  primaryImageUrl?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
   description?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   url?: Prisma.SortOrder
@@ -532,9 +499,7 @@ export type ProductMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
-  primaryImage?: Prisma.SortOrder
-  productImage?: Prisma.SortOrder
-  aiNormalizedProductImage?: Prisma.SortOrder
+  primaryImageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   url?: Prisma.SortOrder
   slot?: Prisma.SortOrder
@@ -547,9 +512,7 @@ export type ProductMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
-  primaryImage?: Prisma.SortOrder
-  productImage?: Prisma.SortOrder
-  aiNormalizedProductImage?: Prisma.SortOrder
+  primaryImageUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
   url?: Prisma.SortOrder
   slot?: Prisma.SortOrder
@@ -609,7 +572,7 @@ export type ProductUncheckedUpdateManyWithoutStoreNestedInput = {
   deleteMany?: Prisma.ProductScalarWhereInput | Prisma.ProductScalarWhereInput[]
 }
 
-export type ProductCreateimagesInput = {
+export type ProductCreateimageUrlsInput = {
   set: string[]
 }
 
@@ -621,7 +584,7 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type ProductUpdateimagesInput = {
+export type ProductUpdateimageUrlsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -644,38 +607,50 @@ export type ProductUpdateOneRequiredWithoutOutfitItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutOutfitItemsInput, Prisma.ProductUpdateWithoutOutfitItemsInput>, Prisma.ProductUncheckedUpdateWithoutOutfitItemsInput>
 }
 
+export type ProductCreateNestedOneWithoutTryOnOutfitItemsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedCreateWithoutTryOnOutfitItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutTryOnOutfitItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutTryOnOutfitItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedCreateWithoutTryOnOutfitItemsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutTryOnOutfitItemsInput
+  upsert?: Prisma.ProductUpsertWithoutTryOnOutfitItemsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutTryOnOutfitItemsInput, Prisma.ProductUpdateWithoutTryOnOutfitItemsInput>, Prisma.ProductUncheckedUpdateWithoutTryOnOutfitItemsInput>
+}
+
 export type ProductCreateWithoutStoreInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
   slot: $Enums.ProductSlot
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemCreateNestedManyWithoutProductInput
+  outfitItems?: Prisma.OutfitProductCreateNestedManyWithoutProductInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutStoreInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
   slot: $Enums.ProductSlot
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedCreateNestedManyWithoutProductInput
+  outfitItems?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutProductInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutStoreInput = {
@@ -711,10 +686,8 @@ export type ProductScalarWhereInput = {
   id?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.FloatFilter<"Product"> | number
-  primaryImage?: Prisma.StringFilter<"Product"> | string
-  images?: Prisma.StringNullableListFilter<"Product">
-  productImage?: Prisma.StringFilter<"Product"> | string
-  aiNormalizedProductImage?: Prisma.StringFilter<"Product"> | string
+  primaryImageUrl?: Prisma.StringFilter<"Product"> | string
+  imageUrls?: Prisma.StringNullableListFilter<"Product">
   description?: Prisma.StringFilter<"Product"> | string
   metadata?: Prisma.JsonFilter<"Product">
   url?: Prisma.StringFilter<"Product"> | string
@@ -728,10 +701,8 @@ export type ProductCreateWithoutOutfitItemsInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -739,16 +710,15 @@ export type ProductCreateWithoutOutfitItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   store: Prisma.StoreCreateNestedOneWithoutProductsInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutOutfitItemsInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -756,6 +726,7 @@ export type ProductUncheckedCreateWithoutOutfitItemsInput = {
   storeId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutOutfitItemsInput = {
@@ -778,10 +749,8 @@ export type ProductUpdateWithoutOutfitItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -789,16 +758,15 @@ export type ProductUpdateWithoutOutfitItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   store?: Prisma.StoreUpdateOneRequiredWithoutProductsNestedInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutOutfitItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -806,16 +774,95 @@ export type ProductUncheckedUpdateWithoutOutfitItemsInput = {
   storeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedUpdateManyWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutTryOnOutfitItemsInput = {
+  id?: string
+  name: string
+  price: number
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
+  description: string
+  metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  url: string
+  slot: $Enums.ProductSlot
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  store: Prisma.StoreCreateNestedOneWithoutProductsInput
+  outfitItems?: Prisma.OutfitProductCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutTryOnOutfitItemsInput = {
+  id?: string
+  name: string
+  price: number
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
+  description: string
+  metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  url: string
+  slot: $Enums.ProductSlot
+  storeId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outfitItems?: Prisma.OutfitProductUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutTryOnOutfitItemsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedCreateWithoutTryOnOutfitItemsInput>
+}
+
+export type ProductUpsertWithoutTryOnOutfitItemsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedUpdateWithoutTryOnOutfitItemsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedCreateWithoutTryOnOutfitItemsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutTryOnOutfitItemsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutTryOnOutfitItemsInput, Prisma.ProductUncheckedUpdateWithoutTryOnOutfitItemsInput>
+}
+
+export type ProductUpdateWithoutTryOnOutfitItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  slot?: Prisma.EnumProductSlotFieldUpdateOperationsInput | $Enums.ProductSlot
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  store?: Prisma.StoreUpdateOneRequiredWithoutProductsNestedInput
+  outfitItems?: Prisma.OutfitProductUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutTryOnOutfitItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  slot?: Prisma.EnumProductSlotFieldUpdateOperationsInput | $Enums.ProductSlot
+  storeId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outfitItems?: Prisma.OutfitProductUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyStoreInput = {
   id?: string
   name: string
   price: number
-  primaryImage: string
-  images?: Prisma.ProductCreateimagesInput | string[]
-  productImage: string
-  aiNormalizedProductImage: string
+  primaryImageUrl: string
+  imageUrls?: Prisma.ProductCreateimageUrlsInput | string[]
   description: string
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url: string
@@ -828,44 +875,40 @@ export type ProductUpdateWithoutStoreInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
   slot?: Prisma.EnumProductSlotFieldUpdateOperationsInput | $Enums.ProductSlot
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUpdateManyWithoutProductNestedInput
+  outfitItems?: Prisma.OutfitProductUpdateManyWithoutProductNestedInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutStoreInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
   slot?: Prisma.EnumProductSlotFieldUpdateOperationsInput | $Enums.ProductSlot
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitItems?: Prisma.OutfitItemUncheckedUpdateManyWithoutProductNestedInput
+  outfitItems?: Prisma.OutfitProductUncheckedUpdateManyWithoutProductNestedInput
+  tryOnOutfitItems?: Prisma.TryOnOutfitProductUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateManyWithoutStoreInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
-  primaryImage?: Prisma.StringFieldUpdateOperationsInput | string
-  images?: Prisma.ProductUpdateimagesInput | string[]
-  productImage?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedProductImage?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrls?: Prisma.ProductUpdateimageUrlsInput | string[]
   description?: Prisma.StringFieldUpdateOperationsInput | string
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   url?: Prisma.StringFieldUpdateOperationsInput | string
@@ -881,10 +924,12 @@ export type ProductUncheckedUpdateManyWithoutStoreInput = {
 
 export type ProductCountOutputType = {
   outfitItems: number
+  tryOnOutfitItems: number
 }
 
 export type ProductCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   outfitItems?: boolean | ProductCountOutputTypeCountOutfitItemsArgs
+  tryOnOutfitItems?: boolean | ProductCountOutputTypeCountTryOnOutfitItemsArgs
 }
 
 /**
@@ -901,7 +946,14 @@ export type ProductCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  * ProductCountOutputType without action
  */
 export type ProductCountOutputTypeCountOutfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OutfitItemWhereInput
+  where?: Prisma.OutfitProductWhereInput
+}
+
+/**
+ * ProductCountOutputType without action
+ */
+export type ProductCountOutputTypeCountTryOnOutfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TryOnOutfitProductWhereInput
 }
 
 
@@ -909,10 +961,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   price?: boolean
-  primaryImage?: boolean
-  images?: boolean
-  productImage?: boolean
-  aiNormalizedProductImage?: boolean
+  primaryImageUrl?: boolean
+  imageUrls?: boolean
   description?: boolean
   metadata?: boolean
   url?: boolean
@@ -922,6 +972,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   outfitItems?: boolean | Prisma.Product$outfitItemsArgs<ExtArgs>
+  tryOnOutfitItems?: boolean | Prisma.Product$tryOnOutfitItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product"]>
 
@@ -929,10 +980,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   price?: boolean
-  primaryImage?: boolean
-  images?: boolean
-  productImage?: boolean
-  aiNormalizedProductImage?: boolean
+  primaryImageUrl?: boolean
+  imageUrls?: boolean
   description?: boolean
   metadata?: boolean
   url?: boolean
@@ -947,10 +996,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   price?: boolean
-  primaryImage?: boolean
-  images?: boolean
-  productImage?: boolean
-  aiNormalizedProductImage?: boolean
+  primaryImageUrl?: boolean
+  imageUrls?: boolean
   description?: boolean
   metadata?: boolean
   url?: boolean
@@ -965,10 +1012,8 @@ export type ProductSelectScalar = {
   id?: boolean
   name?: boolean
   price?: boolean
-  primaryImage?: boolean
-  images?: boolean
-  productImage?: boolean
-  aiNormalizedProductImage?: boolean
+  primaryImageUrl?: boolean
+  imageUrls?: boolean
   description?: boolean
   metadata?: boolean
   url?: boolean
@@ -978,10 +1023,11 @@ export type ProductSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "primaryImage" | "images" | "productImage" | "aiNormalizedProductImage" | "description" | "metadata" | "url" | "slot" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "primaryImageUrl" | "imageUrls" | "description" | "metadata" | "url" | "slot" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   outfitItems?: boolean | Prisma.Product$outfitItemsArgs<ExtArgs>
+  tryOnOutfitItems?: boolean | Prisma.Product$tryOnOutfitItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -995,16 +1041,15 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Product"
   objects: {
     store: Prisma.$StorePayload<ExtArgs>
-    outfitItems: Prisma.$OutfitItemPayload<ExtArgs>[]
+    outfitItems: Prisma.$OutfitProductPayload<ExtArgs>[]
+    tryOnOutfitItems: Prisma.$TryOnOutfitProductPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     price: number
-    primaryImage: string
-    images: string[]
-    productImage: string
-    aiNormalizedProductImage: string
+    primaryImageUrl: string
+    imageUrls: string[]
     description: string
     metadata: runtime.JsonValue
     url: string
@@ -1407,7 +1452,8 @@ readonly fields: ProductFieldRefs;
 export interface Prisma__ProductClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   store<T extends Prisma.StoreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoreDefaultArgs<ExtArgs>>): Prisma.Prisma__StoreClient<runtime.Types.Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  outfitItems<T extends Prisma.Product$outfitItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$outfitItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  outfitItems<T extends Prisma.Product$outfitItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$outfitItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tryOnOutfitItems<T extends Prisma.Product$tryOnOutfitItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$tryOnOutfitItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TryOnOutfitProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1440,10 +1486,8 @@ export interface ProductFieldRefs {
   readonly id: Prisma.FieldRef<"Product", 'String'>
   readonly name: Prisma.FieldRef<"Product", 'String'>
   readonly price: Prisma.FieldRef<"Product", 'Float'>
-  readonly primaryImage: Prisma.FieldRef<"Product", 'String'>
-  readonly images: Prisma.FieldRef<"Product", 'String[]'>
-  readonly productImage: Prisma.FieldRef<"Product", 'String'>
-  readonly aiNormalizedProductImage: Prisma.FieldRef<"Product", 'String'>
+  readonly primaryImageUrl: Prisma.FieldRef<"Product", 'String'>
+  readonly imageUrls: Prisma.FieldRef<"Product", 'String[]'>
   readonly description: Prisma.FieldRef<"Product", 'String'>
   readonly metadata: Prisma.FieldRef<"Product", 'Json'>
   readonly url: Prisma.FieldRef<"Product", 'String'>
@@ -1851,23 +1895,47 @@ export type ProductDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
  */
 export type Product$outfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the OutfitItem
+   * Select specific fields to fetch from the OutfitProduct
    */
-  select?: Prisma.OutfitItemSelect<ExtArgs> | null
+  select?: Prisma.OutfitProductSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the OutfitItem
+   * Omit specific fields from the OutfitProduct
    */
-  omit?: Prisma.OutfitItemOmit<ExtArgs> | null
+  omit?: Prisma.OutfitProductOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.OutfitItemInclude<ExtArgs> | null
-  where?: Prisma.OutfitItemWhereInput
-  orderBy?: Prisma.OutfitItemOrderByWithRelationInput | Prisma.OutfitItemOrderByWithRelationInput[]
-  cursor?: Prisma.OutfitItemWhereUniqueInput
+  include?: Prisma.OutfitProductInclude<ExtArgs> | null
+  where?: Prisma.OutfitProductWhereInput
+  orderBy?: Prisma.OutfitProductOrderByWithRelationInput | Prisma.OutfitProductOrderByWithRelationInput[]
+  cursor?: Prisma.OutfitProductWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.OutfitItemScalarFieldEnum | Prisma.OutfitItemScalarFieldEnum[]
+  distinct?: Prisma.OutfitProductScalarFieldEnum | Prisma.OutfitProductScalarFieldEnum[]
+}
+
+/**
+ * Product.tryOnOutfitItems
+ */
+export type Product$tryOnOutfitItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TryOnOutfitProduct
+   */
+  select?: Prisma.TryOnOutfitProductSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TryOnOutfitProduct
+   */
+  omit?: Prisma.TryOnOutfitProductOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TryOnOutfitProductInclude<ExtArgs> | null
+  where?: Prisma.TryOnOutfitProductWhereInput
+  orderBy?: Prisma.TryOnOutfitProductOrderByWithRelationInput | Prisma.TryOnOutfitProductOrderByWithRelationInput[]
+  cursor?: Prisma.TryOnOutfitProductWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TryOnOutfitProductScalarFieldEnum | Prisma.TryOnOutfitProductScalarFieldEnum[]
 }
 
 /**
