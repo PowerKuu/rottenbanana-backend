@@ -74,3 +74,93 @@ export async function getProductSlots(storeId: string) {
 
     return products.map((p) => p.slot)
 }
+
+export async function createProduct({
+    name,
+    price,
+    primaryImageUrl,
+    imageUrls,
+    description,
+    metadata,
+    url,
+    slot,
+    storeId
+}: {
+    name: string
+    price: number
+    primaryImageUrl: string
+    imageUrls: string[]
+    description: string
+    metadata: Record<string, any>
+    url: string
+    slot: ProductSlot
+    storeId: string
+}) {
+    const product = await prisma.product.create({
+        data: {
+            name,
+            price,
+            primaryImageUrl,
+            imageUrls,
+            description,
+            metadata,
+            url,
+            slot,
+            storeId
+        },
+        include: {
+            store: true
+        }
+    })
+
+    return product
+}
+
+export async function updateProduct({
+    id,
+    name,
+    price,
+    primaryImageUrl,
+    imageUrls,
+    description,
+    metadata,
+    url,
+    slot
+}: {
+    id: string
+    name?: string
+    price?: number
+    primaryImageUrl?: string
+    imageUrls?: string[]
+    description?: string
+    metadata?: Record<string, any>
+    url?: string
+    slot?: ProductSlot
+}) {
+    const product = await prisma.product.update({
+        where: { id },
+        data: {
+            name,
+            price,
+            primaryImageUrl,
+            imageUrls,
+            description,
+            metadata,
+            url,
+            slot
+        },
+        include: {
+            store: true
+        }
+    })
+
+    return product
+}
+
+export async function deleteProduct(productId: string) {
+    const product = await prisma.product.delete({
+        where: { id: productId }
+    })
+
+    return product
+}

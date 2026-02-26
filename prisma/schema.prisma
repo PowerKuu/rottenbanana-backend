@@ -108,8 +108,12 @@ model PreferenceTag {
 
 model Store {
   id         String @id @default(cuid())
+  identifier String @unique
+
   name       String
   websiteUrl String
+  websiteOrigins String[]
+
   imageUrl   String
 
   products Product[]
@@ -141,7 +145,8 @@ model Product {
   primaryImageUrl String
   imageUrls       String[]
 
-  description String
+  description String?
+  brand       String?
   metadata    Json
   url         String
   slot        ProductSlot
@@ -149,6 +154,7 @@ model Product {
   storeId          String
   store            Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
   tryOnOutfitItems TryOnOutfitProduct[]
+  postProducts     PostProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -187,20 +193,34 @@ model TryOnOutfitProduct {
   @@index([tryOnOutfitId])
 }
 
+model PostProduct {
+  productId String
+  postId    String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([productId, postId])
+  @@index([postId])
+  @@index([productId])
+}
+
 model Post {
   id        String   @id @default(cuid())
   caption   String?
   imageUrls String[]
 
-  outfitId String
 
-  postLikes PostLike[]
+  likes PostLike[]
   preferenceTags PostPreferenceTag[]
+  products PostProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([outfitId])
+  isOfficial Boolean @default(false)
 }
 
 model PostLike {
