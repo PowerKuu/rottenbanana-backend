@@ -37,7 +37,7 @@ export function ProductDetailsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto">
+            <DialogContent className="max-h-[90vh] max-w-7xl overflow-x-hidden overflow-y-auto w-[95vw]">
                 {loading ? (
                     <div className="space-y-4">
                         <Skeleton className="h-8 w-3/4" />
@@ -64,28 +64,31 @@ export function ProductDetailsDialog({
                             </div>
                         </DialogHeader>
 
-                        <div className="space-y-6">
-                            <div className="space-y-4">
-                                <div className="relative aspect-video w-full max-h-[500px] overflow-hidden rounded-lg bg-muted">
-                                    {product.productOnlyImageUrl ? (
-                                        <Image
-                                            src={product.productOnlyImageUrl}
-                                            alt={product.name}
-                                            fill
-                                            className="object-contain"
-                                            sizes="(max-width: 1200px) 100vw, 800px"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full items-center justify-center">
-                                            <Package className="h-24 w-24 text-muted-foreground/50" />
-                                        </div>
-                                    )}
+                        <div className="space-y-6 w-full">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <h3 className="text-sm font-semibold">Product Image</h3>
+                                    <div className="relative w-full h-100 overflow-hidden rounded-lg bg-muted">
+                                        {product.productOnlyImageUrl ? (
+                                            <Image
+                                                src={product.productOnlyImageUrl}
+                                                alt={product.name}
+                                                fill
+                                                className="object-contain"
+                                                sizes="(max-width: 1024px) 100vw, 50vw"
+                                            />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center">
+                                                <Package className="h-24 w-24 text-muted-foreground/50" />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {product.imageUrls && product.imageUrls.length > 0 && (
-                                    <div>
-                                        <h3 className="mb-2 text-sm font-semibold">All Product Images</h3>
-                                        <div className="grid grid-cols-3 gap-3">
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-semibold">All Product Images ({product.imageUrls.length})</h3>
+                                        <div className="grid grid-cols-2 gap-3 max-h-100 overflow-y-auto pr-2">
                                             {product.imageUrls.map((url: string, index: number) => (
                                                 <div
                                                     key={index}
@@ -96,7 +99,7 @@ export function ProductDetailsDialog({
                                                         alt={`${product.name} ${index + 1}`}
                                                         fill
                                                         className="object-cover"
-                                                        sizes="300px"
+                                                        sizes="250px"
                                                     />
                                                 </div>
                                             ))}
@@ -105,45 +108,132 @@ export function ProductDetailsDialog({
                                 )}
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <h3 className="mb-2 text-sm font-semibold">Product Details</h3>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">ID:</span>
+                                            <span className="font-mono text-xs">{product.id}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Price:</span>
+                                            <span className="font-semibold">{formatPrice(product.priceGross, product.currency)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Gender:</span>
+                                            <Badge variant="secondary" className="text-xs">{product.gender}</Badge>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Category:</span>
+                                            <Badge variant="outline" className="text-xs">{product.slot}</Badge>
+                                        </div>
+                                        {product.brand && (
+                                            <div className="flex justify-between">
+                                                <span className="text-muted-foreground">Brand:</span>
+                                                <span>{product.brand}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {product.store && (
+                                    <div>
+                                        <h3 className="mb-2 text-sm font-semibold">Store Information</h3>
+                                        <div className="space-y-2 text-sm">
+                                            <div>
+                                                <span className="text-muted-foreground">Name: </span>
+                                                <span>{product.store.name}</span>
+                                            </div>
+                                            {product.store.websiteUrl && (
+                                                <div>
+                                                    <a
+                                                        href={product.store.websiteUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-primary hover:underline inline-flex items-center gap-1"
+                                                    >
+                                                        Visit Store <ExternalLink className="h-3 w-3" />
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             {product.description && (
                                 <div>
-                                    <h3 className="mb-2 font-semibold">Description</h3>
+                                    <h3 className="mb-2 text-sm font-semibold">Description</h3>
                                     <p className="text-sm text-muted-foreground">{product.description}</p>
-                                </div>
-                            )}
-
-                            {product.store && (
-                                <div>
-                                    <h3 className="mb-2 font-semibold">Store</h3>
-                                    <p className="text-sm">
-                                        {product.store.name}
-                                        {product.store.websiteUrl && (
-                                            <a
-                                                href={product.store.websiteUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="ml-2 text-primary hover:underline"
-                                            >
-                                                Visit Store <ExternalLink className="inline h-3 w-3" />
-                                            </a>
-                                        )}
-                                    </p>
                                 </div>
                             )}
 
                             {product.metadata && Object.keys(product.metadata).length > 0 && (
                                 <div>
-                                    <h3 className="mb-2 font-semibold">Additional Information</h3>
-                                    <pre className="rounded-md bg-muted p-4 text-xs overflow-x-auto">
-                                        {JSON.stringify(product.metadata, null, 2)}
-                                    </pre>
+                                    <h3 className="mb-2 text-sm font-semibold">AI Analysis</h3>
+                                    <div className="rounded-md bg-muted p-4 space-y-2">
+                                        {product.metadata.primaryColorHex && (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-muted-foreground">Primary Color:</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div
+                                                        className="w-6 h-6 rounded border"
+                                                        style={{ backgroundColor: product.metadata.primaryColorHex }}
+                                                    />
+                                                    <span className="text-sm font-mono">{product.metadata.primaryColorHex}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {product.metadata.description && (
+                                            <div>
+                                                <span className="text-sm text-muted-foreground">AI Description: </span>
+                                                <p className="text-sm mt-1">{product.metadata.description}</p>
+                                            </div>
+                                        )}
+                                        <details className="mt-2">
+                                            <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+                                                View Raw Metadata
+                                            </summary>
+                                            <pre className="mt-2 text-xs overflow-x-auto">
+                                                {JSON.stringify(product.metadata, null, 2)}
+                                            </pre>
+                                        </details>
+                                    </div>
                                 </div>
                             )}
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {product.createdAt && (
+                                    <div className="text-xs text-muted-foreground">
+                                        <span>Created: </span>
+                                        {new Date(product.createdAt).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}
+                                    </div>
+                                )}
+                                {product.updatedAt && (
+                                    <div className="text-xs text-muted-foreground">
+                                        <span>Updated: </span>
+                                        {new Date(product.updatedAt).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}
+                                    </div>
+                                )}
+                            </div>
 
                             {product.url && (
                                 <Button asChild className="w-full">
                                     <a href={product.url} target="_blank" rel="noopener noreferrer">
-                                        View on Store Website
+                                        View Original Product Page
                                         <ExternalLink className="ml-2 h-4 w-4" />
                                     </a>
                                 </Button>
