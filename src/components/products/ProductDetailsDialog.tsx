@@ -37,7 +37,7 @@ export function ProductDetailsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+            <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto">
                 {loading ? (
                     <div className="space-y-4">
                         <Skeleton className="h-8 w-3/4" />
@@ -51,8 +51,12 @@ export function ProductDetailsDialog({
                                 <div className="flex-1">
                                     <DialogTitle className="text-2xl">{product.name}</DialogTitle>
                                     <DialogDescription className="mt-2 text-lg font-semibold">
-                                        {formatPrice(product.price)}
+                                        {formatPrice(product.priceGross, product.currency)}
                                     </DialogDescription>
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        <Badge variant="secondary">{product.gender}</Badge>
+                                        {product.brand && <Badge variant="outline">{product.brand}</Badge>}
+                                    </div>
                                 </div>
                                 <Badge variant="outline" className="shrink-0">
                                     {product.slot}
@@ -62,13 +66,13 @@ export function ProductDetailsDialog({
 
                         <div className="space-y-6">
                             <div className="space-y-4">
-                                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted">
-                                    {product.primaryImageUrl ? (
+                                <div className="relative aspect-video w-full max-h-[500px] overflow-hidden rounded-lg bg-muted">
+                                    {product.productOnlyImageUrl ? (
                                         <Image
-                                            src={product.primaryImageUrl}
+                                            src={product.productOnlyImageUrl}
                                             alt={product.name}
                                             fill
-                                            className="object-cover"
+                                            className="object-contain"
                                             sizes="(max-width: 1200px) 100vw, 800px"
                                         />
                                     ) : (
@@ -79,21 +83,24 @@ export function ProductDetailsDialog({
                                 </div>
 
                                 {product.imageUrls && product.imageUrls.length > 0 && (
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {product.imageUrls.map((url: string, index: number) => (
-                                            <div
-                                                key={index}
-                                                className="relative aspect-square overflow-hidden rounded-md bg-muted"
-                                            >
-                                                <Image
-                                                    src={url}
-                                                    alt={`${product.name} ${index + 1}`}
-                                                    fill
-                                                    className="object-cover"
-                                                    sizes="200px"
-                                                />
-                                            </div>
-                                        ))}
+                                    <div>
+                                        <h3 className="mb-2 text-sm font-semibold">All Product Images</h3>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {product.imageUrls.map((url: string, index: number) => (
+                                                <div
+                                                    key={index}
+                                                    className="relative aspect-square overflow-hidden rounded-md bg-muted"
+                                                >
+                                                    <Image
+                                                        src={url}
+                                                        alt={`${product.name} ${index + 1}`}
+                                                        fill
+                                                        className="object-cover"
+                                                        sizes="300px"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>

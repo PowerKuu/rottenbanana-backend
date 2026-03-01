@@ -131,15 +131,18 @@ export default function ProductsPage() {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 xl:grid-cols-6">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {products.map((product) => (
                             <ProductCard
                                 key={product.id}
                                 id={product.id}
                                 name={product.name}
-                                price={product.price}
-                                primaryImageUrl={product.primaryImageUrl}
+                                priceGross={product.priceGross}
+                                currency={product.currency}
+                                imageUrl={product.productOnlyImageUrl}
                                 slot={product.slot}
+                                gender={product.gender}
+                                brand={product.brand}
                                 onClick={() => handleProductClick(product.id)}
                             />
                         ))}

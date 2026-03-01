@@ -9,11 +9,8 @@ export function removeUndefinedValues<T extends Object>(obj: T): Partial<T> {
     return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined)) as Partial<T>
 }
 
-export function formatPrice(price: number) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD"
-    }).format(price)
+export function formatPrice(priceGross: number, currency: string = "USD") {
+    return `${priceGross.toFixed(2)} ${currency}`
 }
 
 export function slugify(text: string): string {
