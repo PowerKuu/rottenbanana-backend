@@ -1,14 +1,15 @@
 import { analyzeProduct } from "../ai/analyzeProduct"
 import { prisma } from "../database/prisma"
 import { scrapers } from "./scrapers"
+import { uploadFromExternalUrl } from "../uploads/upload"
 
 export async function scrapeProduct(url: string) {
-    const origin = new URL(url).origin
+    const hostname = new URL(url).hostname
 
     const store = await prisma.store.findFirst({
         where: {
-            websiteOrigins: {
-                has: origin
+            websiteHostnames: {
+                has: hostname
             }
         }
     })
@@ -26,9 +27,21 @@ export async function scrapeProduct(url: string) {
     const scrapedProduct = await scraper.scrape(url)
     const analyzedProduct = await analyzeProduct(scrapedProduct)
 
-    if (analyzedProduct.productOnlyImageIndex === undefined) throw new Error("AI analysis did not return a product only image index")
+    if (analyzedProduct.productOnlyImageIndex === null) throw new Error("AI analysis did not return a product only image index")
 
-    const productOnlyImage = scrapedProduct.imageUrls[analyzedProduct.productOnlyImageIndex]
+    const uploadedImages = await Promise.all(
+        scrapedProduct.imageUrls.map(async (externalUrl) => {
+            try {
+                const result = await uploadFromExternalUrl(externalUrl)
+                return result.url
+            } catch (error) {
+                console.error(`Failed to upload image ${externalUrl}:`, error)
+                throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`)
+            }
+        })
+    )
+
+    const productOnlyImageUrl = uploadedImages[analyzedProduct.productOnlyImageIndex]
 
     const product = await prisma.product.create({
         data: {
@@ -36,8 +49,8 @@ export async function scrapeProduct(url: string) {
             priceGross: scrapedProduct.priceGross,
             currency: scrapedProduct.currency,
 
-            productOnlyImageUrl: productOnlyImage,
-            imageUrls: scrapedProduct.imageUrls,
+            productOnlyImageUrl: productOnlyImageUrl,
+            imageUrls: uploadedImages,
             description: scrapedProduct.description,
             brand: scrapedProduct.brand,
             gender: scrapedProduct.gender,

@@ -32,13 +32,13 @@ export async function createStore({
     name,
     identifier,
     websiteUrl,
-    websiteOrigins,
+    websiteHostnames,
     imageUrl
 }: {
     name: string
     identifier?: string
     websiteUrl: string
-    websiteOrigins?: string[]
+    websiteHostnames?: string[]
     imageUrl: string
 }) {
     const store = await prisma.store.create({
@@ -46,7 +46,7 @@ export async function createStore({
             name,
             identifier: identifier || slugify(name),
             websiteUrl,
-            websiteOrigins: websiteOrigins || [],
+            websiteHostnames: websiteHostnames || [],
             imageUrl
         }
     })
@@ -59,14 +59,14 @@ export async function updateStore({
     name,
     identifier,
     websiteUrl,
-    websiteOrigins,
+    websiteHostnames,
     imageUrl
 }: {
     id: string
     name?: string
     identifier?: string
     websiteUrl?: string
-    websiteOrigins?: string[]
+    websiteHostnames?: string[]
     imageUrl?: string
 }) {
     const store = await prisma.store.update({
@@ -75,7 +75,7 @@ export async function updateStore({
             name,
             identifier,
             websiteUrl,
-            websiteOrigins,
+            websiteHostnames,
             imageUrl
         })
     })

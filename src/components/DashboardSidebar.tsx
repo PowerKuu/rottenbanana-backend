@@ -10,12 +10,12 @@ import {
     SidebarMenuButton,
     SidebarHeader
 } from "@/components/ui/sidebar"
-import { Package, Shirt, FileText, Tag } from "lucide-react"
+import { Package, Shirt, FileText, Tag, Store } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const items = [
-    { title: "Products", url: "/dashboard/products", icon: Package },
+    { title: "Stores", url: "/dashboard/stores", icon: Store },
     { title: "Tags", url: "/dashboard/tags", icon: Tag },
     { title: "Posts", url: "/dashboard/posts", icon: FileText }
 ]

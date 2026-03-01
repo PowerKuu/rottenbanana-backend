@@ -24,7 +24,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         slot: z.enum(avalilableSlots).describe("Which slot does this product belong to?"),
         description: z.string().describe("A brief description of the product"),
         primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The color of the product in HEX format. Example: #FF5733"),
-        productOnlyImageIndex: z.number().optional().describe("The index of the primary image showing only the product without a model"),
+        productOnlyImageIndex: z.number().nullable().describe("The index of the primary image showing only the product without a model, or null if none exists"),
     })
 
     const system = `You are a fashion product analyzer. Analyze the provided product images and information to extract relevant metadata.`

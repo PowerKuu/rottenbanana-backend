@@ -14,7 +14,7 @@ import { getProductsByStore, getProductSlots } from "@/server/admin/actions/prod
 import Link from "next/link"
 import { ProductSlot } from "@/prisma/client"
 
-export default function StoreProductsPage() {
+export default function ProductsPage() {
     const params = useParams()
     const storeId = params.storeId as string
 

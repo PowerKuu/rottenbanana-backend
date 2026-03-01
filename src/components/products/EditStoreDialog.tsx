@@ -28,7 +28,7 @@ export function StoreFormDialog({
     const [name, setName] = useState("")
     const [identifier, setIdentifier] = useState("")
     const [websiteUrl, setWebsiteUrl] = useState("")
-    const [websiteOrigins, setWebsiteOrigins] = useState("")
+    const [websiteHostnames, setWebsiteHostnames] = useState("")
     const [image, setImage] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [identifierManuallyEdited, setIdentifierManuallyEdited] = useState(false)
@@ -40,14 +40,14 @@ export function StoreFormDialog({
             setName(store.name)
             setIdentifier(store.identifier)
             setWebsiteUrl(store.websiteUrl)
-            setWebsiteOrigins(store.websiteOrigins.join("\n"))
+            setWebsiteHostnames(store.websiteHostnames.join("\n"))
             setImagePreview(store.imageUrl)
             setIdentifierManuallyEdited(true)
         } else {
             setName("")
             setIdentifier("")
             setWebsiteUrl("")
-            setWebsiteOrigins("")
+            setWebsiteHostnames("")
             setImage(null)
             setImagePreview(null)
             setIdentifierManuallyEdited(false)
@@ -121,7 +121,7 @@ export function StoreFormDialog({
             return
         }
 
-        if (websiteOrigins.length <= 0) {
+        if (websiteHostnames.length <= 0) {
             setError("At least one website origin is required")
             return
         }
@@ -153,7 +153,7 @@ export function StoreFormDialog({
             imageUrl = uploadData.url
         }
 
-        const origins = parseTextfieldList(websiteOrigins)
+        const hostnames = parseTextfieldList(websiteHostnames)
 
         if (store) {
             await updateStore({
@@ -161,7 +161,7 @@ export function StoreFormDialog({
                 name,
                 identifier,
                 websiteUrl,
-                websiteOrigins: origins,
+                websiteHostnames: hostnames,
                 imageUrl
             })
         } else {
@@ -169,7 +169,7 @@ export function StoreFormDialog({
                 name,
                 identifier,
                 websiteUrl,
-                websiteOrigins: origins,
+                websiteHostnames: hostnames,
                 imageUrl
             })
         }
@@ -231,11 +231,11 @@ export function StoreFormDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="websiteOrigins">Website Origins</Label>
+                        <Label htmlFor="websiteHostnames">Website Hostnames</Label>
                         <Textarea
-                            id="websiteOrigins"
-                            value={websiteOrigins}
-                            onChange={(e) => setWebsiteOrigins(e.target.value)}
+                            id="websiteHostnames"
+                            value={websiteHostnames}
+                            onChange={(e) => setWebsiteHostnames(e.target.value)}
                             placeholder="example.com, www.example.com"
                             disabled={loading}
                             className="min-h-24"

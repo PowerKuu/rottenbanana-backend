@@ -1644,7 +1644,7 @@ export const StoreScalarFieldEnum = {
   identifier: 'identifier',
   name: 'name',
   websiteUrl: 'websiteUrl',
-  websiteOrigins: 'websiteOrigins',
+  websiteHostnames: 'websiteHostnames',
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

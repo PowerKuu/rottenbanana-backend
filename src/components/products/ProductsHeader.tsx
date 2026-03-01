@@ -58,7 +58,7 @@ export function ProductsHeader({
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard/products")}>
+                <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard/stores")}>
                     <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>

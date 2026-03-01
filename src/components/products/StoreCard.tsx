@@ -27,7 +27,7 @@ export function StoreCard({
     return (
         <Card
             className="cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
-            onClick={() => router.push(`/dashboard/products/${id}`)}
+            onClick={() => router.push(`/dashboard/stores/${id}`)}
         >
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">

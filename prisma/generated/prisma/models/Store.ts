@@ -49,7 +49,7 @@ export type StoreCountAggregateOutputType = {
   identifier: number
   name: number
   websiteUrl: number
-  websiteOrigins: number
+  websiteHostnames: number
   imageUrl: number
   createdAt: number
   updatedAt: number
@@ -82,7 +82,7 @@ export type StoreCountAggregateInputType = {
   identifier?: true
   name?: true
   websiteUrl?: true
-  websiteOrigins?: true
+  websiteHostnames?: true
   imageUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -166,7 +166,7 @@ export type StoreGroupByOutputType = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins: string[]
+  websiteHostnames: string[]
   imageUrl: string
   createdAt: Date
   updatedAt: Date
@@ -198,7 +198,7 @@ export type StoreWhereInput = {
   identifier?: Prisma.StringFilter<"Store"> | string
   name?: Prisma.StringFilter<"Store"> | string
   websiteUrl?: Prisma.StringFilter<"Store"> | string
-  websiteOrigins?: Prisma.StringNullableListFilter<"Store">
+  websiteHostnames?: Prisma.StringNullableListFilter<"Store">
   imageUrl?: Prisma.StringFilter<"Store"> | string
   createdAt?: Prisma.DateTimeFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Store"> | Date | string
@@ -210,7 +210,7 @@ export type StoreOrderByWithRelationInput = {
   identifier?: Prisma.SortOrder
   name?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
-  websiteOrigins?: Prisma.SortOrder
+  websiteHostnames?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -225,7 +225,7 @@ export type StoreWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.StoreWhereInput | Prisma.StoreWhereInput[]
   name?: Prisma.StringFilter<"Store"> | string
   websiteUrl?: Prisma.StringFilter<"Store"> | string
-  websiteOrigins?: Prisma.StringNullableListFilter<"Store">
+  websiteHostnames?: Prisma.StringNullableListFilter<"Store">
   imageUrl?: Prisma.StringFilter<"Store"> | string
   createdAt?: Prisma.DateTimeFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Store"> | Date | string
@@ -237,7 +237,7 @@ export type StoreOrderByWithAggregationInput = {
   identifier?: Prisma.SortOrder
   name?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
-  websiteOrigins?: Prisma.SortOrder
+  websiteHostnames?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -254,7 +254,7 @@ export type StoreScalarWhereWithAggregatesInput = {
   identifier?: Prisma.StringWithAggregatesFilter<"Store"> | string
   name?: Prisma.StringWithAggregatesFilter<"Store"> | string
   websiteUrl?: Prisma.StringWithAggregatesFilter<"Store"> | string
-  websiteOrigins?: Prisma.StringNullableListFilter<"Store">
+  websiteHostnames?: Prisma.StringNullableListFilter<"Store">
   imageUrl?: Prisma.StringWithAggregatesFilter<"Store"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Store"> | Date | string
@@ -265,7 +265,7 @@ export type StoreCreateInput = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins?: Prisma.StoreCreatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreCreatewebsiteHostnamesInput | string[]
   imageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -277,7 +277,7 @@ export type StoreUncheckedCreateInput = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins?: Prisma.StoreCreatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreCreatewebsiteHostnamesInput | string[]
   imageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -289,7 +289,7 @@ export type StoreUpdateInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -301,7 +301,7 @@ export type StoreUncheckedUpdateInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -313,7 +313,7 @@ export type StoreCreateManyInput = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins?: Prisma.StoreCreatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreCreatewebsiteHostnamesInput | string[]
   imageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -324,7 +324,7 @@ export type StoreUpdateManyMutationInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -335,7 +335,7 @@ export type StoreUncheckedUpdateManyInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,7 +354,7 @@ export type StoreCountOrderByAggregateInput = {
   identifier?: Prisma.SortOrder
   name?: Prisma.SortOrder
   websiteUrl?: Prisma.SortOrder
-  websiteOrigins?: Prisma.SortOrder
+  websiteHostnames?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -385,11 +385,11 @@ export type StoreScalarRelationFilter = {
   isNot?: Prisma.StoreWhereInput
 }
 
-export type StoreCreatewebsiteOriginsInput = {
+export type StoreCreatewebsiteHostnamesInput = {
   set: string[]
 }
 
-export type StoreUpdatewebsiteOriginsInput = {
+export type StoreUpdatewebsiteHostnamesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -413,7 +413,7 @@ export type StoreCreateWithoutProductsInput = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins?: Prisma.StoreCreatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreCreatewebsiteHostnamesInput | string[]
   imageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -424,7 +424,7 @@ export type StoreUncheckedCreateWithoutProductsInput = {
   identifier: string
   name: string
   websiteUrl: string
-  websiteOrigins?: Prisma.StoreCreatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreCreatewebsiteHostnamesInput | string[]
   imageUrl: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -451,7 +451,7 @@ export type StoreUpdateWithoutProductsInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,7 +462,7 @@ export type StoreUncheckedUpdateWithoutProductsInput = {
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   websiteUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  websiteOrigins?: Prisma.StoreUpdatewebsiteOriginsInput | string[]
+  websiteHostnames?: Prisma.StoreUpdatewebsiteHostnamesInput | string[]
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -504,7 +504,7 @@ export type StoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   identifier?: boolean
   name?: boolean
   websiteUrl?: boolean
-  websiteOrigins?: boolean
+  websiteHostnames?: boolean
   imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -517,7 +517,7 @@ export type StoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   identifier?: boolean
   name?: boolean
   websiteUrl?: boolean
-  websiteOrigins?: boolean
+  websiteHostnames?: boolean
   imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -528,7 +528,7 @@ export type StoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   identifier?: boolean
   name?: boolean
   websiteUrl?: boolean
-  websiteOrigins?: boolean
+  websiteHostnames?: boolean
   imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -539,13 +539,13 @@ export type StoreSelectScalar = {
   identifier?: boolean
   name?: boolean
   websiteUrl?: boolean
-  websiteOrigins?: boolean
+  websiteHostnames?: boolean
   imageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifier" | "name" | "websiteUrl" | "websiteOrigins" | "imageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+export type StoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifier" | "name" | "websiteUrl" | "websiteHostnames" | "imageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
 export type StoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.Store$productsArgs<ExtArgs>
   _count?: boolean | Prisma.StoreCountOutputTypeDefaultArgs<ExtArgs>
@@ -563,7 +563,7 @@ export type $StorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     identifier: string
     name: string
     websiteUrl: string
-    websiteOrigins: string[]
+    websiteHostnames: string[]
     imageUrl: string
     createdAt: Date
     updatedAt: Date
@@ -995,7 +995,7 @@ export interface StoreFieldRefs {
   readonly identifier: Prisma.FieldRef<"Store", 'String'>
   readonly name: Prisma.FieldRef<"Store", 'String'>
   readonly websiteUrl: Prisma.FieldRef<"Store", 'String'>
-  readonly websiteOrigins: Prisma.FieldRef<"Store", 'String[]'>
+  readonly websiteHostnames: Prisma.FieldRef<"Store", 'String[]'>
   readonly imageUrl: Prisma.FieldRef<"Store", 'String'>
   readonly createdAt: Prisma.FieldRef<"Store", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Store", 'DateTime'>

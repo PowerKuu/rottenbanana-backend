@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { StoreCard } from "@/components/products/StoreCard"
 import { StoreFormDialog } from "@/components/products/EditStoreDialog"
 import { DeleteStoreDialog } from "@/components/products/DeleteStoreDialog"
-import { Plus } from "lucide-react"
+import { ImportProductDialog } from "@/components/products/ImportProductDialog"
+import { Plus, Download } from "lucide-react"
 import { getAllStores } from "@/server/admin/actions/stores"
 import { Store } from "@/prisma/client"
 
@@ -15,12 +16,13 @@ type StoreWithCount = Store & {
     }
 }
 
-export default function ProductsPage() {
+export default function StoresPage() {
     const [stores, setStores] = useState<StoreWithCount[]>([])
     const [loading, setLoading] = useState(true)
     const [createDialogOpen, setCreateDialogOpen] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [importDialogOpen, setImportDialogOpen] = useState(false)
     const [selectedStore, setSelectedStore] = useState<StoreWithCount | null>(null)
 
     useEffect(() => {
@@ -60,10 +62,16 @@ export default function ProductsPage() {
                         <h1 className="text-2xl font-bold tracking-tight">Stores</h1>
                         <p className="text-sm text-muted-foreground">Select a store to view products</p>
                     </div>
-                    <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Store
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+                            <Download className="h-4 w-4 mr-2" />
+                            Import Product
+                        </Button>
+                        <Button onClick={() => setCreateDialogOpen(true)}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Create Store
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -80,6 +88,12 @@ export default function ProductsPage() {
                     ))}
                 </div>
             </div>
+
+            <ImportProductDialog
+                open={importDialogOpen}
+                onOpenChange={setImportDialogOpen}
+                onSuccess={handleSuccess}
+            />
 
             <StoreFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
 

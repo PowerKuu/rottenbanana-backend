@@ -35,10 +35,10 @@ export function validateUrl(url: string): boolean {
 export function parseTextfieldList(input: string): string[] {
     if (!input.trim()) return []
 
-    const origins = input
+    const list = input
         .split(/[,\n]/)
         .map(s => s.trim())
         .filter(s => s.length > 0)
 
-    return origins
+    return list
 }
