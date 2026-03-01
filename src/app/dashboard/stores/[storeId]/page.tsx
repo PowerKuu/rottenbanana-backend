@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/products/ProductCard"
 import { ProductsHeader } from "@/components/products/ProductsHeader"
 import { ProductsPagination } from "@/components/products/ProductsPagination"
 import { ProductDetailsDialog } from "@/components/products/ProductDetailsDialog"
+import { DeleteProductDialog } from "@/components/products/DeleteProductDialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Package } from "lucide-react"
@@ -26,6 +27,8 @@ export default function ProductsPage() {
     const [error, setError] = useState<string | null>(null)
     const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null)
 
     const [page, setPage] = useState(1)
     const [search, setSearch] = useState("")
@@ -82,6 +85,26 @@ export default function ProductsPage() {
     const handleSlotChange = (value: ProductSlot | null) => {
         setSlot(value)
         setPage(1)
+    }
+
+    const handleDelete = (product: { id: string; name: string }) => {
+        setSelectedProduct(product)
+        setDeleteDialogOpen(true)
+    }
+
+    const handleSuccess = () => {
+        // Reload products after successful deletion
+        setLoading(true)
+        getProductsByStore({
+            storeId,
+            page,
+            search,
+            slot
+        }).then((data) => {
+            setProducts(data.products)
+            setPagination(data.pagination)
+            setLoading(false)
+        })
     }
 
     if (error || !store) {
@@ -144,6 +167,7 @@ export default function ProductsPage() {
                                 gender={product.gender}
                                 brand={product.brand}
                                 onClick={() => handleProductClick(product.id)}
+                                onDelete={() => handleDelete({ id: product.id, name: product.name })}
                             />
                         ))}
                     </div>
@@ -161,6 +185,13 @@ export default function ProductsPage() {
             )}
 
             <ProductDetailsDialog productId={selectedProductId} open={dialogOpen} onOpenChange={setDialogOpen} />
+
+            <DeleteProductDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                product={selectedProduct}
+                onSuccess={handleSuccess}
+            />
         </div>
     )
 }

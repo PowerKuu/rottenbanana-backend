@@ -3,8 +3,10 @@
 import Image from "next/image"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Package } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Package, Trash2 } from "lucide-react"
 import { formatPrice } from "@/lib/utils"
+
 export function ProductCard({
     id,
     name,
@@ -14,7 +16,8 @@ export function ProductCard({
     slot,
     gender,
     brand,
-    onClick
+    onClick,
+    onDelete
 }: {
     id: string
     name: string
@@ -25,9 +28,10 @@ export function ProductCard({
     gender: string
     brand?: string | null
     onClick: () => void
+    onDelete?: () => void
 }) {
     return (
-        <Card className="cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]" onClick={onClick}>
+        <Card className="cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] group" onClick={onClick}>
             <CardContent className="p-0">
                 <div className="relative aspect-square w-full overflow-hidden rounded-t-md bg-muted">
                     {imageUrl ? (
@@ -41,6 +45,20 @@ export function ProductCard({
                     ) : (
                         <div className="flex h-full items-center justify-center">
                             <Package className="h-12 w-12 text-muted-foreground/50" />
+                        </div>
+                    )}
+                    {onDelete && (
+                        <div className="absolute top-2 right-2 transition-opacity">
+                            <Button
+                                size="icon-sm"
+                                variant="secondary"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    onDelete()
+                                }}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
                         </div>
                     )}
                 </div>
