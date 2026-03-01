@@ -175,7 +175,8 @@ export type PreferenceTagWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"PreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PreferenceTag"> | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagListRelationFilter
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
+  postPreferenceTags?: Prisma.PostPreferenceTagListRelationFilter
+  productPreferenceTags?: Prisma.ProductPreferenceTagListRelationFilter
 }
 
 export type PreferenceTagOrderByWithRelationInput = {
@@ -184,7 +185,8 @@ export type PreferenceTagOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userPreferenceTags?: Prisma.UserPreferenceTagOrderByRelationAggregateInput
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagOrderByRelationAggregateInput
+  postPreferenceTags?: Prisma.PostPreferenceTagOrderByRelationAggregateInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagOrderByRelationAggregateInput
 }
 
 export type PreferenceTagWhereUniqueInput = Prisma.AtLeast<{
@@ -196,7 +198,8 @@ export type PreferenceTagWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"PreferenceTag"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PreferenceTag"> | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagListRelationFilter
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagListRelationFilter
+  postPreferenceTags?: Prisma.PostPreferenceTagListRelationFilter
+  productPreferenceTags?: Prisma.ProductPreferenceTagListRelationFilter
 }, "id" | "tag">
 
 export type PreferenceTagOrderByWithAggregationInput = {
@@ -225,7 +228,8 @@ export type PreferenceTagCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutPreferenceTagInput
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagCreateNestedManyWithoutPreferenceTagInput
 }
 
 export type PreferenceTagUncheckedCreateInput = {
@@ -234,7 +238,8 @@ export type PreferenceTagUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
 }
 
 export type PreferenceTagUpdateInput = {
@@ -243,7 +248,8 @@ export type PreferenceTagUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
 }
 
 export type PreferenceTagUncheckedUpdateInput = {
@@ -252,7 +258,8 @@ export type PreferenceTagUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
 }
 
 export type PreferenceTagCreateManyInput = {
@@ -316,18 +323,32 @@ export type PreferenceTagUpdateOneRequiredWithoutUserPreferenceTagsNestedInput =
   update?: Prisma.XOR<Prisma.XOR<Prisma.PreferenceTagUpdateToOneWithWhereWithoutUserPreferenceTagsInput, Prisma.PreferenceTagUpdateWithoutUserPreferenceTagsInput>, Prisma.PreferenceTagUncheckedUpdateWithoutUserPreferenceTagsInput>
 }
 
-export type PreferenceTagCreateNestedOneWithoutOutfitPreferenceTagsInput = {
-  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutOutfitPreferenceTagsInput>
-  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutOutfitPreferenceTagsInput
+export type PreferenceTagCreateNestedOneWithoutPostPreferenceTagsInput = {
+  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutPostPreferenceTagsInput>
+  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutPostPreferenceTagsInput
   connect?: Prisma.PreferenceTagWhereUniqueInput
 }
 
-export type PreferenceTagUpdateOneRequiredWithoutOutfitPreferenceTagsNestedInput = {
-  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutOutfitPreferenceTagsInput>
-  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutOutfitPreferenceTagsInput
-  upsert?: Prisma.PreferenceTagUpsertWithoutOutfitPreferenceTagsInput
+export type PreferenceTagUpdateOneRequiredWithoutPostPreferenceTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutPostPreferenceTagsInput>
+  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutPostPreferenceTagsInput
+  upsert?: Prisma.PreferenceTagUpsertWithoutPostPreferenceTagsInput
   connect?: Prisma.PreferenceTagWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PreferenceTagUpdateToOneWithWhereWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUpdateWithoutOutfitPreferenceTagsInput>, Prisma.PreferenceTagUncheckedUpdateWithoutOutfitPreferenceTagsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PreferenceTagUpdateToOneWithWhereWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUpdateWithoutPostPreferenceTagsInput>, Prisma.PreferenceTagUncheckedUpdateWithoutPostPreferenceTagsInput>
+}
+
+export type PreferenceTagCreateNestedOneWithoutProductPreferenceTagsInput = {
+  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutProductPreferenceTagsInput>
+  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutProductPreferenceTagsInput
+  connect?: Prisma.PreferenceTagWhereUniqueInput
+}
+
+export type PreferenceTagUpdateOneRequiredWithoutProductPreferenceTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.PreferenceTagCreateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutProductPreferenceTagsInput>
+  connectOrCreate?: Prisma.PreferenceTagCreateOrConnectWithoutProductPreferenceTagsInput
+  upsert?: Prisma.PreferenceTagUpsertWithoutProductPreferenceTagsInput
+  connect?: Prisma.PreferenceTagWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PreferenceTagUpdateToOneWithWhereWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUpdateWithoutProductPreferenceTagsInput>, Prisma.PreferenceTagUncheckedUpdateWithoutProductPreferenceTagsInput>
 }
 
 export type PreferenceTagCreateWithoutUserPreferenceTagsInput = {
@@ -335,7 +356,8 @@ export type PreferenceTagCreateWithoutUserPreferenceTagsInput = {
   tag: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagCreateNestedManyWithoutPreferenceTagInput
 }
 
 export type PreferenceTagUncheckedCreateWithoutUserPreferenceTagsInput = {
@@ -343,7 +365,8 @@ export type PreferenceTagUncheckedCreateWithoutUserPreferenceTagsInput = {
   tag: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
 }
 
 export type PreferenceTagCreateOrConnectWithoutUserPreferenceTagsInput = {
@@ -367,7 +390,8 @@ export type PreferenceTagUpdateWithoutUserPreferenceTagsInput = {
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
 }
 
 export type PreferenceTagUncheckedUpdateWithoutUserPreferenceTagsInput = {
@@ -375,55 +399,112 @@ export type PreferenceTagUncheckedUpdateWithoutUserPreferenceTagsInput = {
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfitPreferenceTags?: Prisma.OutfitPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
 }
 
-export type PreferenceTagCreateWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagCreateWithoutPostPreferenceTagsInput = {
   id?: string
   tag: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagCreateNestedManyWithoutPreferenceTagInput
 }
 
-export type PreferenceTagUncheckedCreateWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagUncheckedCreateWithoutPostPreferenceTagsInput = {
   id?: string
   tag: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
 }
 
-export type PreferenceTagCreateOrConnectWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagCreateOrConnectWithoutPostPreferenceTagsInput = {
   where: Prisma.PreferenceTagWhereUniqueInput
-  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutOutfitPreferenceTagsInput>
+  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutPostPreferenceTagsInput>
 }
 
-export type PreferenceTagUpsertWithoutOutfitPreferenceTagsInput = {
-  update: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutOutfitPreferenceTagsInput>
-  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutOutfitPreferenceTagsInput>
+export type PreferenceTagUpsertWithoutPostPreferenceTagsInput = {
+  update: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutPostPreferenceTagsInput>
+  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutPostPreferenceTagsInput>
   where?: Prisma.PreferenceTagWhereInput
 }
 
-export type PreferenceTagUpdateToOneWithWhereWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagUpdateToOneWithWhereWithoutPostPreferenceTagsInput = {
   where?: Prisma.PreferenceTagWhereInput
-  data: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutOutfitPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutOutfitPreferenceTagsInput>
+  data: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutPostPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutPostPreferenceTagsInput>
 }
 
-export type PreferenceTagUpdateWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagUpdateWithoutPostPreferenceTagsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
 }
 
-export type PreferenceTagUncheckedUpdateWithoutOutfitPreferenceTagsInput = {
+export type PreferenceTagUncheckedUpdateWithoutPostPreferenceTagsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tag?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  productPreferenceTags?: Prisma.ProductPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+}
+
+export type PreferenceTagCreateWithoutProductPreferenceTagsInput = {
+  id?: string
+  tag: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userPreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagCreateNestedManyWithoutPreferenceTagInput
+}
+
+export type PreferenceTagUncheckedCreateWithoutProductPreferenceTagsInput = {
+  id?: string
+  tag: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userPreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedCreateNestedManyWithoutPreferenceTagInput
+}
+
+export type PreferenceTagCreateOrConnectWithoutProductPreferenceTagsInput = {
+  where: Prisma.PreferenceTagWhereUniqueInput
+  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutProductPreferenceTagsInput>
+}
+
+export type PreferenceTagUpsertWithoutProductPreferenceTagsInput = {
+  update: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutProductPreferenceTagsInput>
+  create: Prisma.XOR<Prisma.PreferenceTagCreateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedCreateWithoutProductPreferenceTagsInput>
+  where?: Prisma.PreferenceTagWhereInput
+}
+
+export type PreferenceTagUpdateToOneWithWhereWithoutProductPreferenceTagsInput = {
+  where?: Prisma.PreferenceTagWhereInput
+  data: Prisma.XOR<Prisma.PreferenceTagUpdateWithoutProductPreferenceTagsInput, Prisma.PreferenceTagUncheckedUpdateWithoutProductPreferenceTagsInput>
+}
+
+export type PreferenceTagUpdateWithoutProductPreferenceTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userPreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUpdateManyWithoutPreferenceTagNestedInput
+}
+
+export type PreferenceTagUncheckedUpdateWithoutProductPreferenceTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tag?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userPreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
+  postPreferenceTags?: Prisma.PostPreferenceTagUncheckedUpdateManyWithoutPreferenceTagNestedInput
 }
 
 
@@ -433,12 +514,14 @@ export type PreferenceTagUncheckedUpdateWithoutOutfitPreferenceTagsInput = {
 
 export type PreferenceTagCountOutputType = {
   userPreferenceTags: number
-  outfitPreferenceTags: number
+  postPreferenceTags: number
+  productPreferenceTags: number
 }
 
 export type PreferenceTagCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userPreferenceTags?: boolean | PreferenceTagCountOutputTypeCountUserPreferenceTagsArgs
-  outfitPreferenceTags?: boolean | PreferenceTagCountOutputTypeCountOutfitPreferenceTagsArgs
+  postPreferenceTags?: boolean | PreferenceTagCountOutputTypeCountPostPreferenceTagsArgs
+  productPreferenceTags?: boolean | PreferenceTagCountOutputTypeCountProductPreferenceTagsArgs
 }
 
 /**
@@ -461,8 +544,15 @@ export type PreferenceTagCountOutputTypeCountUserPreferenceTagsArgs<ExtArgs exte
 /**
  * PreferenceTagCountOutputType without action
  */
-export type PreferenceTagCountOutputTypeCountOutfitPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OutfitPreferenceTagWhereInput
+export type PreferenceTagCountOutputTypeCountPostPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostPreferenceTagWhereInput
+}
+
+/**
+ * PreferenceTagCountOutputType without action
+ */
+export type PreferenceTagCountOutputTypeCountProductPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductPreferenceTagWhereInput
 }
 
 
@@ -472,7 +562,8 @@ export type PreferenceTagSelect<ExtArgs extends runtime.Types.Extensions.Interna
   createdAt?: boolean
   updatedAt?: boolean
   userPreferenceTags?: boolean | Prisma.PreferenceTag$userPreferenceTagsArgs<ExtArgs>
-  outfitPreferenceTags?: boolean | Prisma.PreferenceTag$outfitPreferenceTagsArgs<ExtArgs>
+  postPreferenceTags?: boolean | Prisma.PreferenceTag$postPreferenceTagsArgs<ExtArgs>
+  productPreferenceTags?: boolean | Prisma.PreferenceTag$productPreferenceTagsArgs<ExtArgs>
   _count?: boolean | Prisma.PreferenceTagCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["preferenceTag"]>
 
@@ -500,7 +591,8 @@ export type PreferenceTagSelectScalar = {
 export type PreferenceTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tag" | "createdAt" | "updatedAt", ExtArgs["result"]["preferenceTag"]>
 export type PreferenceTagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userPreferenceTags?: boolean | Prisma.PreferenceTag$userPreferenceTagsArgs<ExtArgs>
-  outfitPreferenceTags?: boolean | Prisma.PreferenceTag$outfitPreferenceTagsArgs<ExtArgs>
+  postPreferenceTags?: boolean | Prisma.PreferenceTag$postPreferenceTagsArgs<ExtArgs>
+  productPreferenceTags?: boolean | Prisma.PreferenceTag$productPreferenceTagsArgs<ExtArgs>
   _count?: boolean | Prisma.PreferenceTagCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PreferenceTagIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -510,7 +602,8 @@ export type $PreferenceTagPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "PreferenceTag"
   objects: {
     userPreferenceTags: Prisma.$UserPreferenceTagPayload<ExtArgs>[]
-    outfitPreferenceTags: Prisma.$OutfitPreferenceTagPayload<ExtArgs>[]
+    postPreferenceTags: Prisma.$PostPreferenceTagPayload<ExtArgs>[]
+    productPreferenceTags: Prisma.$ProductPreferenceTagPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -912,7 +1005,8 @@ readonly fields: PreferenceTagFieldRefs;
 export interface Prisma__PreferenceTagClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   userPreferenceTags<T extends Prisma.PreferenceTag$userPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreferenceTag$userPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  outfitPreferenceTags<T extends Prisma.PreferenceTag$outfitPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreferenceTag$outfitPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postPreferenceTags<T extends Prisma.PreferenceTag$postPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreferenceTag$postPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  productPreferenceTags<T extends Prisma.PreferenceTag$productPreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreferenceTag$productPreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1358,27 +1452,51 @@ export type PreferenceTag$userPreferenceTagsArgs<ExtArgs extends runtime.Types.E
 }
 
 /**
- * PreferenceTag.outfitPreferenceTags
+ * PreferenceTag.postPreferenceTags
  */
-export type PreferenceTag$outfitPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type PreferenceTag$postPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the OutfitPreferenceTag
+   * Select specific fields to fetch from the PostPreferenceTag
    */
-  select?: Prisma.OutfitPreferenceTagSelect<ExtArgs> | null
+  select?: Prisma.PostPreferenceTagSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the OutfitPreferenceTag
+   * Omit specific fields from the PostPreferenceTag
    */
-  omit?: Prisma.OutfitPreferenceTagOmit<ExtArgs> | null
+  omit?: Prisma.PostPreferenceTagOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.OutfitPreferenceTagInclude<ExtArgs> | null
-  where?: Prisma.OutfitPreferenceTagWhereInput
-  orderBy?: Prisma.OutfitPreferenceTagOrderByWithRelationInput | Prisma.OutfitPreferenceTagOrderByWithRelationInput[]
-  cursor?: Prisma.OutfitPreferenceTagWhereUniqueInput
+  include?: Prisma.PostPreferenceTagInclude<ExtArgs> | null
+  where?: Prisma.PostPreferenceTagWhereInput
+  orderBy?: Prisma.PostPreferenceTagOrderByWithRelationInput | Prisma.PostPreferenceTagOrderByWithRelationInput[]
+  cursor?: Prisma.PostPreferenceTagWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.OutfitPreferenceTagScalarFieldEnum | Prisma.OutfitPreferenceTagScalarFieldEnum[]
+  distinct?: Prisma.PostPreferenceTagScalarFieldEnum | Prisma.PostPreferenceTagScalarFieldEnum[]
+}
+
+/**
+ * PreferenceTag.productPreferenceTags
+ */
+export type PreferenceTag$productPreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductPreferenceTag
+   */
+  select?: Prisma.ProductPreferenceTagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductPreferenceTag
+   */
+  omit?: Prisma.ProductPreferenceTagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductPreferenceTagInclude<ExtArgs> | null
+  where?: Prisma.ProductPreferenceTagWhereInput
+  orderBy?: Prisma.ProductPreferenceTagOrderByWithRelationInput | Prisma.ProductPreferenceTagOrderByWithRelationInput[]
+  cursor?: Prisma.ProductPreferenceTagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductPreferenceTagScalarFieldEnum | Prisma.ProductPreferenceTagScalarFieldEnum[]
 }
 
 /**

@@ -1,41 +1,109 @@
-import { getAllStores } from "@/server/actions/stores"
+"use client"
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
 import { StoreCard } from "@/components/products/StoreCard"
-import { Package } from "lucide-react"
+import { StoreFormDialog } from "@/components/products/EditStoreDialog"
+import { DeleteStoreDialog } from "@/components/products/DeleteStoreDialog"
+import { Plus } from "lucide-react"
+import { getAllStores } from "@/server/admin/actions/stores"
+import { Store } from "@/prisma/client"
 
-export default async function ProductsPage() {
-    const stores = await getAllStores()
+type StoreWithCount = Store & {
+    _count: {
+        products: number
+    }
+}
 
-    if (stores.length === 0) {
-        return (
-            <div className="space-y-4">
-                <h2 className="text-2xl font-bold tracking-tight">Stores</h2>
-                <div className="flex min-h-100 flex-col items-center justify-center rounded-lg border border-dashed">
-                    <Package className="mb-4 h-12 w-12 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold">No stores found</h3>
-                    <p className="text-sm text-muted-foreground">Add stores to start managing products</p>
-                </div>
-            </div>
-        )
+export default function ProductsPage() {
+    const [stores, setStores] = useState<StoreWithCount[]>([])
+    const [loading, setLoading] = useState(true)
+    const [createDialogOpen, setCreateDialogOpen] = useState(false)
+    const [editDialogOpen, setEditDialogOpen] = useState(false)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [selectedStore, setSelectedStore] = useState<StoreWithCount | null>(null)
+
+    useEffect(() => {
+        loadStores()
+    }, [])
+
+    const loadStores = async () => {
+        setLoading(true)
+        const data = await getAllStores()
+        setStores(data)
+        setLoading(false)
+    }
+
+    const handleSuccess = () => {
+        loadStores()
+    }
+
+    const handleEdit = (store: StoreWithCount) => {
+        setSelectedStore(store)
+        setEditDialogOpen(true)
+    }
+
+    const handleDelete = (store: StoreWithCount) => {
+        setSelectedStore(store)
+        setDeleteDialogOpen(true)
+    }
+
+    if (loading) {
+        return <div>Loading...</div>
     }
 
     return (
-        <div className="space-y-4">
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">Stores</h2>
-                <p className="text-muted-foreground">Select a store to view and manage its products</p>
+        <>
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Stores</h1>
+                        <p className="text-sm text-muted-foreground">Select a store to view products</p>
+                    </div>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Store
+                    </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                    {stores.map((store) => (
+                        <StoreCard
+                            key={store.id}
+                            id={store.id}
+                            name={store.name}
+                            imageUrl={store.imageUrl}
+                            productCount={store._count.products}
+                            onEdit={() => handleEdit(store)}
+                            onDelete={() => handleDelete(store)}
+                        />
+                    ))}
+                </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4">
-                {stores.map((store) => (
-                    <StoreCard
-                        key={store.id}
-                        id={store.id}
-                        name={store.name}
-                        imageUrl={store.imageUrl}
-                        productCount={store._count.products}
-                    />
-                ))}
-            </div>
-        </div>
+            <StoreFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
+
+            <StoreFormDialog
+                open={editDialogOpen}
+                onOpenChange={setEditDialogOpen}
+                store={selectedStore}
+                onSuccess={handleSuccess}
+            />
+
+            <DeleteStoreDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                store={
+                    selectedStore
+                        ? {
+                              id: selectedStore.id,
+                              name: selectedStore.name,
+                              productCount: selectedStore._count.products
+                          }
+                        : null
+                }
+                onSuccess={handleSuccess}
+            />
+        </>
     )
 }

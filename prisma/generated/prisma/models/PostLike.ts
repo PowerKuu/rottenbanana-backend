@@ -211,7 +211,7 @@ export type PostLikeScalarWhereWithAggregatesInput = {
 export type PostLikeCreateInput = {
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPostLikesInput
-  post: Prisma.PostCreateNestedOneWithoutPostLikesInput
+  post: Prisma.PostCreateNestedOneWithoutLikesInput
 }
 
 export type PostLikeUncheckedCreateInput = {
@@ -223,7 +223,7 @@ export type PostLikeUncheckedCreateInput = {
 export type PostLikeUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPostLikesNestedInput
-  post?: Prisma.PostUpdateOneRequiredWithoutPostLikesNestedInput
+  post?: Prisma.PostUpdateOneRequiredWithoutLikesNestedInput
 }
 
 export type PostLikeUncheckedUpdateInput = {
@@ -367,7 +367,7 @@ export type PostLikeUncheckedUpdateManyWithoutPostNestedInput = {
 
 export type PostLikeCreateWithoutUserInput = {
   createdAt?: Date | string
-  post: Prisma.PostCreateNestedOneWithoutPostLikesInput
+  post: Prisma.PostCreateNestedOneWithoutLikesInput
 }
 
 export type PostLikeUncheckedCreateWithoutUserInput = {
@@ -453,7 +453,7 @@ export type PostLikeCreateManyUserInput = {
 
 export type PostLikeUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  post?: Prisma.PostUpdateOneRequiredWithoutPostLikesNestedInput
+  post?: Prisma.PostUpdateOneRequiredWithoutLikesNestedInput
 }
 
 export type PostLikeUncheckedUpdateWithoutUserInput = {

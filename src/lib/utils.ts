@@ -15,3 +15,30 @@ export function formatPrice(price: number) {
         currency: "USD"
     }).format(price)
 }
+
+export function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+}
+
+export function validateUrl(url: string): boolean {
+    try {
+        const parsed = new URL(url)
+        return parsed.protocol === "http:" || parsed.protocol === "https:"
+    } catch {
+        return false
+    }
+}
+
+export function parseTextfieldList(input: string): string[] {
+    if (!input.trim()) return []
+
+    const origins = input
+        .split(/[,\n]/)
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+
+    return origins
+}

@@ -9,8 +9,8 @@ import { ProductDetailsDialog } from "@/components/products/ProductDetailsDialog
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Package } from "lucide-react"
-import { getStoreById } from "@/server/actions/stores"
-import { getProductsByStore, getProductSlots } from "@/server/actions/products"
+import { getStoreById } from "@/server/admin/actions/stores"
+import { getProductsByStore, getProductSlots } from "@/server/admin/actions/products"
 import Link from "next/link"
 import { ProductSlot } from "@/prisma/client"
 
@@ -82,33 +82,6 @@ export default function StoreProductsPage() {
     const handleSlotChange = (value: ProductSlot | null) => {
         setSlot(value)
         setPage(1)
-    }
-
-    if (loading) {
-        return (
-            <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                    <Skeleton className="h-10 w-10" />
-                    <div>
-                        <Skeleton className="h-8 w-48" />
-                        <Skeleton className="mt-2 h-5 w-64" />
-                    </div>
-                </div>
-                <div className="flex gap-4">
-                    <Skeleton className="h-10 flex-1" />
-                    <Skeleton className="h-10 w-50" />
-                </div>
-                <div className="grid grid-cols-3 gap-4 lg:grid-cols-4 xl:grid-cols-6">
-                    {Array.from({ length: 24 }).map((_, i) => (
-                        <div key={i} className="space-y-2">
-                            <Skeleton className="aspect-square w-full rounded-md" />
-                            <Skeleton className="h-4 w-3/4" />
-                            <Skeleton className="h-6 w-1/2" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        )
     }
 
     if (error || !store) {

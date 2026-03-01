@@ -58,14 +58,14 @@ export const ModelName = {
   PreferenceTag: 'PreferenceTag',
   Store: 'Store',
   Product: 'Product',
-  Outfit: 'Outfit',
-  OutfitProduct: 'OutfitProduct',
   TryOnOutfit: 'TryOnOutfit',
   TryOnOutfitProduct: 'TryOnOutfitProduct',
+  PostProduct: 'PostProduct',
   Post: 'Post',
   PostLike: 'PostLike',
   UserPreferenceTag: 'UserPreferenceTag',
-  OutfitPreferenceTag: 'OutfitPreferenceTag'
+  PostPreferenceTag: 'PostPreferenceTag',
+  ProductPreferenceTag: 'ProductPreferenceTag'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -158,8 +158,10 @@ export type PreferenceTagScalarFieldEnum = (typeof PreferenceTagScalarFieldEnum)
 
 export const StoreScalarFieldEnum = {
   id: 'id',
+  identifier: 'identifier',
   name: 'name',
   websiteUrl: 'websiteUrl',
+  websiteOrigins: 'websiteOrigins',
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -171,14 +173,17 @@ export type StoreScalarFieldEnum = (typeof StoreScalarFieldEnum)[keyof typeof St
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  price: 'price',
-  primaryImageUrl: 'primaryImageUrl',
+  priceGross: 'priceGross',
+  currency: 'currency',
+  productOnlyImageUrl: 'productOnlyImageUrl',
   imageUrls: 'imageUrls',
   description: 'description',
+  brand: 'brand',
   metadata: 'metadata',
   url: 'url',
   slot: 'slot',
   storeId: 'storeId',
+  gender: 'gender',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -186,33 +191,10 @@ export const ProductScalarFieldEnum = {
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
-export const OutfitScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  official: 'official',
-  ownerId: 'ownerId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type OutfitScalarFieldEnum = (typeof OutfitScalarFieldEnum)[keyof typeof OutfitScalarFieldEnum]
-
-
-export const OutfitProductScalarFieldEnum = {
-  outfitId: 'outfitId',
-  productId: 'productId',
-  createdAt: 'createdAt'
-} as const
-
-export type OutfitProductScalarFieldEnum = (typeof OutfitProductScalarFieldEnum)[keyof typeof OutfitProductScalarFieldEnum]
-
-
 export const TryOnOutfitScalarFieldEnum = {
   id: 'id',
   referenceImageUrl: 'referenceImageUrl',
   resultImageUrls: 'resultImageUrls',
-  outfitId: 'outfitId',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -230,13 +212,22 @@ export const TryOnOutfitProductScalarFieldEnum = {
 export type TryOnOutfitProductScalarFieldEnum = (typeof TryOnOutfitProductScalarFieldEnum)[keyof typeof TryOnOutfitProductScalarFieldEnum]
 
 
+export const PostProductScalarFieldEnum = {
+  productId: 'productId',
+  postId: 'postId',
+  createdAt: 'createdAt'
+} as const
+
+export type PostProductScalarFieldEnum = (typeof PostProductScalarFieldEnum)[keyof typeof PostProductScalarFieldEnum]
+
+
 export const PostScalarFieldEnum = {
   id: 'id',
   caption: 'caption',
   imageUrls: 'imageUrls',
-  outfitId: 'outfitId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isOfficial: 'isOfficial'
 } as const
 
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
@@ -262,13 +253,22 @@ export const UserPreferenceTagScalarFieldEnum = {
 export type UserPreferenceTagScalarFieldEnum = (typeof UserPreferenceTagScalarFieldEnum)[keyof typeof UserPreferenceTagScalarFieldEnum]
 
 
-export const OutfitPreferenceTagScalarFieldEnum = {
-  outfitId: 'outfitId',
+export const PostPreferenceTagScalarFieldEnum = {
+  postId: 'postId',
   preferenceTagId: 'preferenceTagId',
   createdAt: 'createdAt'
 } as const
 
-export type OutfitPreferenceTagScalarFieldEnum = (typeof OutfitPreferenceTagScalarFieldEnum)[keyof typeof OutfitPreferenceTagScalarFieldEnum]
+export type PostPreferenceTagScalarFieldEnum = (typeof PostPreferenceTagScalarFieldEnum)[keyof typeof PostPreferenceTagScalarFieldEnum]
+
+
+export const ProductPreferenceTagScalarFieldEnum = {
+  productId: 'productId',
+  preferenceTagId: 'preferenceTagId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProductPreferenceTagScalarFieldEnum = (typeof ProductPreferenceTagScalarFieldEnum)[keyof typeof ProductPreferenceTagScalarFieldEnum]
 
 
 export const SortOrder = {

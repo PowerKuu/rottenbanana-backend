@@ -75,16 +75,6 @@ export type Store = Prisma.StoreModel
  */
 export type Product = Prisma.ProductModel
 /**
- * Model Outfit
- * 
- */
-export type Outfit = Prisma.OutfitModel
-/**
- * Model OutfitProduct
- * 
- */
-export type OutfitProduct = Prisma.OutfitProductModel
-/**
  * Model TryOnOutfit
  * 
  */
@@ -94,6 +84,11 @@ export type TryOnOutfit = Prisma.TryOnOutfitModel
  * 
  */
 export type TryOnOutfitProduct = Prisma.TryOnOutfitProductModel
+/**
+ * Model PostProduct
+ * 
+ */
+export type PostProduct = Prisma.PostProductModel
 /**
  * Model Post
  * 
@@ -110,7 +105,12 @@ export type PostLike = Prisma.PostLikeModel
  */
 export type UserPreferenceTag = Prisma.UserPreferenceTagModel
 /**
- * Model OutfitPreferenceTag
+ * Model PostPreferenceTag
  * 
  */
-export type OutfitPreferenceTag = Prisma.OutfitPreferenceTagModel
+export type PostPreferenceTag = Prisma.PostPreferenceTagModel
+/**
+ * Model ProductPreferenceTag
+ * 
+ */
+export type ProductPreferenceTag = Prisma.ProductPreferenceTagModel

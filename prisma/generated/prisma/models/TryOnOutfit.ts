@@ -27,7 +27,6 @@ export type AggregateTryOnOutfit = {
 export type TryOnOutfitMinAggregateOutputType = {
   id: string | null
   referenceImageUrl: string | null
-  outfitId: string | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -36,7 +35,6 @@ export type TryOnOutfitMinAggregateOutputType = {
 export type TryOnOutfitMaxAggregateOutputType = {
   id: string | null
   referenceImageUrl: string | null
-  outfitId: string | null
   userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,7 +44,6 @@ export type TryOnOutfitCountAggregateOutputType = {
   id: number
   referenceImageUrl: number
   resultImageUrls: number
-  outfitId: number
   userId: number
   createdAt: number
   updatedAt: number
@@ -57,7 +54,6 @@ export type TryOnOutfitCountAggregateOutputType = {
 export type TryOnOutfitMinAggregateInputType = {
   id?: true
   referenceImageUrl?: true
-  outfitId?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -66,7 +62,6 @@ export type TryOnOutfitMinAggregateInputType = {
 export type TryOnOutfitMaxAggregateInputType = {
   id?: true
   referenceImageUrl?: true
-  outfitId?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,7 +71,6 @@ export type TryOnOutfitCountAggregateInputType = {
   id?: true
   referenceImageUrl?: true
   resultImageUrls?: true
-  outfitId?: true
   userId?: true
   createdAt?: true
   updatedAt?: true
@@ -159,7 +153,6 @@ export type TryOnOutfitGroupByOutputType = {
   id: string
   referenceImageUrl: string
   resultImageUrls: string[]
-  outfitId: string
   userId: string
   createdAt: Date
   updatedAt: Date
@@ -190,11 +183,9 @@ export type TryOnOutfitWhereInput = {
   id?: Prisma.StringFilter<"TryOnOutfit"> | string
   referenceImageUrl?: Prisma.StringFilter<"TryOnOutfit"> | string
   resultImageUrls?: Prisma.StringNullableListFilter<"TryOnOutfit">
-  outfitId?: Prisma.StringFilter<"TryOnOutfit"> | string
   userId?: Prisma.StringFilter<"TryOnOutfit"> | string
   createdAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
-  outfit?: Prisma.XOR<Prisma.OutfitScalarRelationFilter, Prisma.OutfitWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   products?: Prisma.TryOnOutfitProductListRelationFilter
 }
@@ -203,11 +194,9 @@ export type TryOnOutfitOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   referenceImageUrl?: Prisma.SortOrder
   resultImageUrls?: Prisma.SortOrder
-  outfitId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  outfit?: Prisma.OutfitOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   products?: Prisma.TryOnOutfitProductOrderByRelationAggregateInput
 }
@@ -219,11 +208,9 @@ export type TryOnOutfitWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TryOnOutfitWhereInput | Prisma.TryOnOutfitWhereInput[]
   referenceImageUrl?: Prisma.StringFilter<"TryOnOutfit"> | string
   resultImageUrls?: Prisma.StringNullableListFilter<"TryOnOutfit">
-  outfitId?: Prisma.StringFilter<"TryOnOutfit"> | string
   userId?: Prisma.StringFilter<"TryOnOutfit"> | string
   createdAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
-  outfit?: Prisma.XOR<Prisma.OutfitScalarRelationFilter, Prisma.OutfitWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   products?: Prisma.TryOnOutfitProductListRelationFilter
 }, "id">
@@ -232,7 +219,6 @@ export type TryOnOutfitOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   referenceImageUrl?: Prisma.SortOrder
   resultImageUrls?: Prisma.SortOrder
-  outfitId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -248,7 +234,6 @@ export type TryOnOutfitScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TryOnOutfit"> | string
   referenceImageUrl?: Prisma.StringWithAggregatesFilter<"TryOnOutfit"> | string
   resultImageUrls?: Prisma.StringNullableListFilter<"TryOnOutfit">
-  outfitId?: Prisma.StringWithAggregatesFilter<"TryOnOutfit"> | string
   userId?: Prisma.StringWithAggregatesFilter<"TryOnOutfit"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TryOnOutfit"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TryOnOutfit"> | Date | string
@@ -260,7 +245,6 @@ export type TryOnOutfitCreateInput = {
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfit: Prisma.OutfitCreateNestedOneWithoutTryOnOutfitsInput
   user: Prisma.UserCreateNestedOneWithoutTryOnOutfitsInput
   products?: Prisma.TryOnOutfitProductCreateNestedManyWithoutTryOnOutfitInput
 }
@@ -269,7 +253,6 @@ export type TryOnOutfitUncheckedCreateInput = {
   id?: string
   referenceImageUrl: string
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  outfitId: string
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -282,7 +265,6 @@ export type TryOnOutfitUpdateInput = {
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfit?: Prisma.OutfitUpdateOneRequiredWithoutTryOnOutfitsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTryOnOutfitsNestedInput
   products?: Prisma.TryOnOutfitProductUpdateManyWithoutTryOnOutfitNestedInput
 }
@@ -291,7 +273,6 @@ export type TryOnOutfitUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -302,7 +283,6 @@ export type TryOnOutfitCreateManyInput = {
   id?: string
   referenceImageUrl: string
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  outfitId: string
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -320,7 +300,6 @@ export type TryOnOutfitUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,7 +319,6 @@ export type TryOnOutfitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceImageUrl?: Prisma.SortOrder
   resultImageUrls?: Prisma.SortOrder
-  outfitId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -349,7 +327,6 @@ export type TryOnOutfitCountOrderByAggregateInput = {
 export type TryOnOutfitMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceImageUrl?: Prisma.SortOrder
-  outfitId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -358,7 +335,6 @@ export type TryOnOutfitMaxOrderByAggregateInput = {
 export type TryOnOutfitMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceImageUrl?: Prisma.SortOrder
-  outfitId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -411,48 +387,6 @@ export type TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.TryOnOutfitScalarWhereInput | Prisma.TryOnOutfitScalarWhereInput[]
 }
 
-export type TryOnOutfitCreateNestedManyWithoutOutfitInput = {
-  create?: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput> | Prisma.TryOnOutfitCreateWithoutOutfitInput[] | Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput[]
-  connectOrCreate?: Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput | Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput[]
-  createMany?: Prisma.TryOnOutfitCreateManyOutfitInputEnvelope
-  connect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-}
-
-export type TryOnOutfitUncheckedCreateNestedManyWithoutOutfitInput = {
-  create?: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput> | Prisma.TryOnOutfitCreateWithoutOutfitInput[] | Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput[]
-  connectOrCreate?: Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput | Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput[]
-  createMany?: Prisma.TryOnOutfitCreateManyOutfitInputEnvelope
-  connect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-}
-
-export type TryOnOutfitUpdateManyWithoutOutfitNestedInput = {
-  create?: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput> | Prisma.TryOnOutfitCreateWithoutOutfitInput[] | Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput[]
-  connectOrCreate?: Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput | Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput[]
-  upsert?: Prisma.TryOnOutfitUpsertWithWhereUniqueWithoutOutfitInput | Prisma.TryOnOutfitUpsertWithWhereUniqueWithoutOutfitInput[]
-  createMany?: Prisma.TryOnOutfitCreateManyOutfitInputEnvelope
-  set?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  disconnect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  delete?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  connect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  update?: Prisma.TryOnOutfitUpdateWithWhereUniqueWithoutOutfitInput | Prisma.TryOnOutfitUpdateWithWhereUniqueWithoutOutfitInput[]
-  updateMany?: Prisma.TryOnOutfitUpdateManyWithWhereWithoutOutfitInput | Prisma.TryOnOutfitUpdateManyWithWhereWithoutOutfitInput[]
-  deleteMany?: Prisma.TryOnOutfitScalarWhereInput | Prisma.TryOnOutfitScalarWhereInput[]
-}
-
-export type TryOnOutfitUncheckedUpdateManyWithoutOutfitNestedInput = {
-  create?: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput> | Prisma.TryOnOutfitCreateWithoutOutfitInput[] | Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput[]
-  connectOrCreate?: Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput | Prisma.TryOnOutfitCreateOrConnectWithoutOutfitInput[]
-  upsert?: Prisma.TryOnOutfitUpsertWithWhereUniqueWithoutOutfitInput | Prisma.TryOnOutfitUpsertWithWhereUniqueWithoutOutfitInput[]
-  createMany?: Prisma.TryOnOutfitCreateManyOutfitInputEnvelope
-  set?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  disconnect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  delete?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  connect?: Prisma.TryOnOutfitWhereUniqueInput | Prisma.TryOnOutfitWhereUniqueInput[]
-  update?: Prisma.TryOnOutfitUpdateWithWhereUniqueWithoutOutfitInput | Prisma.TryOnOutfitUpdateWithWhereUniqueWithoutOutfitInput[]
-  updateMany?: Prisma.TryOnOutfitUpdateManyWithWhereWithoutOutfitInput | Prisma.TryOnOutfitUpdateManyWithWhereWithoutOutfitInput[]
-  deleteMany?: Prisma.TryOnOutfitScalarWhereInput | Prisma.TryOnOutfitScalarWhereInput[]
-}
-
 export type TryOnOutfitCreateresultImageUrlsInput = {
   set: string[]
 }
@@ -482,7 +416,6 @@ export type TryOnOutfitCreateWithoutUserInput = {
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfit: Prisma.OutfitCreateNestedOneWithoutTryOnOutfitsInput
   products?: Prisma.TryOnOutfitProductCreateNestedManyWithoutTryOnOutfitInput
 }
 
@@ -490,7 +423,6 @@ export type TryOnOutfitUncheckedCreateWithoutUserInput = {
   id?: string
   referenceImageUrl: string
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  outfitId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   products?: Prisma.TryOnOutfitProductUncheckedCreateNestedManyWithoutTryOnOutfitInput
@@ -529,56 +461,9 @@ export type TryOnOutfitScalarWhereInput = {
   id?: Prisma.StringFilter<"TryOnOutfit"> | string
   referenceImageUrl?: Prisma.StringFilter<"TryOnOutfit"> | string
   resultImageUrls?: Prisma.StringNullableListFilter<"TryOnOutfit">
-  outfitId?: Prisma.StringFilter<"TryOnOutfit"> | string
   userId?: Prisma.StringFilter<"TryOnOutfit"> | string
   createdAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TryOnOutfit"> | Date | string
-}
-
-export type TryOnOutfitCreateWithoutOutfitInput = {
-  id?: string
-  referenceImageUrl: string
-  resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutTryOnOutfitsInput
-  products?: Prisma.TryOnOutfitProductCreateNestedManyWithoutTryOnOutfitInput
-}
-
-export type TryOnOutfitUncheckedCreateWithoutOutfitInput = {
-  id?: string
-  referenceImageUrl: string
-  resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  userId: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  products?: Prisma.TryOnOutfitProductUncheckedCreateNestedManyWithoutTryOnOutfitInput
-}
-
-export type TryOnOutfitCreateOrConnectWithoutOutfitInput = {
-  where: Prisma.TryOnOutfitWhereUniqueInput
-  create: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput>
-}
-
-export type TryOnOutfitCreateManyOutfitInputEnvelope = {
-  data: Prisma.TryOnOutfitCreateManyOutfitInput | Prisma.TryOnOutfitCreateManyOutfitInput[]
-  skipDuplicates?: boolean
-}
-
-export type TryOnOutfitUpsertWithWhereUniqueWithoutOutfitInput = {
-  where: Prisma.TryOnOutfitWhereUniqueInput
-  update: Prisma.XOR<Prisma.TryOnOutfitUpdateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedUpdateWithoutOutfitInput>
-  create: Prisma.XOR<Prisma.TryOnOutfitCreateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedCreateWithoutOutfitInput>
-}
-
-export type TryOnOutfitUpdateWithWhereUniqueWithoutOutfitInput = {
-  where: Prisma.TryOnOutfitWhereUniqueInput
-  data: Prisma.XOR<Prisma.TryOnOutfitUpdateWithoutOutfitInput, Prisma.TryOnOutfitUncheckedUpdateWithoutOutfitInput>
-}
-
-export type TryOnOutfitUpdateManyWithWhereWithoutOutfitInput = {
-  where: Prisma.TryOnOutfitScalarWhereInput
-  data: Prisma.XOR<Prisma.TryOnOutfitUpdateManyMutationInput, Prisma.TryOnOutfitUncheckedUpdateManyWithoutOutfitInput>
 }
 
 export type TryOnOutfitCreateWithoutProductsInput = {
@@ -587,7 +472,6 @@ export type TryOnOutfitCreateWithoutProductsInput = {
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  outfit: Prisma.OutfitCreateNestedOneWithoutTryOnOutfitsInput
   user: Prisma.UserCreateNestedOneWithoutTryOnOutfitsInput
 }
 
@@ -595,7 +479,6 @@ export type TryOnOutfitUncheckedCreateWithoutProductsInput = {
   id?: string
   referenceImageUrl: string
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  outfitId: string
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -623,7 +506,6 @@ export type TryOnOutfitUpdateWithoutProductsInput = {
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfit?: Prisma.OutfitUpdateOneRequiredWithoutTryOnOutfitsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTryOnOutfitsNestedInput
 }
 
@@ -631,7 +513,6 @@ export type TryOnOutfitUncheckedUpdateWithoutProductsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -641,7 +522,6 @@ export type TryOnOutfitCreateManyUserInput = {
   id?: string
   referenceImageUrl: string
   resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  outfitId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -652,7 +532,6 @@ export type TryOnOutfitUpdateWithoutUserInput = {
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  outfit?: Prisma.OutfitUpdateOneRequiredWithoutTryOnOutfitsNestedInput
   products?: Prisma.TryOnOutfitProductUpdateManyWithoutTryOnOutfitNestedInput
 }
 
@@ -660,7 +539,6 @@ export type TryOnOutfitUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  outfitId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.TryOnOutfitProductUncheckedUpdateManyWithoutTryOnOutfitNestedInput
@@ -670,45 +548,6 @@ export type TryOnOutfitUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  outfitId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type TryOnOutfitCreateManyOutfitInput = {
-  id?: string
-  referenceImageUrl: string
-  resultImageUrls?: Prisma.TryOnOutfitCreateresultImageUrlsInput | string[]
-  userId: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type TryOnOutfitUpdateWithoutOutfitInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutTryOnOutfitsNestedInput
-  products?: Prisma.TryOnOutfitProductUpdateManyWithoutTryOnOutfitNestedInput
-}
-
-export type TryOnOutfitUncheckedUpdateWithoutOutfitInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  products?: Prisma.TryOnOutfitProductUncheckedUpdateManyWithoutTryOnOutfitNestedInput
-}
-
-export type TryOnOutfitUncheckedUpdateManyWithoutOutfitInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  resultImageUrls?: Prisma.TryOnOutfitUpdateresultImageUrlsInput | string[]
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -748,11 +587,9 @@ export type TryOnOutfitSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   referenceImageUrl?: boolean
   resultImageUrls?: boolean
-  outfitId?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   products?: boolean | Prisma.TryOnOutfit$productsArgs<ExtArgs>
   _count?: boolean | Prisma.TryOnOutfitCountOutputTypeDefaultArgs<ExtArgs>
@@ -762,11 +599,9 @@ export type TryOnOutfitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   referenceImageUrl?: boolean
   resultImageUrls?: boolean
-  outfitId?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tryOnOutfit"]>
 
@@ -774,11 +609,9 @@ export type TryOnOutfitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   referenceImageUrl?: boolean
   resultImageUrls?: boolean
-  outfitId?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tryOnOutfit"]>
 
@@ -786,32 +619,27 @@ export type TryOnOutfitSelectScalar = {
   id?: boolean
   referenceImageUrl?: boolean
   resultImageUrls?: boolean
-  outfitId?: boolean
   userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TryOnOutfitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceImageUrl" | "resultImageUrls" | "outfitId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["tryOnOutfit"]>
+export type TryOnOutfitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceImageUrl" | "resultImageUrls" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["tryOnOutfit"]>
 export type TryOnOutfitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   products?: boolean | Prisma.TryOnOutfit$productsArgs<ExtArgs>
   _count?: boolean | Prisma.TryOnOutfitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TryOnOutfitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type TryOnOutfitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  outfit?: boolean | Prisma.OutfitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $TryOnOutfitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TryOnOutfit"
   objects: {
-    outfit: Prisma.$OutfitPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
     products: Prisma.$TryOnOutfitProductPayload<ExtArgs>[]
   }
@@ -819,7 +647,6 @@ export type $TryOnOutfitPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     referenceImageUrl: string
     resultImageUrls: string[]
-    outfitId: string
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -1217,7 +1044,6 @@ readonly fields: TryOnOutfitFieldRefs;
  */
 export interface Prisma__TryOnOutfitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  outfit<T extends Prisma.OutfitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OutfitDefaultArgs<ExtArgs>>): Prisma.Prisma__OutfitClient<runtime.Types.Result.GetResult<Prisma.$OutfitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   products<T extends Prisma.TryOnOutfit$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TryOnOutfit$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TryOnOutfitProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1252,7 +1078,6 @@ export interface TryOnOutfitFieldRefs {
   readonly id: Prisma.FieldRef<"TryOnOutfit", 'String'>
   readonly referenceImageUrl: Prisma.FieldRef<"TryOnOutfit", 'String'>
   readonly resultImageUrls: Prisma.FieldRef<"TryOnOutfit", 'String[]'>
-  readonly outfitId: Prisma.FieldRef<"TryOnOutfit", 'String'>
   readonly userId: Prisma.FieldRef<"TryOnOutfit", 'String'>
   readonly createdAt: Prisma.FieldRef<"TryOnOutfit", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TryOnOutfit", 'DateTime'>

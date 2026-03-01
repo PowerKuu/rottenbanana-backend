@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/server/database/prisma"
-import { ProductSlot } from "@/prisma/client"
+import { Gender, ProductSlot } from "@/prisma/client"
 
 const PAGE_SIZE = 24
 
@@ -75,63 +75,25 @@ export async function getProductSlots(storeId: string) {
     return products.map((p) => p.slot)
 }
 
-export async function createProduct({
-    name,
-    price,
-    primaryImageUrl,
-    imageUrls,
-    description,
-    metadata,
-    url,
-    slot,
-    storeId
-}: {
-    name: string
-    price: number
-    primaryImageUrl: string
-    imageUrls: string[]
-    description: string
-    metadata: Record<string, any>
-    url: string
-    slot: ProductSlot
-    storeId: string
-}) {
-    const product = await prisma.product.create({
-        data: {
-            name,
-            price,
-            primaryImageUrl,
-            imageUrls,
-            description,
-            metadata,
-            url,
-            slot,
-            storeId
-        },
-        include: {
-            store: true
-        }
-    })
-
-    return product
-}
 
 export async function updateProduct({
     id,
     name,
-    price,
-    primaryImageUrl,
+    priceGross,
+    productOnlyImageUrl,
     imageUrls,
     description,
     metadata,
+    gender,
     url,
     slot
 }: {
     id: string
     name?: string
-    price?: number
-    primaryImageUrl?: string
+    priceGross?: number
+    productOnlyImageUrl?: string
     imageUrls?: string[]
+    gender?: Gender
     description?: string
     metadata?: Record<string, any>
     url?: string
@@ -141,10 +103,11 @@ export async function updateProduct({
         where: { id },
         data: {
             name,
-            price,
-            primaryImageUrl,
+            priceGross,
+            productOnlyImageUrl,
             imageUrls,
             description,
+            gender,
             metadata,
             url,
             slot

@@ -235,7 +235,6 @@ export type UserWhereInput = {
   tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
   postLikes?: Prisma.PostLikeListRelationFilter
   PreferenceTags?: Prisma.UserPreferenceTagListRelationFilter
-  ownedOutfits?: Prisma.OutfitListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -255,7 +254,6 @@ export type UserOrderByWithRelationInput = {
   tryOnOutfits?: Prisma.TryOnOutfitOrderByRelationAggregateInput
   postLikes?: Prisma.PostLikeOrderByRelationAggregateInput
   PreferenceTags?: Prisma.UserPreferenceTagOrderByRelationAggregateInput
-  ownedOutfits?: Prisma.OutfitOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -278,7 +276,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tryOnOutfits?: Prisma.TryOnOutfitListRelationFilter
   postLikes?: Prisma.PostLikeListRelationFilter
   PreferenceTags?: Prisma.UserPreferenceTagListRelationFilter
-  ownedOutfits?: Prisma.OutfitListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -332,7 +329,6 @@ export type UserCreateInput = {
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -352,7 +348,6 @@ export type UserUncheckedCreateInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUpdateInput = {
@@ -372,7 +367,6 @@ export type UserUpdateInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -392,7 +386,6 @@ export type UserUncheckedUpdateInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -484,11 +477,6 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
-}
-
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -535,22 +523,6 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutAccountsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
-}
-
-export type UserCreateNestedOneWithoutOwnedOutfitsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOutfitsInput, Prisma.UserUncheckedCreateWithoutOwnedOutfitsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOutfitsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneWithoutOwnedOutfitsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOutfitsInput, Prisma.UserUncheckedCreateWithoutOwnedOutfitsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOutfitsInput
-  upsert?: Prisma.UserUpsertWithoutOwnedOutfitsInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedOutfitsInput, Prisma.UserUpdateWithoutOwnedOutfitsInput>, Prisma.UserUncheckedUpdateWithoutOwnedOutfitsInput>
 }
 
 export type UserCreateNestedOneWithoutTryOnOutfitsInput = {
@@ -611,7 +583,6 @@ export type UserCreateWithoutSessionsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -630,7 +601,6 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -665,7 +635,6 @@ export type UserUpdateWithoutSessionsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -684,7 +653,6 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -703,7 +671,6 @@ export type UserCreateWithoutAccountsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -722,7 +689,6 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -757,7 +723,6 @@ export type UserUpdateWithoutAccountsInput = {
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -773,99 +738,6 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
-  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
-  PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
-}
-
-export type UserCreateWithoutOwnedOutfitsInput = {
-  id: string
-  name: string
-  email: string
-  emailVerified?: boolean
-  image?: string | null
-  role?: string
-  gender: $Enums.Gender
-  referenceImageUrl: string
-  aiNormalizedReferenceImageUrl: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
-  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
-  PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutOwnedOutfitsInput = {
-  id: string
-  name: string
-  email: string
-  emailVerified?: boolean
-  image?: string | null
-  role?: string
-  gender: $Enums.Gender
-  referenceImageUrl: string
-  aiNormalizedReferenceImageUrl: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
-  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
-  PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutOwnedOutfitsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOutfitsInput, Prisma.UserUncheckedCreateWithoutOwnedOutfitsInput>
-}
-
-export type UserUpsertWithoutOwnedOutfitsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOutfitsInput, Prisma.UserUncheckedUpdateWithoutOwnedOutfitsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOutfitsInput, Prisma.UserUncheckedCreateWithoutOwnedOutfitsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutOwnedOutfitsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOutfitsInput, Prisma.UserUncheckedUpdateWithoutOwnedOutfitsInput>
-}
-
-export type UserUpdateWithoutOwnedOutfitsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
-  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
-  PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutOwnedOutfitsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  referenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  aiNormalizedReferenceImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
@@ -887,7 +759,6 @@ export type UserCreateWithoutTryOnOutfitsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTryOnOutfitsInput = {
@@ -906,7 +777,6 @@ export type UserUncheckedCreateWithoutTryOnOutfitsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTryOnOutfitsInput = {
@@ -941,7 +811,6 @@ export type UserUpdateWithoutTryOnOutfitsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTryOnOutfitsInput = {
@@ -960,7 +829,6 @@ export type UserUncheckedUpdateWithoutTryOnOutfitsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutPostLikesInput = {
@@ -979,7 +847,6 @@ export type UserCreateWithoutPostLikesInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutPostLikesInput = {
@@ -998,7 +865,6 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutPostLikesInput = {
@@ -1033,7 +899,6 @@ export type UserUpdateWithoutPostLikesInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostLikesInput = {
@@ -1052,7 +917,6 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
   PreferenceTags?: Prisma.UserPreferenceTagUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutPreferenceTagsInput = {
@@ -1071,7 +935,6 @@ export type UserCreateWithoutPreferenceTagsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   tryOnOutfits?: Prisma.TryOnOutfitCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceTagsInput = {
@@ -1090,7 +953,6 @@ export type UserUncheckedCreateWithoutPreferenceTagsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
-  ownedOutfits?: Prisma.OutfitUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceTagsInput = {
@@ -1125,7 +987,6 @@ export type UserUpdateWithoutPreferenceTagsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceTagsInput = {
@@ -1144,7 +1005,6 @@ export type UserUncheckedUpdateWithoutPreferenceTagsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   tryOnOutfits?: Prisma.TryOnOutfitUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
-  ownedOutfits?: Prisma.OutfitUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 
@@ -1158,7 +1018,6 @@ export type UserCountOutputType = {
   tryOnOutfits: number
   postLikes: number
   PreferenceTags: number
-  ownedOutfits: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1167,7 +1026,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tryOnOutfits?: boolean | UserCountOutputTypeCountTryOnOutfitsArgs
   postLikes?: boolean | UserCountOutputTypeCountPostLikesArgs
   PreferenceTags?: boolean | UserCountOutputTypeCountPreferenceTagsArgs
-  ownedOutfits?: boolean | UserCountOutputTypeCountOwnedOutfitsArgs
 }
 
 /**
@@ -1215,13 +1073,6 @@ export type UserCountOutputTypeCountPreferenceTagsArgs<ExtArgs extends runtime.T
   where?: Prisma.UserPreferenceTagWhereInput
 }
 
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountOwnedOutfitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OutfitWhereInput
-}
-
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1240,7 +1091,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tryOnOutfits?: boolean | Prisma.User$tryOnOutfitsArgs<ExtArgs>
   postLikes?: boolean | Prisma.User$postLikesArgs<ExtArgs>
   PreferenceTags?: boolean | Prisma.User$PreferenceTagsArgs<ExtArgs>
-  ownedOutfits?: boolean | Prisma.User$ownedOutfitsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1293,7 +1143,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tryOnOutfits?: boolean | Prisma.User$tryOnOutfitsArgs<ExtArgs>
   postLikes?: boolean | Prisma.User$postLikesArgs<ExtArgs>
   PreferenceTags?: boolean | Prisma.User$PreferenceTagsArgs<ExtArgs>
-  ownedOutfits?: boolean | Prisma.User$ownedOutfitsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1307,7 +1156,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tryOnOutfits: Prisma.$TryOnOutfitPayload<ExtArgs>[]
     postLikes: Prisma.$PostLikePayload<ExtArgs>[]
     PreferenceTags: Prisma.$UserPreferenceTagPayload<ExtArgs>[]
-    ownedOutfits: Prisma.$OutfitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1720,7 +1568,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tryOnOutfits<T extends Prisma.User$tryOnOutfitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tryOnOutfitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TryOnOutfitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postLikes<T extends Prisma.User$postLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   PreferenceTags<T extends Prisma.User$PreferenceTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$PreferenceTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPreferenceTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  ownedOutfits<T extends Prisma.User$ownedOutfitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedOutfitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutfitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2266,30 +2113,6 @@ export type User$PreferenceTagsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.UserPreferenceTagScalarFieldEnum | Prisma.UserPreferenceTagScalarFieldEnum[]
-}
-
-/**
- * User.ownedOutfits
- */
-export type User$ownedOutfitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Outfit
-   */
-  select?: Prisma.OutfitSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Outfit
-   */
-  omit?: Prisma.OutfitOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OutfitInclude<ExtArgs> | null
-  where?: Prisma.OutfitWhereInput
-  orderBy?: Prisma.OutfitOrderByWithRelationInput | Prisma.OutfitOrderByWithRelationInput[]
-  cursor?: Prisma.OutfitWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OutfitScalarFieldEnum | Prisma.OutfitScalarFieldEnum[]
 }
 
 /**

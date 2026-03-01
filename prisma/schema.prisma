@@ -13,6 +13,7 @@ datasource db {
 enum Gender {
   MALE
   FEMALE
+  UNISEX
 }
 
 // ── AUTH MODELS — DO NOT MODIFY ────────────────────────────────────────────
@@ -99,8 +100,9 @@ model PreferenceTag {
   id  String @id @default(cuid())
   tag String @unique
 
-  userPreferenceTags   UserPreferenceTag[]
-  postPreferenceTags PostPreferenceTag[]
+  userPreferenceTags    UserPreferenceTag[]
+  postPreferenceTags    PostPreferenceTag[]
+  productPreferenceTags ProductPreferenceTag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -141,8 +143,9 @@ enum ProductSlot {
 model Product {
   id              String   @id @default(cuid())
   name            String
-  price           Float
-  primaryImageUrl String
+  priceGross     Float
+  currency        String
+  productOnlyImageUrl String
   imageUrls       String[]
 
   description String?
@@ -155,6 +158,9 @@ model Product {
   store            Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
   tryOnOutfitItems TryOnOutfitProduct[]
   postProducts     PostProduct[]
+  preferenceTags   ProductPreferenceTag[]
+
+  gender Gender
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -263,5 +269,18 @@ model PostPreferenceTag {
   createdAt DateTime @default(now())
 
   @@id([postId, preferenceTagId])
+  @@index([preferenceTagId])
+}
+
+model ProductPreferenceTag {
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  preferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [preferenceTagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([productId, preferenceTagId])
   @@index([preferenceTagId])
 }

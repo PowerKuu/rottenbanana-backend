@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ExternalLink, Package } from "lucide-react"
-import { getProductById } from "@/server/actions/products"
+import { getProductById } from "@/server/admin/actions/products"
 import { formatPrice } from "@/lib/utils"
 
 export function ProductDetailsDialog({
