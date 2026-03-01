@@ -1,6 +1,7 @@
 export interface UploadOptions {
     maxFileSize?: number
     allowedTypes?: string[]
+    removeBackground?: boolean
 }
 
 export interface UploadResult {

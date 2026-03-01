@@ -2,6 +2,7 @@ import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { UploadOptions, UploadResult } from "./types"
 import axios from "axios"
+import { removeBackground } from "../ai/removeBackground"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
@@ -9,7 +10,7 @@ const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "im
 
 export async function upload(
     buffer: Buffer,
-    originalFilename: string,
+    filename: string,
     contentType: string,
     options: UploadOptions = {}
 ): Promise<UploadResult> {
@@ -24,20 +25,25 @@ export async function upload(
         throw new Error(`File size ${buffer.length} exceeds maximum of ${maxFileSize}`)
     }
 
+    let processedBuffer = buffer
+    if (options.removeBackground) {
+        processedBuffer = await removeBackground(buffer)
+    }
+
     const timestamp = Date.now()
-    const sanitizedName = originalFilename.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const filename = `${timestamp}-${sanitizedName}`
+    const sanitizedName = filename.replace(/[^a-zA-Z0-9.-]/g, "_")
+    const uniqueFilename = `${timestamp}-${sanitizedName}`
 
     const uploadDir = join(process.cwd(), "uploads")
-    const filepath = join(uploadDir, filename)
+    const filepath = join(uploadDir, uniqueFilename)
 
     await mkdir(uploadDir, { recursive: true })
 
-    await writeFile(filepath, buffer)
+    await writeFile(filepath, processedBuffer)
 
     return {
         success: true,
-        url: `/api/uploads/${filename}`,
+        url: `/api/uploads/${uniqueFilename}`,
         path: filepath,
         filename
     }
@@ -55,11 +61,11 @@ export async function uploadFromExternalUrl(
     const buffer = Buffer.from(response.data)
 
     const urlPath = new URL(externalUrl).pathname
-    const originalFilename = urlPath.split("/").pop()
+    const filename = urlPath.split("/").pop()
 
-    if (!originalFilename) {
+    if (!filename) {
         throw new Error("Could not determine original filename from URL")
     }
 
-    return upload(buffer, originalFilename, contentType, options)
+    return upload(buffer, filename, contentType, options)
 }

@@ -39,11 +39,16 @@ export function ProductDetailsDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90vh] max-w-7xl overflow-x-hidden overflow-y-auto w-[95vw]">
                 {loading ? (
-                    <div className="space-y-4">
-                        <Skeleton className="h-8 w-3/4" />
-                        <Skeleton className="h-64 w-full" />
-                        <Skeleton className="h-32 w-full" />
-                    </div>
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Loading Product Details</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                            <Skeleton className="h-8 w-3/4" />
+                            <Skeleton className="h-64 w-full" />
+                            <Skeleton className="h-32 w-full" />
+                        </div>
+                    </>
                 ) : product ? (
                     <>
                         <DialogHeader>
@@ -170,9 +175,9 @@ export function ProductDetailsDialog({
                             )}
 
                             {product.metadata && Object.keys(product.metadata).length > 0 && (
-                                <div>
+                                <div className="min-w-0">
                                     <h3 className="mb-2 text-sm font-semibold">AI Analysis</h3>
-                                    <div className="rounded-md bg-muted p-4 space-y-2">
+                                    <div className="rounded-md bg-muted p-4 space-y-2 overflow-hidden">
                                         {product.metadata.primaryColorHex && (
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm text-muted-foreground">Primary Color:</span>
@@ -195,7 +200,7 @@ export function ProductDetailsDialog({
                                             <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
                                                 View Raw Metadata
                                             </summary>
-                                            <pre className="mt-2 text-xs overflow-x-auto">
+                                            <pre className="mt-2 text-xs max-h-96 overflow-auto p-2 bg-background rounded border whitespace-pre-wrap break-words w-full">
                                                 {JSON.stringify(product.metadata, null, 2)}
                                             </pre>
                                         </details>
@@ -240,7 +245,11 @@ export function ProductDetailsDialog({
                             )}
                         </div>
                     </>
-                ) : null}
+                ) : (
+                    <DialogHeader>
+                        <DialogTitle>Product Details</DialogTitle>
+                    </DialogHeader>
+                )}
             </DialogContent>
         </Dialog>
     )

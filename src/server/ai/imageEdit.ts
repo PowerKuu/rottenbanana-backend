@@ -10,7 +10,7 @@ if (!GOOGLE_API_KEY || !BFL_API_KEY) {
 
 export async function imageEditGoogle(
     prompt: string,
-    imagesBase64: string[],
+    images: Buffer[],
     output: Partial<{
         aspectRatio: "1:1" | "3:2" | "2:3" | "3:4" | "4:3" | "4:5" | "5:4" | "9:16" | "16:9" | "21:9"
         imageSize: "1K" | "2K" | "4K"
@@ -19,16 +19,16 @@ export async function imageEditGoogle(
 ) {
     const MODEL = "gemini-3-pro-image-preview" as const
 
-    if (imagesBase64.length === 0 || imagesBase64.length > 14) {
+    if (images.length === 0 || images.length > 14) {
         throw new Error("Must provide between 1 and 14 images")
     }
 
     const parts = [
         { text: prompt },
-        ...imagesBase64.map((imageData) => ({
+        ...images.map((imageBuffer) => ({
             inline_data: {
                 mime_type: output.format === "png" ? "image/png" : "image/jpeg",
-                data: imageData
+                data: imageBuffer.toString('base64')
             }
         }))
     ]
@@ -54,7 +54,7 @@ export async function imageEditGoogle(
 
 export async function imageEditBFL(
     prompt: string,
-    imagesBase64: string[],
+    images: Buffer[],
     output: Partial<{
         width: number
         height: number
@@ -63,10 +63,11 @@ export async function imageEditBFL(
 ) {
     const MODEL = "flux-2-klein-9b" as const
 
-    if (imagesBase64.length === 0 || imagesBase64.length > 8) {
+    if (images.length === 0 || images.length > 8) {
         throw new Error("Must provide between 1 and 8 images")
     }
 
+    const imagesBase64 = images.map(buffer => buffer.toString('base64'))
     const [refrenceImage, ...additionalImages] = imagesBase64
 
     const body: Record<string, string | number> = removeUndefinedValues({

@@ -19,7 +19,7 @@ export async function scrapeProduct(url: string) {
     }
 
     const scraper = scrapers.find((scraper) => scraper.storeIdentifier === store.identifier)
-    
+
     if (!scraper) {
         throw new Error("No scraper found for the given store")
     }
@@ -27,12 +27,13 @@ export async function scrapeProduct(url: string) {
     const scrapedProduct = await scraper.scrape(url)
     const analyzedProduct = await analyzeProduct(scrapedProduct)
 
-    if (analyzedProduct.productOnlyImageIndex === null) throw new Error("AI analysis did not return a product only image index")
+    if (analyzedProduct.productOnlyImageIndex === null)
+        throw new Error("AI analysis did not return a product only image index")
 
     const uploadedImages = await Promise.all(
         scrapedProduct.imageUrls.map(async (externalUrl) => {
             try {
-                const result = await uploadFromExternalUrl(externalUrl)
+                const result = await uploadFromExternalUrl(externalUrl, { removeBackground: true })
                 return result.url
             } catch (error) {
                 console.error(`Failed to upload image ${externalUrl}:`, error)
@@ -56,7 +57,7 @@ export async function scrapeProduct(url: string) {
             gender: scrapedProduct.gender,
             metadata: {
                 primaryColorHex: analyzedProduct.primaryColorHex,
-                description: analyzedProduct.description,
+                description: analyzedProduct.description
             },
             slot: analyzedProduct.slot,
             url: url,
@@ -65,20 +66,22 @@ export async function scrapeProduct(url: string) {
     })
 
     await prisma.productPreferenceTag.createMany({
-        data: await Promise.all(analyzedProduct.tags.map(async (tag) => {
-            const preferenceTag = await prisma.preferenceTag.findUnique({
-                where: { tag }
+        data: await Promise.all(
+            analyzedProduct.tags.map(async (tag) => {
+                const preferenceTag = await prisma.preferenceTag.findUnique({
+                    where: { tag }
+                })
+
+                if (!preferenceTag) {
+                    throw new Error("Preference tag not found: " + tag)
+                }
+
+                return {
+                    productId: product.id,
+                    preferenceTagId: preferenceTag.id
+                }
             })
-
-            if (!preferenceTag) {
-                throw new Error("Preference tag not found: " + tag)
-            }
-
-            return {
-                productId: product.id,
-                preferenceTagId: preferenceTag.id
-            }
-        }))
+        )
     })
 
     return product
