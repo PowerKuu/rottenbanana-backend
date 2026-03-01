@@ -6,14 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
-
-interface ProductData {
-    name: string
-    price: number
-    imageUrl?: string
-    description?: string
-    [key: string]: any
-}
+import { toast } from "sonner"
 
 export function ImportProductDialog({
     open,
@@ -27,12 +20,10 @@ export function ImportProductDialog({
     const [url, setUrl] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-    const [productData, setProductData] = useState<ProductData | null>(null)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
-        setProductData(null)
 
         if (!url.trim()) {
             setError("Product URL is required")
@@ -57,8 +48,9 @@ export function ImportProductDialog({
                 return
             }
 
-            setProductData(data.product)
+            toast.success(`Product "${data.product.name}" imported successfully!`)
             setUrl("")
+            onOpenChange(false)
             onSuccess?.()
         } catch (err) {
             setError(err instanceof Error ? err.message : "An error occurred while importing the product")
@@ -70,7 +62,6 @@ export function ImportProductDialog({
     const handleClose = () => {
         setUrl("")
         setError("")
-        setProductData(null)
         onOpenChange(false)
     }
 
@@ -99,56 +90,20 @@ export function ImportProductDialog({
                         </div>
                     )}
 
-                    {productData && (
-                        <div className="rounded-md border bg-muted/50 p-4 space-y-2">
-                            <h3 className="font-semibold text-green-600">Product Imported Successfully!</h3>
-                            <div className="space-y-1 text-sm">
-                                <div>
-                                    <span className="font-medium">Name:</span> {productData.name}
-                                </div>
-                                <div>
-                                    <span className="font-medium">Price:</span> ${productData.price}
-                                </div>
-                                {productData.description && (
-                                    <div>
-                                        <span className="font-medium">Description:</span>{" "}
-                                        {productData.description.substring(0, 100)}
-                                        {productData.description.length > 100 ? "..." : ""}
-                                    </div>
-                                )}
-                                {productData.imageUrl && (
-                                    <div>
-                                        <span className="font-medium">Image:</span>{" "}
-                                        <a
-                                            href={productData.imageUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            View
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
                     <div className="flex justify-end gap-2">
                         <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
-                            {productData ? "Close" : "Cancel"}
+                            Cancel
                         </Button>
-                        {!productData && (
-                            <Button type="submit" disabled={loading}>
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        Importing...
-                                    </>
-                                ) : (
-                                    "Import Product"
-                                )}
-                            </Button>
-                        )}
+                        <Button type="submit" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Importing...
+                                </>
+                            ) : (
+                                "Import Product"
+                            )}
+                        </Button>
                     </div>
                 </form>
             </DialogContent>
