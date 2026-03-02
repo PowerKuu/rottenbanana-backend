@@ -3,8 +3,9 @@ import z from "zod"
 import { prisma } from "../database/prisma"
 import { generateText, Output } from 'ai'
 import { ScrapedProduct } from "../scaper/types"
+import { PreferenceTag } from "@/prisma/client"
 
-const analyzeProductPrompt = (scrapedProduct: ScrapedProduct) => `
+const analyzeProductPrompt = (scrapedProduct: ScrapedProduct, tags: PreferenceTag[]) => `
 Analyze this product:
 Name: ${scrapedProduct.name}
 Gender: ${scrapedProduct.gender}
@@ -12,6 +13,9 @@ ${scrapedProduct.description ? `Description: ${scrapedProduct.description}` : ''
 ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ''}
 
 I will provide ${scrapedProduct.imageUrls.length} images below. Please provide the tags, slot, description, color, and identify which image index (0-${scrapedProduct.imageUrls.length - 1}) shows only the product without a model.
+
+Slots with descriptions:
+${ProductSlot.HAT}: Accessories worn on the head, such as hats, caps, beanies, headbands, and hair accessories.
 `
 
 export async function analyzeProduct(scrapedProduct: ScrapedProduct) {

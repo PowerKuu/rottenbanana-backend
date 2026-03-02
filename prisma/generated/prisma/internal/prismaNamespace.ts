@@ -1632,6 +1632,7 @@ export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[k
 export const PreferenceTagScalarFieldEnum = {
   id: 'id',
   tag: 'tag',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

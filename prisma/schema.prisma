@@ -99,6 +99,7 @@ model Verification {
 model PreferenceTag {
   id  String @id @default(cuid())
   tag String @unique
+  description String
 
   userPreferenceTags    UserPreferenceTag[]
   postPreferenceTags    PostPreferenceTag[]
