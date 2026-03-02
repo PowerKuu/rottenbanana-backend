@@ -75,51 +75,6 @@ export async function getProductSlots(storeId: string) {
     return products.map((p) => p.slot)
 }
 
-
-export async function updateProduct({
-    id,
-    name,
-    priceGross,
-    productOnlyImageUrl,
-    imageUrls,
-    description,
-    metadata,
-    gender,
-    url,
-    slot
-}: {
-    id: string
-    name?: string
-    priceGross?: number
-    productOnlyImageUrl?: string
-    imageUrls?: string[]
-    gender?: Gender
-    description?: string
-    metadata?: Record<string, any>
-    url?: string
-    slot?: ProductSlot
-}) {
-    const product = await prisma.product.update({
-        where: { id },
-        data: {
-            name,
-            priceGross,
-            productOnlyImageUrl,
-            imageUrls,
-            description,
-            gender,
-            metadata,
-            url,
-            slot
-        },
-        include: {
-            store: true
-        }
-    })
-
-    return product
-}
-
 export async function deleteProduct(productId: string) {
     const product = await prisma.product.delete({
         where: { id: productId }

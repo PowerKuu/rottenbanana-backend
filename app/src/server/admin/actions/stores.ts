@@ -109,11 +109,3 @@ export async function deleteStore(storeId: string) {
 
     return deletedStore
 }
-
-export async function getStoreByIdentifier(identifier: string) {
-    const store = await prisma.store.findUnique({
-        where: { identifier }
-    })
-
-    return store
-}
