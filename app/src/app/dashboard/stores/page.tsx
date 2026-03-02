@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { StoreCard } from "@/components/products/StoreCard"
-import { StoreFormDialog } from "@/components/products/EditStoreDialog"
-import { DeleteStoreDialog } from "@/components/products/DeleteStoreDialog"
+import { StoreCard } from "@/components/store/StoreCard"
+import { StoreFormDialog } from "@/components/store/EditStoreDialog"
+import { DeleteStoreDialog } from "@/components/store/DeleteStoreDialog"
 import { ImportProductDialog } from "@/components/products/ImportProductDialog"
 import { Plus, Download } from "lucide-react"
 import { getAllStores } from "@/server/admin/actions/stores"
