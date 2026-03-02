@@ -1,12 +1,11 @@
 import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
+import { join, basename, extname } from "path"
 import { UploadOptions, UploadResult } from "./types"
 import axios from "axios"
 import { removeBackground } from "../ai/removeBackground"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
-
 
 export async function upload(
     buffer: Buffer,
@@ -26,12 +25,16 @@ export async function upload(
     }
 
     let processedBuffer = buffer
+    let processedFilename = filename
     if (options.removeBackground) {
         processedBuffer = await removeBackground(buffer)
+
+        const nameWithoutExt = basename(filename, extname(filename))
+        processedFilename = `${nameWithoutExt}.png`
     }
 
     const timestamp = Date.now()
-    const sanitizedName = filename.replace(/[^a-zA-Z0-9.-]/g, "_")
+    const sanitizedName = processedFilename.replace(/[^a-zA-Z0-9.-]/g, "_")
     const uniqueFilename = `${timestamp}-${sanitizedName}`
 
     const uploadDir = join(process.cwd(), "uploads")

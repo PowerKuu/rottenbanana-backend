@@ -1,27 +1,27 @@
-import { pipeline, RawImage } from "@xenova/transformers"
+import { pipeline, RawImage, env } from "@huggingface/transformers"
 import sharp from "sharp"
 
+env.allowRemoteModels = true
+env.allowLocalModels = true
+env.cacheDir = "./.cache/transformers"
+
 export async function removeBackground(image: Buffer): Promise<Buffer> {
-    const segmenter = await pipeline("image-segmentation", "briaai/RMBG-2.0")
-    const rawImage = await RawImage.fromBlob(new Blob([new Uint8Array(image)]));
-
-    const result = await segmenter(rawImage);
-    const mask = result[0].mask;
-
-    const maskBuffer = Buffer.from(mask.data);
-    const { width, height } = rawImage;
-
-    const maskImage = await sharp(maskBuffer, {
-        raw: { width, height, channels: 1 }
+    const segmenter = await pipeline("background-removal", "briaai/RMBG-1.4", {
+        dtype: "fp32"
     })
-        .toBuffer();
+    
+    const rawImage = await RawImage.fromBlob(new Blob([new Uint8Array(image)]))
 
-    return sharp(image)
-        .ensureAlpha()
-        .composite([{
-            input: maskImage,
-            blend: 'dest-in'
-        }])
-        .png()
-        .toBuffer();
+    const result = await segmenter(rawImage)
+    const outputImage = result[0]
+
+    const { data, width, height, channels } = outputImage
+
+    return await sharp(Buffer.from(data), {
+        raw: {
+            width,
+            height,
+            channels
+        }
+    }).png().toBuffer()
 }
