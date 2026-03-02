@@ -36,6 +36,8 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         description: z.string().describe("A brief description of the product"),
         primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The color of the product in HEX format. Example: #FF5733"),
         productOnlyImageIndex: z.number().nullable().describe("The index of the primary image showing only the product without a model, or null if none exists"),
+        personFrontImageIndex: z.number().nullable().describe("The index of the image showing the front of the person wearing the product, or null if none exists"),
+        personBackImageIndex: z.number().nullable().describe("The index of the image showing the back of the person wearing the product, or null if none exists"),
     })
 
     const system = `You are a fashion product analyzer. Analyze the provided product images and information to extract relevant metadata.`

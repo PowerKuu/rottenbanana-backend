@@ -27,11 +27,30 @@ export async function scrapeProduct(url: string) {
     const scrapedProduct = await scraper.scrape(url)
     const analyzedProduct = await analyzeProduct(scrapedProduct)
 
-    if (analyzedProduct.productOnlyImageIndex === null)
+    if (analyzedProduct.productOnlyImageIndex === null) {
         throw new Error("AI analysis did not return a product only image index")
+    }
+
+    const MAX_IMAGES = 3
+
+    const productOnlyImage = scrapedProduct.imageUrls[analyzedProduct.productOnlyImageIndex]
+    const personFrontImage =
+        analyzedProduct.personFrontImageIndex !== null
+            ? scrapedProduct.imageUrls[analyzedProduct.personFrontImageIndex]
+            : null
+    const personBackImage =
+        analyzedProduct.personBackImageIndex !== null
+            ? scrapedProduct.imageUrls[analyzedProduct.personBackImageIndex]
+            : null
+
+    const specialImages = [productOnlyImage, personFrontImage, personBackImage].filter(Boolean) as string[]
+    const additionalImages = scrapedProduct.imageUrls.filter((url) => !specialImages.includes(url))
+    const additionalImagesSliced = additionalImages.slice(0, Math.max(0, MAX_IMAGES - specialImages.length))
+
+    const imagesToUpload: string[] = [...specialImages, ...additionalImagesSliced]
 
     const uploadedImages = await Promise.all(
-        scrapedProduct.imageUrls.map(async (externalUrl) => {
+        imagesToUpload.map(async (externalUrl) => {
             try {
                 const result = await uploadFromExternalUrl(externalUrl, { removeBackground: true })
                 return result.url
@@ -42,7 +61,7 @@ export async function scrapeProduct(url: string) {
         })
     )
 
-    const productOnlyImageUrl = uploadedImages[analyzedProduct.productOnlyImageIndex]
+    const [productOnlyImageUrl] = uploadedImages
 
     const product = await prisma.product.create({
         data: {
