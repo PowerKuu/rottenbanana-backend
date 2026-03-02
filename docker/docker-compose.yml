@@ -1,0 +1,18 @@
+# Development PostgreSQL Database
+# postgresql://postgres:Passord01@localhost:5432/postgres
+
+services:
+    postgres:
+        container_name: rottenbana
+        image: postgres:15.15-alpine
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: Passord01
+            POSTGRES_DB: postgres
+        ports:
+            - "${POSTGRES_PORT:-9876}:5432"
+        volumes:
+            - rottenbana:/var/lib/postgresql/data
+
+volumes:
+    rottenbana:
