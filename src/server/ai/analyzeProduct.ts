@@ -15,7 +15,14 @@ ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ''}
 I will provide ${scrapedProduct.imageUrls.length} images below. Please provide the tags, slot, description, color, and identify which image index (0-${scrapedProduct.imageUrls.length - 1}) shows only the product without a model.
 
 Slots with descriptions:
+"""
 ${ProductSlot.HAT}: Accessories worn on the head, such as hats, caps, beanies, headbands, and hair accessories.
+"""
+
+Tags with descriptions:
+"""
+${tags.map(tag => `${tag.tag}: ${tag.description}`).join("\n")}
+"""
 `
 
 export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
@@ -60,7 +67,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
                 content: [
                     {
                         type: "text",
-                        text: analyzeProductPrompt(scrapedProduct)
+                        text: analyzeProductPrompt(scrapedProduct, tags)
                     },
                     ...imageContent,
                 ]
