@@ -32,9 +32,10 @@ model User {
   postLikes      PostLike[]
   PreferenceTags UserPreferenceTag[]
 
-  gender                        Gender
-  referenceImageUrl             String
-  aiNormalizedReferenceImageUrl String
+  gender                        Gender?
+  referenceImageUrl             String?
+  aiNormalizedReferenceImageUrl String?
+  onboardingCompleted            Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
