@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/server/database/prisma"
-import { Gender, ProductSlot } from "@/prisma/client"
+import { ProductSlot } from "@/prisma/client"
 
 const PAGE_SIZE = 24
 
@@ -9,7 +9,12 @@ export async function getProductById(productId: string) {
     const product = await prisma.product.findUnique({
         where: { id: productId },
         include: {
-            store: true
+            store: true,
+            preferenceTags: {
+                include: {
+                    preferenceTag: true
+                }
+            }
         }
     })
 
@@ -47,6 +52,13 @@ export async function getProductsByStore({
             take: PAGE_SIZE,
             orderBy: {
                 name: "asc"
+            },
+            include: {
+                preferenceTags: {
+                    include: {
+                        preferenceTag: true
+                    }
+                }
             }
         }),
         prisma.product.count({ where })

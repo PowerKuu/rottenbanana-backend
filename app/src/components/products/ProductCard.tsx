@@ -16,6 +16,7 @@ export function ProductCard({
     slot,
     gender,
     brand,
+    preferenceTags = [],
     onClick,
     onDelete
 }: {
@@ -27,6 +28,7 @@ export function ProductCard({
     slot: string
     gender: string
     brand?: string | null
+    preferenceTags?: { preferenceTag: { tag: string } }[]
     onClick: () => void
     onDelete?: () => void
 }) {
@@ -74,6 +76,15 @@ export function ProductCard({
                         {gender}
                     </Badge>
                 </div>
+                {preferenceTags.length > 0 && (
+                    <div className="flex w-full flex-wrap items-center gap-1">
+                        {preferenceTags.map((pt) => (
+                            <Badge key={pt.preferenceTag.tag} variant="default" className="text-xs">
+                                {pt.preferenceTag.tag}
+                            </Badge>
+                        ))}
+                    </div>
+                )}
                 <p className="text-lg font-bold">{formatPrice(priceGross, currency)}</p>
             </CardFooter>
         </Card>

@@ -62,6 +62,18 @@ export function ProductDetailsDialog({
                                         <Badge variant="secondary">{product.gender}</Badge>
                                         {product.brand && <Badge variant="outline">{product.brand}</Badge>}
                                     </div>
+                                    {product.preferenceTags && product.preferenceTags.length > 0 && (
+                                        <div className="mt-3">
+                                            <span className="text-sm font-medium text-muted-foreground">Preference Tags:</span>
+                                            <div className="mt-1 flex flex-wrap gap-1">
+                                                {product.preferenceTags.map((pt: any) => (
+                                                    <Badge key={pt.preferenceTag.tag} variant="default" className="text-xs">
+                                                        {pt.preferenceTag.tag}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <Badge variant="outline" className="shrink-0">
                                     {product.slot}

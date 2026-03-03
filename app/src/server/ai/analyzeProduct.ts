@@ -16,7 +16,20 @@ I will provide ${scrapedProduct.imageUrls.length} images below. Please provide t
 
 Slots with descriptions:
 """
-${ProductSlot.HAT}: Accessories worn on the head, such as hats, caps, beanies, headbands, and hair accessories.
+${ProductSlot.UNDERSHIRT}: Base layer tops worn underneath other clothing. Examples: tank tops, undershirts, compression shirts, thermal underwear tops, singlets, athletic base layers, camisoles, wife beaters, muscle shirts, seamless underlayers.
+${ProductSlot.SHIRT}: Main upper body garments worn as primary tops. Examples: t-shirts, polo shirts, dress shirts, button-ups, henleys, long sleeve tees, graphic tees, oxford shirts, flannel shirts, chambray shirts, linen shirts, camp collar shirts.
+${ProductSlot.OVERSHIRT}: Mid-layer shirts worn over other tops, typically unbuttoned or as a layering piece. Examples: half-zip pullovers, quarter-zip sweaters, fleece pullovers, shackets (shirt-jackets), flannel overshirts, denim shirts worn open, cardigans, knit sweaters, crewneck sweatshirts, hoodies, track jackets, bomber-style shirts.
+${ProductSlot.JACKET}: Outer layer garments for warmth or protection. Examples: denim jackets, leather jackets, bomber jackets, puffer jackets, down jackets, parkas, windbreakers, rain jackets, trench coats, blazers, suit jackets, varsity jackets, field jackets, coach jackets, harrington jackets, peacoats.
+${ProductSlot.UNDERPANTS}: Underwear and base layer bottoms. Examples: boxers, briefs, boxer briefs, trunks, compression shorts, thermal underwear bottoms, long johns, athletic underwear, performance underwear.
+${ProductSlot.PANTS}: Main lower body garments. Examples: jeans, chinos, dress pants, trousers, cargo pants, joggers, sweatpants, khakis, corduroy pants, linen pants, track pants, wide-leg pants, tapered pants, straight-leg pants, slim-fit pants, relaxed-fit pants, painter pants.
+${ProductSlot.SOCKS}: Foot coverings worn inside shoes. Examples: crew socks, ankle socks, no-show socks, athletic socks, dress socks, compression socks, wool socks, thermal socks, tube socks, quarter socks, knee-high socks.
+${ProductSlot.SHOES}: Footwear for the feet. Examples: sneakers, running shoes, basketball shoes, dress shoes, oxfords, loafers, boots, chelsea boots, work boots, hiking boots, sandals, slides, flip-flops, boat shoes, espadrilles, slip-ons, high-tops, low-tops, trainers, athletic shoes.
+${ProductSlot.GLASSES}: Eyewear for vision or sun protection. Examples: sunglasses, prescription glasses, reading glasses, aviators, wayfarers, round frames, square frames, sports sunglasses, polarized sunglasses, blue light glasses, safety glasses.
+${ProductSlot.BELT}: Waist accessories to hold up pants or for style. Examples: leather belts, canvas belts, woven belts, dress belts, casual belts, reversible belts, braided belts, studded belts, chain belts, web belts, tactical belts.
+${ProductSlot.HAT}: Accessories worn on the head. Examples: baseball caps, snapbacks, dad hats, beanies, bucket hats, fedoras, trucker hats, fitted caps, winter hats, sun hats, visors, berets, newsboy caps, flat caps.
+${ProductSlot.OTHER}: Items that don't fit other categories. Examples: bags, backpacks, watches, jewelry, scarves, gloves, ties, bow ties, pocket squares, wallets, phone cases, keychains, bracelets, necklaces, rings, sunglasses cases.
+
+IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = OVERSHIRT). Always base your slot selection on what you see in the images, not what the title says.
 """
 
 Tags with descriptions:

@@ -166,6 +166,7 @@ export default function ProductsPage() {
                                 slot={product.slot}
                                 gender={product.gender}
                                 brand={product.brand}
+                                preferenceTags={product.preferenceTags}
                                 onClick={() => handleProductClick(product.id)}
                                 onDelete={() => handleDelete({ id: product.id, name: product.name })}
                             />
