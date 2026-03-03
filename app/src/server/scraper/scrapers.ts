@@ -17,6 +17,10 @@ function createGenericScraper({
         currency: string
         description?: string
         brand?: string
+
+        metadata?: {
+            [key: string]: string
+        }
     }
     transformers: {
         gender: Transformer<Gender>
@@ -145,7 +149,7 @@ export const scrapers: {
                 images: `img[data-testid^="product"]`,
                 gender: `[data-testid="genderLink"] [aria-current="true"]`,
                 brand: `[data-testid="product_title-brand-name"]`,
-                currency: `[data-testid="pdp-price-container"] span`
+                currency: `[data-testid="pdp-price-container"] span`,
             },
             transformers: {
                 gender: (_, text) => (text === "Dame" ? Gender.FEMALE : text === "Herre" ? Gender.MALE : Gender.UNISEX),

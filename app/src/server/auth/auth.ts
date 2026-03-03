@@ -13,7 +13,7 @@ export const auth = betterAuth({
         async sendResetPassword(data, request) {
             const template = emailTemplates.resetPassword(data.url)
             await resend.emails.send({
-                from: "noreply@rottenbana.com",
+                from: "noreply@rottenbanana.com",
                 to: data.user.email,
                 ...template
             })
@@ -23,7 +23,7 @@ export const auth = betterAuth({
         async sendVerificationEmail(data, request) {
             const template = emailTemplates.verifyEmail(data.url)
             await resend.emails.send({
-                from: "noreply@rottenbana.com",
+                from: "noreply@rottenbanana.com",
                 to: data.user.email,
                 ...template
             })

@@ -1,5 +1,6 @@
 import "dotenv/config"
 import { pipeline, env } from '@huggingface/transformers';
+import { scrapers } from "@/server/scraper/scrapers"
 
 env.allowRemoteModels = true
 env.allowLocalModels = true
@@ -16,4 +17,15 @@ async function testBGRM() {
     output[0].save('mask.png');
 }
 
-testBGRM().catch(console.error);
+
+async function testScraper() {
+    const URL = "https://www.zalando.no/copenhagen-muse-cmmaryann-shirt-skjortebluse-bright-white-w-goji-berry-c3a21e029-a11.html"
+    console.log("Testing scraper for URL:", URL)
+    const scraped = await scrapers.find((s) => s.storeIdentifier === "zalando")?.scrape(URL)
+
+    console.log(scraped)
+}
+
+testScraper()
+
+//testBGRM().catch(console.error);
