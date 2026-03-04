@@ -17,6 +17,7 @@ function createGenericScraper({
         currency: string
         description?: string
         brand?: string
+        originalPriceGross?: string
 
         metadata?: {
             [key: string]: string
@@ -30,6 +31,7 @@ function createGenericScraper({
         currency?: Transformer
         description?: Transformer
         brand?: Transformer
+        originalPriceGross?: Transformer
     }
 }): Scraper {
     return async (productUrl: string) => {
@@ -83,6 +85,25 @@ function createGenericScraper({
         const brand =
             transformers.brand && brandElement && brandText ? transformers.brand(brandElement, brandText) : brandText
 
+        const originalPriceElement = querySelectors.originalPriceGross ? getElement(querySelectors.originalPriceGross) : undefined
+        const originalPriceText = querySelectors.originalPriceGross ? getText(querySelectors.originalPriceGross) : undefined
+        const originalPriceGross =
+            transformers.originalPriceGross && originalPriceElement && originalPriceText
+                ? parseFloat(extractPrice(transformers.originalPriceGross(originalPriceElement, originalPriceText)))
+                : originalPriceText
+                  ? parseFloat(extractPrice(originalPriceText))
+                  : undefined
+
+        const metadata: { [key: string]: string } = {}
+        if (querySelectors.metadata) {
+            for (const [key, selector] of Object.entries(querySelectors.metadata)) {
+                const text = getText(selector)
+                if (text) {
+                    metadata[key] = text
+                }
+            }
+        }
+
         const genderElement = getElement(querySelectors.gender)
         const genderText = getText(querySelectors.gender)
         const gender = transformers.gender(genderElement!, genderText!)
@@ -131,7 +152,9 @@ function createGenericScraper({
             gender,
             description,
             currency,
-            brand
+            brand,
+            originalPriceGross,
+            metadata
         }
     }
 }

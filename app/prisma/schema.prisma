@@ -127,18 +127,24 @@ model Store {
 }
 
 enum ProductSlot {
-  UNDERSHIRT
-  SHIRT
-  OVERSHIRT
-  JACKET
-  UNDERPANTS
-  PANTS
-  SOCKS
-  SHOES
+  UPPERBODY_LAYER_1
+  UPPERBODY_LAYER_2
+  UPPERBODY_LAYER_3
+  LOWERBODY_LAYER_1
+  FOOTWEAR_LAYER_1
+  FOOTWEAR_LAYER_2
 
   GLASSES
+  BAG
+  MASK
   BELT
   HAT
+  GLOVES
+  SCARF
+  WATCH
+  BRACELETS
+  EARRINGS
+  RING
   OTHER
 }
 
@@ -146,6 +152,8 @@ model Product {
   id              String   @id @default(cuid())
   name            String
   priceGross     Float
+  priceOriginalGross Float?
+
   currency        String
   productOnlyImageUrl String
   imageUrls       String[]
@@ -155,6 +163,10 @@ model Product {
   metadata    Json
   url         String
   slot        ProductSlot
+  type       String
+
+  primaryColorCIELAB Float[]
+  primaryColorHex    String
 
   storeId          String
   store            Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)

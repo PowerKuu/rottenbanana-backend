@@ -12,24 +12,30 @@ Gender: ${scrapedProduct.gender}
 ${scrapedProduct.description ? `Description: ${scrapedProduct.description}` : ''}
 ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ''}
 
-I will provide ${scrapedProduct.imageUrls.length} images below. Please provide the tags, slot, description, color, and identify which image index (0-${scrapedProduct.imageUrls.length - 1}) shows only the product without a model.
+I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
 
 Slots with descriptions:
 """
-${ProductSlot.UNDERSHIRT}: Base layer tops worn underneath other clothing. Examples: tank tops, undershirts, compression shirts, thermal underwear tops, singlets, athletic base layers, camisoles, wife beaters, muscle shirts, seamless underlayers.
-${ProductSlot.SHIRT}: Main upper body garments worn as primary tops. Examples: t-shirts, polo shirts, dress shirts, button-ups, henleys, long sleeve tees, graphic tees, oxford shirts, flannel shirts, chambray shirts, linen shirts, camp collar shirts.
-${ProductSlot.OVERSHIRT}: Mid-layer shirts worn over other tops, typically unbuttoned or as a layering piece. Examples: half-zip pullovers, quarter-zip sweaters, fleece pullovers, shackets (shirt-jackets), flannel overshirts, denim shirts worn open, cardigans, knit sweaters, crewneck sweatshirts, hoodies, track jackets, bomber-style shirts.
-${ProductSlot.JACKET}: Outer layer garments for warmth or protection. Examples: denim jackets, leather jackets, bomber jackets, puffer jackets, down jackets, parkas, windbreakers, rain jackets, trench coats, blazers, suit jackets, varsity jackets, field jackets, coach jackets, harrington jackets, peacoats.
-${ProductSlot.UNDERPANTS}: Underwear and base layer bottoms. Examples: boxers, briefs, boxer briefs, trunks, compression shorts, thermal underwear bottoms, long johns, athletic underwear, performance underwear.
-${ProductSlot.PANTS}: Main lower body garments. Examples: jeans, chinos, dress pants, trousers, cargo pants, joggers, sweatpants, khakis, corduroy pants, linen pants, track pants, wide-leg pants, tapered pants, straight-leg pants, slim-fit pants, relaxed-fit pants, painter pants.
-${ProductSlot.SOCKS}: Foot coverings worn inside shoes. Examples: crew socks, ankle socks, no-show socks, athletic socks, dress socks, compression socks, wool socks, thermal socks, tube socks, quarter socks, knee-high socks.
-${ProductSlot.SHOES}: Footwear for the feet. Examples: sneakers, running shoes, basketball shoes, dress shoes, oxfords, loafers, boots, chelsea boots, work boots, hiking boots, sandals, slides, flip-flops, boat shoes, espadrilles, slip-ons, high-tops, low-tops, trainers, athletic shoes.
-${ProductSlot.GLASSES}: Eyewear for vision or sun protection. Examples: sunglasses, prescription glasses, reading glasses, aviators, wayfarers, round frames, square frames, sports sunglasses, polarized sunglasses, blue light glasses, safety glasses.
-${ProductSlot.BELT}: Waist accessories to hold up pants or for style. Examples: leather belts, canvas belts, woven belts, dress belts, casual belts, reversible belts, braided belts, studded belts, chain belts, web belts, tactical belts.
-${ProductSlot.HAT}: Accessories worn on the head. Examples: baseball caps, snapbacks, dad hats, beanies, bucket hats, fedoras, trucker hats, fitted caps, winter hats, sun hats, visors, berets, newsboy caps, flat caps.
-${ProductSlot.OTHER}: Items that don't fit other categories. Examples: bags, backpacks, watches, jewelry, scarves, gloves, ties, bow ties, pocket squares, wallets, phone cases, keychains, bracelets, necklaces, rings, sunglasses cases.
+${ProductSlot.UPPERBODY_LAYER_1}: Base layer worn directly on skin. Examples: t-shirts, tank tops, polo shirts, dress shirts, button-ups, training shirts, wool shirts, long sleeve tees, graphic tees, henleys.
+${ProductSlot.UPPERBODY_LAYER_2}: Mid-layer worn over layer 1. Examples: sweaters, half-zips, quarter-zips, hoodies, crewneck sweatshirts, cardigans, fleece pullovers, knit sweaters.
+${ProductSlot.UPPERBODY_LAYER_3}: Outer layer for protection and warmth. Examples: jackets, parkas, puffer jackets, overalls, trench coats, windbreakers, rain jackets, blazers, coats.
+${ProductSlot.LOWERBODY_LAYER_1}: Lower body garments. Examples: pants, jeans, shorts, chinos, trousers, joggers, sweatpants, cargo pants, leggings.
+${ProductSlot.FOOTWEAR_LAYER_1}: Foot base layer. Examples: socks, crew socks, ankle socks, no-show socks, athletic socks, dress socks, wool socks.
+${ProductSlot.FOOTWEAR_LAYER_2}: Shoes and footwear. Examples: sneakers, boots, sandals, dress shoes, loafers, running shoes, slides, flip-flops, oxford shoes.
+${ProductSlot.GLASSES}: Eyewear. Examples: sunglasses, prescription glasses, aviators, wayfarers.
+${ProductSlot.BAG}: Bags and carriers. Examples: backpacks, tote bags, messenger bags, duffel bags.
+${ProductSlot.MASK}: Face coverings.
+${ProductSlot.BELT}: Waist belts. Examples: leather belts, canvas belts, dress belts.
+${ProductSlot.HAT}: Headwear. Examples: caps, beanies, bucket hats, fedoras.
+${ProductSlot.GLOVES}: Hand coverings.
+${ProductSlot.SCARF}: Neck accessories primarily scarves.
+${ProductSlot.WATCH}: Watches only.
+${ProductSlot.BRACELETS}: Bracelets and wristbands.
+${ProductSlot.EARRINGS}: Ear jewelry.
+${ProductSlot.RING}: Finger jewelry.
+${ProductSlot.OTHER}: Items that don't fit other categories.
 
-IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = OVERSHIRT). Always base your slot selection on what you see in the images, not what the title says.
+IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = UPPERBODY_LAYER_2). Always base your slot selection on what you see in the images, not what the title says.
 """
 
 Tags with descriptions:
@@ -44,13 +50,15 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
     const avalilableSlots = Object.values(ProductSlot)
 
     const AnalyzeProductSchema = z.object({
-        tags: z.array(z.enum(avalilableTags as [string, ...string[]])).describe(`Select the most relevant tags for this product from the following list: ${avalilableTags.join(", ")}`),
-        slot: z.enum(avalilableSlots).describe("Which slot does this product belong to?"),
-        description: z.string().describe("A brief description of the product"),
-        primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The color of the product in HEX format. Example: #FF5733"),
-        productOnlyImageIndex: z.number().nullable().describe("The index of the primary image showing only the product without a model, or null if none exists"),
-        personFrontImageIndex: z.number().nullable().describe("The index of the image showing the front of the person wearing the product, or null if none exists"),
-        personBackImageIndex: z.number().nullable().describe("The index of the image showing the back of the person wearing the product, or null if none exists"),
+        tags: z.array(z.enum(avalilableTags as [string, ...string[]])).describe("Select tags that best describe the product's style, material, occasion, and key features"),
+        slot: z.enum(avalilableSlots).describe("Product slot based on visual analysis of images (prioritize what you see over the title)"),
+        description: z.string().describe("A concise description highlighting the product's key features, material, and style (2-3 sentences)"),
+        type: z.string().describe("Specific product type (e.g., 't-shirt', 'sneakers', 'jeans'). Use common, searchable terminology"),
+        primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The dominant/most visible color of the product in HEX format (e.g., #FF5733)"),
+        keepBackgroundImageIndexes: z.array(z.number()).describe("Indexes where background should NOT be removed (close-ups, detail shots, labels). Only include if the image shows a zoomed-in detail rather than the full product"),
+        productOnlyImageIndex: z.number().nullable().describe("Index of the flat-lay or product-only image without a model wearing it, or null if all images show a person"),
+        personFrontImageIndex: z.number().nullable().describe("Index of the clearest front-facing image of a person wearing the product, or null if none exists"),
+        personBackImageIndex: z.number().nullable().describe("Index of the clearest back-facing image of a person wearing the product, or null if none exists"),
     })
 
     const system = `You are a fashion product analyzer. Analyze the provided product images and information to extract relevant metadata.`

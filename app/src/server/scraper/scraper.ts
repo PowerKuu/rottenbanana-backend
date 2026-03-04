@@ -2,6 +2,7 @@ import { analyzeProduct } from "../ai/analyzeProduct"
 import { prisma } from "../database/prisma"
 import { scrapers } from "./scrapers"
 import { uploadFromExternalUrl } from "../uploads/upload"
+import { hexToCIELAB } from "@/lib/utils"
 
 export async function scrapeProduct(url: string) {
     const hostname = new URL(url).hostname
@@ -44,7 +45,19 @@ export async function scrapeProduct(url: string) {
             : null
 
     const specialImages = [productOnlyImage, personFrontImage, personBackImage].filter(Boolean) as string[]
-    const additionalImages = scrapedProduct.imageUrls.filter((url) => !specialImages.includes(url))
+    const additionalImages = scrapedProduct.imageUrls
+        .filter((url) => !specialImages.includes(url))
+        .sort((a, b) => {
+            const aIndex = scrapedProduct.imageUrls.indexOf(a)
+            const bIndex = scrapedProduct.imageUrls.indexOf(b)
+            const aKeepBg = analyzedProduct.keepBackgroundImageIndexes.includes(aIndex)
+            const bKeepBg = analyzedProduct.keepBackgroundImageIndexes.includes(bIndex)
+
+            if (aKeepBg && !bKeepBg) return 1
+            if (!aKeepBg && bKeepBg) return -1
+            return 0
+        })
+
     const additionalImagesSliced = additionalImages.slice(0, Math.max(0, MAX_IMAGES - specialImages.length))
 
     const imagesToUpload: string[] = [...specialImages, ...additionalImagesSliced]
@@ -52,7 +65,9 @@ export async function scrapeProduct(url: string) {
     const uploadedImages = await Promise.all(
         imagesToUpload.map(async (externalUrl) => {
             try {
-                const result = await uploadFromExternalUrl(externalUrl, { removeBackground: true })
+                const keepBackground = analyzedProduct.keepBackgroundImageIndexes.includes(scrapedProduct.imageUrls.indexOf(externalUrl))
+
+                const result = await uploadFromExternalUrl(externalUrl, { removeBackground: !keepBackground })
                 return result.url
             } catch (error) {
                 console.error(`Failed to upload image ${externalUrl}:`, error)
@@ -67,8 +82,11 @@ export async function scrapeProduct(url: string) {
         data: {
             name: scrapedProduct.name,
             priceGross: scrapedProduct.priceGross,
+            priceOriginalGross: scrapedProduct.originalPriceGross,
             currency: scrapedProduct.currency,
-
+            type: analyzedProduct.type,
+            primaryColorHex: analyzedProduct.primaryColorHex,
+            primaryColorCIELAB: hexToCIELAB(analyzedProduct.primaryColorHex),
             productOnlyImageUrl: productOnlyImageUrl,
             imageUrls: uploadedImages,
             description: scrapedProduct.description,
@@ -76,7 +94,8 @@ export async function scrapeProduct(url: string) {
             gender: scrapedProduct.gender,
             metadata: {
                 primaryColorHex: analyzedProduct.primaryColorHex,
-                description: analyzedProduct.description
+                description: analyzedProduct.description,
+                ...scrapedProduct.metadata
             },
             slot: analyzedProduct.slot,
             url: url,

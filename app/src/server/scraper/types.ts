@@ -8,6 +8,11 @@ export type ScrapedProduct = {
     gender: Gender
     description?: string
     brand?: string
+    originalPriceGross?: number
+
+    metadata?: {
+        [key: string]: string
+    }
 }
 
 export type Scraper = (productUrl: string) => Promise<ScrapedProduct>

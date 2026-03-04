@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import convert from "color-convert"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -38,4 +39,13 @@ export function parseTextfieldList(input: string): string[] {
         .filter(s => s.length > 0)
 
     return list
+}
+
+export function hexToCIELAB(hex: string): [number, number, number] {
+    const cleanHex = hex.replace(/^#/, "")
+
+    const rgb = convert.hex.rgb(cleanHex)
+    const lab = convert.rgb.lab(rgb)
+
+    return lab
 }
