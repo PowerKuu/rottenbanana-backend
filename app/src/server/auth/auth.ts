@@ -13,7 +13,7 @@ export const auth = betterAuth({
         async sendResetPassword(data, request) {
             const template = emailTemplates.resetPassword(data.url)
             await resend.emails.send({
-                from: "noreply@rottenbanana.com",
+                from: process.env.EMAIL_FROM!,
                 to: data.user.email,
                 ...template
             })
@@ -23,7 +23,7 @@ export const auth = betterAuth({
         async sendVerificationEmail(data, request) {
             const template = emailTemplates.verifyEmail(data.url)
             await resend.emails.send({
-                from: "noreply@rottenbanana.com",
+                from: process.env.EMAIL_FROM!,
                 to: data.user.email,
                 ...template
             })
