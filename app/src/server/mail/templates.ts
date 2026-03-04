@@ -41,32 +41,5 @@ export const emailTemplates = {
                 </p>
             </div>
         `
-    }),
-
-    organizationInvitation: (data: {
-        invitationUrl: string
-        organizationName: string
-        inviterName: string
-        role: string
-    }) => ({
-        subject: `You've been invited to join ${data.organizationName}`,
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2>Organization Invitation</h2>
-                <p>Hello,</p>
-                <p><strong>${data.inviterName}</strong> has invited you to join <strong>${data.organizationName}</strong> as a <strong>${data.role}</strong>.</p>
-                <div style="margin: 30px 0;">
-                    <a href="${data.invitationUrl}"
-                       style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-                        Accept Invitation
-                    </a>
-                </div>
-                <p>Or copy and paste this link into your browser:</p>
-                <p style="color: #666; word-break: break-all;">${data.invitationUrl}</p>
-                <p style="margin-top: 30px; color: #666; font-size: 14px;">
-                    If you weren't expecting this invitation, you can safely ignore this email.
-                </p>
-            </div>
-        `
     })
 }
