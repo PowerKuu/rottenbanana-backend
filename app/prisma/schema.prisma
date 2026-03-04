@@ -152,7 +152,7 @@ model Product {
   id              String   @id @default(cuid())
   name            String
   priceGross     Float
-  priceOriginalGross Float?
+  originalPriceGross Float?
 
   currency        String
   productOnlyImageUrl String

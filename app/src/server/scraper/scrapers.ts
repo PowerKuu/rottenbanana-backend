@@ -169,6 +169,7 @@ export const scrapers: {
             querySelectors: {
                 name: `[data-testid="product_title-product-name"]`,
                 priceGross: `[data-testid="pdp-price-container"] span`,
+                originalPriceGross: `[data-testid="pdp-price-container"] p:nth-of-type(2) span:nth-of-type(2)`,
                 images: `img[data-testid^="product"]`,
                 gender: `[data-testid="genderLink"] [aria-current="true"]`,
                 brand: `[data-testid="product_title-brand-name"]`,

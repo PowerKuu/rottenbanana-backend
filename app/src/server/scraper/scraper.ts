@@ -82,7 +82,7 @@ export async function scrapeProduct(url: string) {
         data: {
             name: scrapedProduct.name,
             priceGross: scrapedProduct.priceGross,
-            priceOriginalGross: scrapedProduct.originalPriceGross,
+            originalPriceGross: scrapedProduct.originalPriceGross,
             currency: scrapedProduct.currency,
             type: analyzedProduct.type,
             primaryColorHex: analyzedProduct.primaryColorHex,
@@ -93,7 +93,6 @@ export async function scrapeProduct(url: string) {
             brand: scrapedProduct.brand,
             gender: scrapedProduct.gender,
             metadata: {
-                primaryColorHex: analyzedProduct.primaryColorHex,
                 description: analyzedProduct.description,
                 ...scrapedProduct.metadata
             },

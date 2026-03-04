@@ -55,7 +55,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         description: z.string().describe("A concise description highlighting the product's key features, material, and style (2-3 sentences)"),
         type: z.string().describe("Specific product type (e.g., 't-shirt', 'sneakers', 'jeans'). Use common, searchable terminology"),
         primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The dominant/most visible color of the product in HEX format (e.g., #FF5733)"),
-        keepBackgroundImageIndexes: z.array(z.number()).describe("Indexes where background should NOT be removed (close-ups, detail shots, labels). Only include if the image shows a zoomed-in detail rather than the full product"),
+        keepBackgroundImageIndexes: z.array(z.number()).describe("RARELY USED: Only include indexes where the ENTIRE image IS the product itself with no separation from background (e.g., a product texture filling the entire frame). DO NOT include images with white, solid color, or studio backgrounds - these should have backgrounds removed. This is an uncommon edge case"),
         productOnlyImageIndex: z.number().nullable().describe("Index of the flat-lay or product-only image without a model wearing it, or null if all images show a person"),
         personFrontImageIndex: z.number().nullable().describe("Index of the clearest front-facing image of a person wearing the product, or null if none exists"),
         personBackImageIndex: z.number().nullable().describe("Index of the clearest back-facing image of a person wearing the product, or null if none exists"),

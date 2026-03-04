@@ -55,8 +55,20 @@ export function ProductDetailsDialog({
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1">
                                     <DialogTitle className="text-2xl">{product.name}</DialogTitle>
-                                    <DialogDescription className="mt-2 text-lg font-semibold">
-                                        {formatPrice(product.priceGross, product.currency)}
+                                    <DialogDescription className="mt-2 flex items-center gap-2">
+                                        <span className="text-lg font-semibold">
+                                            {formatPrice(product.priceGross, product.currency)}
+                                        </span>
+                                        {product.originalPriceGross && product.originalPriceGross > product.priceGross && (
+                                            <>
+                                                <span className="text-sm line-through text-muted-foreground">
+                                                    {formatPrice(product.originalPriceGross, product.currency)}
+                                                </span>
+                                                <Badge variant="destructive" className="text-xs">
+                                                    -{Math.round((1 - product.priceGross / product.originalPriceGross) * 100)}%
+                                                </Badge>
+                                            </>
+                                        )}
                                     </DialogDescription>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                         <Badge variant="secondary">{product.gender}</Badge>
@@ -145,10 +157,26 @@ export function ProductDetailsDialog({
                                             <span className="text-muted-foreground">Category:</span>
                                             <Badge variant="outline" className="text-xs">{product.slot}</Badge>
                                         </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Type:</span>
+                                            <span>{product.type}</span>
+                                        </div>
                                         {product.brand && (
                                             <div className="flex justify-between">
                                                 <span className="text-muted-foreground">Brand:</span>
                                                 <span>{product.brand}</span>
+                                            </div>
+                                        )}
+                                        {product.primaryColorHex && (
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-muted-foreground">Primary Color:</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div
+                                                        className="w-5 h-5 rounded border"
+                                                        style={{ backgroundColor: product.primaryColorHex }}
+                                                    />
+                                                    <span className="font-mono text-xs">{product.primaryColorHex}</span>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -190,18 +218,6 @@ export function ProductDetailsDialog({
                                 <div className="min-w-0">
                                     <h3 className="mb-2 text-sm font-semibold">AI Analysis</h3>
                                     <div className="rounded-md bg-muted p-4 space-y-2 overflow-hidden">
-                                        {product.metadata.primaryColorHex && (
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm text-muted-foreground">Primary Color:</span>
-                                                <div className="flex items-center gap-2">
-                                                    <div
-                                                        className="w-6 h-6 rounded border"
-                                                        style={{ backgroundColor: product.metadata.primaryColorHex }}
-                                                    />
-                                                    <span className="text-sm font-mono">{product.metadata.primaryColorHex}</span>
-                                                </div>
-                                            </div>
-                                        )}
                                         {product.metadata.description && (
                                             <div>
                                                 <span className="text-sm text-muted-foreground">AI Description: </span>

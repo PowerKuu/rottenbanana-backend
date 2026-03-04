@@ -11,6 +11,7 @@ export function ProductCard({
     id,
     name,
     priceGross,
+    originalPriceGross,
     currency,
     imageUrl,
     slot,
@@ -23,6 +24,7 @@ export function ProductCard({
     id: string
     name: string
     priceGross: number
+    originalPriceGross?: number | null
     currency: string
     imageUrl: string
     slot: string
@@ -85,7 +87,19 @@ export function ProductCard({
                         ))}
                     </div>
                 )}
-                <p className="text-lg font-bold">{formatPrice(priceGross, currency)}</p>
+                <div className="flex w-full flex-wrap items-center gap-2">
+                    <p className="text-lg font-bold">{formatPrice(priceGross, currency)}</p>
+                    {originalPriceGross && originalPriceGross > priceGross && (
+                        <>
+                            <p className="text-xs line-through text-muted-foreground">
+                                {formatPrice(originalPriceGross, currency)}
+                            </p>
+                            <Badge variant="destructive" className="text-xs">
+                                -{Math.round((1 - priceGross / originalPriceGross) * 100)}%
+                            </Badge>
+                        </>
+                    )}
+                </div>
             </CardFooter>
         </Card>
     )
