@@ -51,7 +51,9 @@ function createGenericScraper({
         }
 
         const extractPrice = (text: string) => {
-            return text.replace(/[^0-9.,]/g, "").replace(",", ".")
+            const cleaned = text.replace(/[^0-9.,]/g, "").replace(",", ".")
+            const parsed = parseFloat(cleaned)
+            return isNaN(parsed) ? undefined : parsed
         }
 
         const extractCurrency = (text: string) => {
@@ -68,9 +70,9 @@ function createGenericScraper({
         const priceElement = getElement(querySelectors.priceGross)
         const priceText = getText(querySelectors.priceGross)
         const priceGross = transformers.priceGross
-            ? parseFloat(extractPrice(transformers.priceGross(priceElement!, priceText!)))
+            ? extractPrice(transformers.priceGross(priceElement!, priceText!))
             : priceText
-              ? parseFloat(extractPrice(priceText))
+              ? extractPrice(priceText)
               : undefined
 
         const descriptionElement = querySelectors.description ? getElement(querySelectors.description) : undefined
@@ -89,9 +91,9 @@ function createGenericScraper({
         const originalPriceText = querySelectors.originalPriceGross ? getText(querySelectors.originalPriceGross) : undefined
         const originalPriceGross =
             transformers.originalPriceGross && originalPriceElement && originalPriceText
-                ? parseFloat(extractPrice(transformers.originalPriceGross(originalPriceElement, originalPriceText)))
+                ? extractPrice(transformers.originalPriceGross(originalPriceElement, originalPriceText))
                 : originalPriceText
-                  ? parseFloat(extractPrice(originalPriceText))
+                  ? extractPrice(originalPriceText)
                   : undefined
 
         const metadata: { [key: string]: string } = {}
@@ -168,7 +170,7 @@ export const scrapers: {
         scrape: createGenericScraper({
             querySelectors: {
                 name: `[data-testid="product_title-product-name"]`,
-                priceGross: `[data-testid="pdp-price-container"] span`,
+                priceGross: `[data-testid="pdp-price-container"] p`,
                 originalPriceGross: `[data-testid="pdp-price-container"] p:nth-of-type(2) span:nth-of-type(2)`,
                 images: `img[data-testid^="product"]`,
                 gender: `[data-testid="genderLink"] [aria-current="true"]`,
