@@ -1,6 +1,6 @@
 export const emailTemplates = {
     resetPassword: (resetUrl: string) => ({
-        subject: "Secparse - Reset your password",
+        subject: "Rottenbanana - Reset your password",
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2>Reset Your Password</h2>
@@ -22,7 +22,7 @@ export const emailTemplates = {
     }),
 
     verifyEmail: (verificationUrl: string) => ({
-        subject: "Secparse - Verify your email",
+        subject: "Rottenbanana - Verify your email",
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2>Verify Your Email Address</h2>

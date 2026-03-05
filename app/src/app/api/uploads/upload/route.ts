@@ -6,6 +6,12 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData()
         const file = formData.get("file") as File
         const removeBackground = formData.get("removeBackground") === "true"
+        const subdir = (formData.get("subdir") as string | null) || "products"
+
+        const allowedSubdirs = ["products", "stores"]
+        if (!allowedSubdirs.includes(subdir)) {
+            return NextResponse.json({ error: "Invalid subdir" }, { status: 400 })
+        }
 
         if (!file) {
             return NextResponse.json(
@@ -18,7 +24,8 @@ export async function POST(request: NextRequest) {
         const buffer = Buffer.from(bytes)
 
         const result = await upload(buffer, file.name, file.type, {
-            removeBackground
+            removeBackground,
+            subdir
         })
 
         return NextResponse.json({

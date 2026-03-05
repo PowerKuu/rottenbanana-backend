@@ -139,6 +139,7 @@ export function StoreFormDialog({
             const formData = new FormData()
             formData.append("file", image)
             formData.append("removeBackground", "true")
+            formData.append("subdir", "stores")
 
             const uploadRes = await fetch("/api/uploads/upload", {
                 method: "POST",

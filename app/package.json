@@ -8,7 +8,8 @@
         "start": "next start",
         "lint": "eslint",
         "format": "bunx prettier --write .",
-        "test": "bun ./src/test/test.ts"
+        "test": "bun ./src/test/test.ts",
+        "seed": "bun ./prisma/seed.ts"
     },
     "dependencies": {
         "@huggingface/transformers": "^3.8.1",
