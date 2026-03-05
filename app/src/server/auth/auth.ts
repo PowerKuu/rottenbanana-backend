@@ -18,7 +18,8 @@ export const auth = betterAuth({
     }),
     trustedOrigins: [
         "fithappens://",
-        "exp://"
+        "exp://",
+        "http://localhost:8081"
     ],
     advanced: {
         disableCSRFCheck: true
