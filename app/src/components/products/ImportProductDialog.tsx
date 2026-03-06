@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { createPendingProduct } from "@/server/admin/actions/pendingProducts"
 
 export function ImportProductDialog({
     open,
@@ -33,27 +34,18 @@ export function ImportProductDialog({
         setLoading(true)
 
         try {
-            const response = await fetch("/api/products/import", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ url })
-            })
+            await createPendingProduct({ url })
 
-            const data = await response.json()
-
-            if (!data.success) {
-                setError(data.error || "Failed to import product")
-                return
-            }
-
-            toast.success(`Product "${data.product.name}" imported successfully!`)
+            toast.success("Product added to pending list!")
             setUrl("")
             onOpenChange(false)
             onSuccess?.()
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An error occurred while importing the product")
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "An error occurred while adding the product"
+            )
         } finally {
             setLoading(false)
         }

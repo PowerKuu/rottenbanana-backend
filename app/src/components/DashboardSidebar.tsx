@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation"
 
 const items = [
     { title: "Stores", url: "/dashboard/stores", icon: Store },
+    { title: "Pending Products", url: "/dashboard/pending-products", icon: Package },
     { title: "Tags", url: "/dashboard/tags", icon: Tag },
     { title: "Posts", url: "/dashboard/posts", icon: FileText }
 ]

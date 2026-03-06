@@ -163,6 +163,7 @@ enum PendingProductStatus {
 model PendingProduct {
   id              String   @id @default(cuid())
   url             String   @unique
+  imageUrl       String
   status          PendingProductStatus @default(PENDING)
 
   createdAt DateTime @default(now())
