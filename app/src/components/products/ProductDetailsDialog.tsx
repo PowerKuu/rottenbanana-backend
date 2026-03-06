@@ -154,7 +154,7 @@ export function ProductDetailsDialog({
                                             <Badge variant="secondary" className="text-xs">{product.gender}</Badge>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Category:</span>
+                                            <span className="text-muted-foreground">Slot:</span>
                                             <Badge variant="outline" className="text-xs">{product.slot}</Badge>
                                         </div>
                                         <div className="flex justify-between">

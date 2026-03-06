@@ -79,10 +79,10 @@ export function ProductsHeader({
                 </div>
                 <Select value={slot || "all"} onValueChange={handleSlotChange}>
                     <SelectTrigger className="w-full sm:w-50">
-                        <SelectValue placeholder="Filter by category" />
+                        <SelectValue placeholder="Filter by slot" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="all">All Slots</SelectItem>
                         {availableSlots.map((slot) => (
                             <SelectItem key={slot} value={slot}>
                                 {slot}

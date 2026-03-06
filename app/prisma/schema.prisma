@@ -144,8 +144,29 @@ enum ProductSlot {
   WATCH
   BRACELETS
   EARRINGS
+  TIE
   RING
   OTHER
+}
+
+enum ProductCategory {
+  SHIRT
+}
+
+enum PendingProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PROCCESSING
+}
+
+model PendingProduct {
+  id              String   @id @default(cuid())
+  url             String   @unique
+  status          PendingProductStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
@@ -161,7 +182,7 @@ model Product {
   description String?
   brand       String?
   metadata    Json
-  url         String
+  url         String @unique
   slot        ProductSlot
   type       String
 

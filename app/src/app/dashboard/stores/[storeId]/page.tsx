@@ -149,7 +149,7 @@ export default function ProductsPage() {
                     <p className="text-sm text-muted-foreground">
                         {search && `No results for "${search}"`}
                         {search && slot && " with "}
-                        {slot && `the selected category`}
+                        {slot && `the selected slot`}
                     </p>
                 </div>
             ) : (

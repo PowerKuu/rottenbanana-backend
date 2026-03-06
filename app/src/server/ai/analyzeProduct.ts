@@ -1,9 +1,35 @@
-import { ProductSlot } from "@/prisma/enums"
+import { ProductCategory, ProductSlot } from "@/prisma/enums"
 import z from "zod"
 import { prisma } from "../database/prisma"
 import { generateText, Output } from 'ai'
 import { ScrapedProduct } from "../scraper/types"
 import { PreferenceTag } from "@/prisma/client"
+
+const productSlotDescriptions: Record<ProductSlot, string> = {
+    [ProductSlot.UPPERBODY_LAYER_1]: "Base layer worn directly on skin. Examples: t-shirts, tank tops, polo shirts, dress shirts, button-ups, training shirts, wool shirts, long sleeve tees, graphic tees, henleys.",
+    [ProductSlot.UPPERBODY_LAYER_2]: "Mid-layer worn over layer 1. Examples: sweaters, half-zips, quarter-zips, hoodies, crewneck sweatshirts, cardigans, fleece pullovers, knit sweaters.",
+    [ProductSlot.UPPERBODY_LAYER_3]: "Outer layer for protection and warmth. Examples: jackets, parkas, puffer jackets, overalls, trench coats, windbreakers, rain jackets, blazers, coats.",
+    [ProductSlot.LOWERBODY_LAYER_1]: "Lower body garments. Examples: pants, jeans, shorts, chinos, trousers, joggers, sweatpants, cargo pants, leggings.",
+    [ProductSlot.FOOTWEAR_LAYER_1]: "Foot base layer. Examples: socks, crew socks, ankle socks, no-show socks, athletic socks, dress socks, wool socks.",
+    [ProductSlot.FOOTWEAR_LAYER_2]: "Shoes and footwear. Examples: sneakers, boots, sandals, dress shoes, loafers, running shoes, slides, flip-flops, oxford shoes.",
+    [ProductSlot.GLASSES]: "Eyewear. Examples: sunglasses, prescription glasses, aviators, wayfarers.",
+    [ProductSlot.BAG]: "Bags and carriers. Examples: backpacks, tote bags, messenger bags, duffel bags.",
+    [ProductSlot.MASK]: "Face coverings.",
+    [ProductSlot.BELT]: "Waist belts. Examples: leather belts, canvas belts, dress belts.",
+    [ProductSlot.HAT]: "Headwear. Examples: caps, beanies, bucket hats, fedoras.",
+    [ProductSlot.GLOVES]: "Hand coverings.",
+    [ProductSlot.SCARF]: "Neck accessories primarily scarves.",
+    [ProductSlot.WATCH]: "Watches only.",
+    [ProductSlot.BRACELETS]: "Bracelets and wristbands.",
+    [ProductSlot.EARRINGS]: "Ear jewelry.",
+    [ProductSlot.TIE]: "Neckties and bow ties.",
+    [ProductSlot.RING]: "Finger jewelry.",
+    [ProductSlot.OTHER]: "Items that don't fit other categories."
+}
+
+const productCategoryDescriptions: Record<ProductCategory, string> = {
+    [ProductCategory.SHIRT]: "Shirts of all types, including t-shirts, dress shirts, polos, and blouses."
+}
 
 const analyzeProductPrompt = (scrapedProduct: ScrapedProduct, tags: PreferenceTag[]) => `
 Analyze this product:
@@ -14,26 +40,16 @@ ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ''}
 
 I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
 
+Category with descriptions:
+"""
+${Object.entries(productCategoryDescriptions).map(([category, description]) => `${category}: ${description}`).join('\n')}
+
+IMPORTANT: When determining the category, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie). Always base your category selection on what you see in the images, not what the title says.
+"""
+
 Slots with descriptions:
 """
-${ProductSlot.UPPERBODY_LAYER_1}: Base layer worn directly on skin. Examples: t-shirts, tank tops, polo shirts, dress shirts, button-ups, training shirts, wool shirts, long sleeve tees, graphic tees, henleys.
-${ProductSlot.UPPERBODY_LAYER_2}: Mid-layer worn over layer 1. Examples: sweaters, half-zips, quarter-zips, hoodies, crewneck sweatshirts, cardigans, fleece pullovers, knit sweaters.
-${ProductSlot.UPPERBODY_LAYER_3}: Outer layer for protection and warmth. Examples: jackets, parkas, puffer jackets, overalls, trench coats, windbreakers, rain jackets, blazers, coats.
-${ProductSlot.LOWERBODY_LAYER_1}: Lower body garments. Examples: pants, jeans, shorts, chinos, trousers, joggers, sweatpants, cargo pants, leggings.
-${ProductSlot.FOOTWEAR_LAYER_1}: Foot base layer. Examples: socks, crew socks, ankle socks, no-show socks, athletic socks, dress socks, wool socks.
-${ProductSlot.FOOTWEAR_LAYER_2}: Shoes and footwear. Examples: sneakers, boots, sandals, dress shoes, loafers, running shoes, slides, flip-flops, oxford shoes.
-${ProductSlot.GLASSES}: Eyewear. Examples: sunglasses, prescription glasses, aviators, wayfarers.
-${ProductSlot.BAG}: Bags and carriers. Examples: backpacks, tote bags, messenger bags, duffel bags.
-${ProductSlot.MASK}: Face coverings.
-${ProductSlot.BELT}: Waist belts. Examples: leather belts, canvas belts, dress belts.
-${ProductSlot.HAT}: Headwear. Examples: caps, beanies, bucket hats, fedoras.
-${ProductSlot.GLOVES}: Hand coverings.
-${ProductSlot.SCARF}: Neck accessories primarily scarves.
-${ProductSlot.WATCH}: Watches only.
-${ProductSlot.BRACELETS}: Bracelets and wristbands.
-${ProductSlot.EARRINGS}: Ear jewelry.
-${ProductSlot.RING}: Finger jewelry.
-${ProductSlot.OTHER}: Items that don't fit other categories.
+${Object.entries(productSlotDescriptions).map(([slot, description]) => `${slot}: ${description}`).join('\n')}
 
 IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = UPPERBODY_LAYER_2). Always base your slot selection on what you see in the images, not what the title says.
 """
