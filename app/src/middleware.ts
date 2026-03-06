@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const ALLOWED_ORIGINS = [
+export const ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "fithappens://",
     "exp://"
@@ -8,7 +8,7 @@ const ALLOWED_ORIGINS = [
 
 export function middleware(request: NextRequest) {
     const origin = request.headers.get("origin") ?? ""
-    const isAllowed = ALLOWED_ORIGINS.some(o => origin === o || origin.startsWith(o))
+    const isAllowed = ALLOWED_ORIGINS.some((allowedOrigin) => origin === allowedOrigin || origin.startsWith(allowedOrigin))
 
     if (request.method === "OPTIONS") {
         const response = new NextResponse(null, { status: 204 })
@@ -22,6 +22,7 @@ export function middleware(request: NextRequest) {
     }
 
     const response = NextResponse.next()
+
     if (isAllowed) {
         response.headers.set("Access-Control-Allow-Origin", origin)
         response.headers.set("Access-Control-Allow-Credentials", "true")

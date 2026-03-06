@@ -5,28 +5,18 @@ import { bearer } from "better-auth/plugins/bearer"
 import { prisma } from "@/server/database/prisma"
 import { resend } from "../mail/resend"
 import { emailTemplates } from "../mail/templates"
-
-function validatePasswordStrength(password: string): string | null {
-    if (!/\d/.test(password)) return "Password must contain at least one number"
-    if (!/[^a-zA-Z0-9]/.test(password)) return "Password must contain at least one special character"
-    return null
-}
+import { ALLOWED_ORIGINS } from "@/middleware"
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
-    trustedOrigins: [
-        "fithappens://",
-        "exp://",
-        "http://localhost:8081"
-    ],
+    trustedOrigins: ALLOWED_ORIGINS,
     advanced: {
         disableCSRFCheck: true
     },
     emailAndPassword: {
         enabled: true,
-        minPasswordLength: 8,
         async sendResetPassword(data, _request) {
             const template = emailTemplates.resetPassword(data.url)
             await resend.emails.send({
@@ -34,12 +24,20 @@ export const auth = betterAuth({
                 to: data.user.email,
                 ...template
             })
+        },
+        password: {
+            verify: async ({ password }: { password: string }) => {
+                if (password.length < 8) return false
+                if (!/\d/.test(password)) return false
+                if (!/[^a-zA-Z0-9]/.test(password)) return false
+                return true
+            }
         }
     },
     emailVerification: {
         sendOnSignUp: true,
-        callbackURL: "/email-verified",
-        async sendVerificationEmail(data, _request) {
+        callbackURL: "/auth/email-verified",
+        async sendVerificationEmail(data) {
             const template = emailTemplates.verifyEmail(data.url)
             await resend.emails.send({
                 from: process.env.EMAIL_FROM!,
@@ -57,15 +55,6 @@ export const auth = betterAuth({
                 input: false
             }
         }
-    },
-    hooks: {
-        before: createAuthMiddleware(async (ctx) => {
-            if (ctx.path === "/sign-up/email") {
-                const body = ctx.body as { password?: string } | undefined
-                const error = validatePasswordStrength(body?.password ?? "")
-                if (error) throw new APIError("BAD_REQUEST", { message: error })
-            }
-        })
     },
     plugins: [bearer()]
 })

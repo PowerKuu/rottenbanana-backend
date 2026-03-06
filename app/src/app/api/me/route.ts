@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
             gender: true,
             referenceImageUrl: true,
             onboardingCompleted: true,
-            PreferenceTags: {
+            preferenceTags: {
                 select: {
                     preferenceTag: {
                         select: { id: true, tag: true, description: true }
@@ -32,9 +32,10 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { PreferenceTags, ...rest } = user
+    const { preferenceTags, ...rest } = user
+
     return NextResponse.json({
+        preferenceTags: preferenceTags.map(({ preferenceTag }) => preferenceTag),
         ...rest,
-        preferenceTags: PreferenceTags.map(pt => pt.preferenceTag)
     })
 }

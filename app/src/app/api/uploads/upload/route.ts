@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
 import { upload } from "@/server/uploads/upload"
+import { PUBLIC_NAMESPACES } from "@/server/uploads/read"
 
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData()
         const file = formData.get("file") as File
         const removeBackground = formData.get("removeBackground") === "true"
-        const subdir = (formData.get("subdir") as string | null) || "products"
+        const namespace = formData.get("namespace") as string
 
-        const allowedSubdirs = ["products", "stores"]
-        if (!allowedSubdirs.includes(subdir)) {
-            return NextResponse.json({ error: "Invalid subdir" }, { status: 400 })
+        if (!namespace || !PUBLIC_NAMESPACES.includes(namespace)) {
+            return NextResponse.json({ error: "Invalid namespace" }, { status: 400 })
         }
 
         if (!file) {
@@ -23,9 +23,8 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        const result = await upload(buffer, file.name, file.type, {
+        const result = await upload(buffer, file.name, [namespace], file.type, {
             removeBackground,
-            subdir
         })
 
         return NextResponse.json({
