@@ -30,7 +30,7 @@ model User {
   accounts       Account[]
   tryOnOutfits   TryOnOutfit[]
   postLikes      PostLike[]
-  PreferenceTags UserPreferenceTag[]
+  preferenceTags UserPreferenceTag[]
 
   gender                        Gender?
   referenceImageUrl             String?

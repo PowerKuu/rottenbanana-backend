@@ -139,13 +139,14 @@ export function StoreFormDialog({
             const formData = new FormData()
             formData.append("file", image)
             formData.append("removeBackground", "true")
+            formData.append("namespace", "stores")
 
-            const uploadRes = await fetch("/api/uploads/upload", {
+            const uploadResponse = await fetch("/api/uploads/upload", {
                 method: "POST",
                 body: formData
             })
 
-            const uploadData = await uploadRes.json()
+            const uploadData = await uploadResponse.json()
 
             if (!uploadData.success) {
                 throw new Error(uploadData.error || "Failed to upload image")

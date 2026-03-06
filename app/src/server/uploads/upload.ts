@@ -4,12 +4,13 @@ import { UploadOptions, UploadResult } from "./types"
 import axios from "axios"
 import { removeBackground } from "../ai/removeBackground"
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
 
 export async function upload(
     buffer: Buffer,
     filename: string,
+    path: string[],
     contentType: string,
     options: UploadOptions = {}
 ): Promise<UploadResult> {
@@ -37,7 +38,7 @@ export async function upload(
     const sanitizedName = processedFilename.replace(/[^a-zA-Z0-9.-]/g, "_")
     const uniqueFilename = `${timestamp}-${sanitizedName}`
 
-    const uploadDir = join(process.cwd(), "uploads")
+    const uploadDir = join(process.cwd(), "uploads", ...path)
     const filepath = join(uploadDir, uniqueFilename)
 
     await mkdir(uploadDir, { recursive: true })
@@ -46,7 +47,7 @@ export async function upload(
 
     return {
         success: true,
-        url: `/api/uploads/${uniqueFilename}`,
+        url: `/api/uploads/${path.join("/")}/${uniqueFilename}`,
         path: filepath,
         filename
     }
@@ -54,6 +55,7 @@ export async function upload(
 
 export async function uploadFromExternalUrl(
     externalUrl: string,
+        path: string[],
     options: UploadOptions = {}
 ): Promise<UploadResult> {
     const response = await axios.get(externalUrl, {
@@ -70,5 +72,5 @@ export async function uploadFromExternalUrl(
         throw new Error("Could not determine original filename from URL")
     }
 
-    return upload(buffer, filename, contentType, options)
+    return upload(buffer, filename, path, contentType, options)
 }
