@@ -165,6 +165,7 @@ export default function ProductsPage() {
                                 currency={product.currency}
                                 imageUrl={product.productOnlyImageUrl}
                                 slot={product.slot}
+                                category={product.category}
                                 gender={product.gender}
                                 brand={product.brand}
                                 preferenceTags={product.preferenceTags}

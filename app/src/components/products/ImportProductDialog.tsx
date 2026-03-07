@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { createPendingProduct } from "@/server/admin/actions/pendingProducts"
 
 export function ImportProductDialog({
     open,
@@ -19,7 +18,6 @@ export function ImportProductDialog({
     onSuccess?: () => void
 }) {
     const [url, setUrl] = useState("")
-    const [imageUrl, setImageUrl] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
@@ -32,27 +30,30 @@ export function ImportProductDialog({
             return
         }
 
-        if (!imageUrl.trim()) {
-            setError("Image URL is required")
-            return
-        }
-
         setLoading(true)
 
         try {
-            await createPendingProduct({ url, imageUrl })
+            const response = await fetch("/api/products/import", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url })
+            })
 
-            toast.success("Product added to pending list!")
+            const data = await response.json()
+
+            if (!data.success) {
+                setError(data.error || "Failed to import product")
+                return
+            }
+
+            toast.success(`Product "${data.product.name}" imported successfully!`)
             setUrl("")
-            setImageUrl("")
             onOpenChange(false)
             onSuccess?.()
         } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "An error occurred while adding the product"
-            )
+            setError(err instanceof Error ? err.message : "An error occurred while importing the product")
         } finally {
             setLoading(false)
         }
@@ -60,7 +61,6 @@ export function ImportProductDialog({
 
     const handleClose = () => {
         setUrl("")
-        setImageUrl("")
         setError("")
         onOpenChange(false)
     }
@@ -81,28 +81,11 @@ export function ImportProductDialog({
                             onChange={(e) => setUrl(e.target.value)}
                             placeholder="https://example.com/product/..."
                             disabled={loading}
-                            required
                         />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="imageUrl">Image URL</Label>
-                        <Input
-                            id="imageUrl"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            placeholder="https://example.com/image.jpg"
-                            disabled={loading}
-                            required
-                        />
-                        <p className="text-xs text-muted-foreground">
-                            Provide the product image URL to display in the
-                            preview
-                        </p>
                     </div>
 
                     {error && (
-                        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive break-all overflow-hidden max-w-full">
                             {error}
                         </div>
                     )}

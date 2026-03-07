@@ -158,8 +158,8 @@ export function ProductDetailsDialog({
                                             <Badge variant="outline" className="text-xs">{product.slot}</Badge>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Type:</span>
-                                            <span>{product.type}</span>
+                                            <span className="text-muted-foreground">Category:</span>
+                                            <Badge variant="outline" className="text-xs">{product.category}</Badge>
                                         </div>
                                         {product.brand && (
                                             <div className="flex justify-between">

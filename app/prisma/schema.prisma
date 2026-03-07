@@ -120,7 +120,8 @@ model Store {
 
   imageUrl   String
 
-  products Product[]
+  products        Product[]
+  pendingProducts PendingProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,7 +151,46 @@ enum ProductSlot {
 }
 
 enum ProductCategory {
-  SHIRT
+  TSHIRTS_TOPS
+  POLOS
+  SHIRTS
+  BLOUSES
+  TANK_TOPS
+  CROP_TOPS
+  SWEATSHIRTS
+  HOODIES
+  JACKETS
+  BLAZERS
+  COATS
+  PARKAS
+  VESTS
+  TROUSERS
+  JEANS
+  SHORTS
+  SKIRTS
+  LEGGINGS
+  DRESSES
+  JUMPSUITS_ROMPERS
+  SPORTSWEAR
+  SOCKS
+  SNEAKERS
+  BOOTS
+  SANDALS_FLIPFLOPS
+  DRESS_SHOES
+  ATHLETIC_SHOES
+  SLIPPERS
+  BAGS
+  BELTS
+  HATS_CAPS
+  SCARVES_WRAPS
+  GLOVES_MITTENS
+  JEWELRY
+  WATCHES
+  SUNGLASSES
+  EYEGLASSES
+  TIES_BOWTIES
+  PERFUMES_COLOGNES
+  OTHER
 }
 
 enum PendingProductStatus {
@@ -167,8 +207,13 @@ model PendingProduct {
   imageUrl       String
   status          PendingProductStatus @default(PENDING)
 
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([storeId])
 }
 
 model Product {

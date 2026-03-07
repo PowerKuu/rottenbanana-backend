@@ -15,6 +15,7 @@ export function ProductCard({
     currency,
     imageUrl,
     slot,
+    category,
     gender,
     brand,
     preferenceTags = [],
@@ -28,6 +29,7 @@ export function ProductCard({
     currency: string
     imageUrl: string
     slot: string
+    category: string
     gender: string
     brand?: string | null
     preferenceTags?: { preferenceTag: { tag: string } }[]
@@ -73,6 +75,9 @@ export function ProductCard({
                 <div className="flex w-full flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-xs">
                         {slot}
+                    </Badge>
+                                        <Badge variant="outline" className="text-xs">
+                        {category}
                     </Badge>
                     <Badge variant="secondary" className="text-xs">
                         {gender}
