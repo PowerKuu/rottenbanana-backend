@@ -43,7 +43,13 @@ export async function getPendingProducts({
     }
 }
 
-export async function createPendingProduct({ url }: { url: string }) {
+export async function createPendingProduct({
+    url,
+    imageUrl
+}: {
+    url: string
+    imageUrl: string
+}) {
     const normalizedUrl = new URL(url).toString()
 
     const existing = await prisma.pendingProduct.findUnique({
@@ -57,42 +63,62 @@ export async function createPendingProduct({ url }: { url: string }) {
     return await prisma.pendingProduct.create({
         data: {
             url: normalizedUrl,
+            imageUrl,
             status: "PENDING"
         }
     })
 }
 
-export async function createBulkPendingProducts({ urls }: { urls: string[] }) {
+interface PendingProductInput {
+    url: string
+    imageUrl: string
+}
+
+export async function createBulkPendingProducts({
+    products
+}: {
+    products: PendingProductInput[]
+}) {
     const results = {
         created: [] as string[],
         duplicates: [] as string[],
         errors: [] as { url: string; error: string }[]
     }
 
-    for (const url of urls) {
+    for (const product of products) {
         try {
-            const normalizedUrl = new URL(url).toString()
+            // Validate both fields are provided
+            if (!product.url || !product.imageUrl) {
+                results.errors.push({
+                    url: product.url || "unknown",
+                    error: "Both url and imageUrl are required"
+                })
+                continue
+            }
+
+            const normalizedUrl = new URL(product.url).toString()
 
             const existing = await prisma.pendingProduct.findUnique({
                 where: { url: normalizedUrl }
             })
 
             if (existing) {
-                results.duplicates.push(url)
+                results.duplicates.push(product.url)
                 continue
             }
 
             await prisma.pendingProduct.create({
                 data: {
                     url: normalizedUrl,
+                    imageUrl: product.imageUrl,
                     status: "PENDING"
                 }
             })
 
-            results.created.push(url)
+            results.created.push(product.url)
         } catch (error) {
             results.errors.push({
-                url,
+                url: product.url,
                 error: error instanceof Error ? error.message : "Invalid URL"
             })
         }
@@ -112,54 +138,6 @@ export async function updatePendingProductStatus({
         where: { id },
         data: { status }
     })
-}
-
-export async function importApprovedProducts({ ids }: { ids: string[] }) {
-    const results = {
-        success: [] as string[],
-        errors: [] as { id: string; url: string; error: string }[]
-    }
-
-    const pendingProducts = await prisma.pendingProduct.findMany({
-        where: {
-            id: { in: ids },
-            status: "APPROVED"
-        }
-    })
-
-    for (const pending of pendingProducts) {
-        try {
-            // Update status to PROCESSING
-            await prisma.pendingProduct.update({
-                where: { id: pending.id },
-                data: { status: "PROCCESSING" }
-            })
-
-            // Scrape and create product
-            await scrapeProduct(pending.url)
-
-            // Delete pending product after successful import
-            await prisma.pendingProduct.delete({
-                where: { id: pending.id }
-            })
-
-            results.success.push(pending.id)
-        } catch (error) {
-            // Revert status back to APPROVED on error
-            await prisma.pendingProduct.update({
-                where: { id: pending.id },
-                data: { status: "APPROVED" }
-            })
-
-            results.errors.push({
-                id: pending.id,
-                url: pending.url,
-                error: error instanceof Error ? error.message : "Unknown error"
-            })
-        }
-    }
-
-    return results
 }
 
 export async function deletePendingProduct(id: string) {

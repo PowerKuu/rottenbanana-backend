@@ -23,7 +23,7 @@ export function BulkImportDialog({
     onOpenChange: (open: boolean) => void
     onSuccess?: () => void
 }) {
-    const [urls, setUrls] = useState("")
+    const [input, setInput] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
@@ -35,16 +35,30 @@ export function BulkImportDialog({
         reader.onload = (event) => {
             try {
                 const json = JSON.parse(event.target?.result as string)
-                // Expect array of URLs or array of objects with url property
-                let urlList: string[] = []
 
-                if (Array.isArray(json)) {
-                    urlList = json
-                        .map((item) => (typeof item === "string" ? item : item.url))
-                        .filter(Boolean)
+                if (!Array.isArray(json)) {
+                    setError("JSON must be an array")
+                    return
                 }
 
-                setUrls(urlList.join("\n"))
+                // Validate and convert to pipe-delimited format
+                const formatted = json
+                    .map((item) => {
+                        if (!item.url || !item.imageUrl) {
+                            setError(
+                                "Each item must have both 'url' and 'imageUrl' fields"
+                            )
+                            return null
+                        }
+                        return `${item.url}|${item.imageUrl}`
+                    })
+                    .filter(Boolean)
+                    .join("\n")
+
+                if (formatted) {
+                    setInput(formatted)
+                    setError("")
+                }
             } catch (err) {
                 setError("Invalid JSON file format")
             }
@@ -56,25 +70,45 @@ export function BulkImportDialog({
         e.preventDefault()
         setError("")
 
-        if (!urls.trim()) {
-            setError("Please enter at least one URL")
+        if (!input.trim()) {
+            setError("Please enter at least one product")
             return
         }
 
-        const urlList = urls
+        // Parse input - format: url|imageUrl (both required)
+        const lines = input
             .split("\n")
-            .map((url) => url.trim())
-            .filter((url) => url.length > 0)
-
-        if (urlList.length === 0) {
-            setError("No valid URLs found")
-            return
-        }
-
-        setLoading(true)
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0)
 
         try {
-            const results = await createBulkPendingProducts({ urls: urlList })
+            const products = lines.map((line) => {
+                const parts = line.split("|")
+                if (parts.length !== 2) {
+                    throw new Error(
+                        `Invalid format: "${line}". Expected: url|imageUrl`
+                    )
+                }
+                const url = parts[0].trim()
+                const imageUrl = parts[1].trim()
+
+                if (!url || !imageUrl) {
+                    throw new Error(
+                        "Both url and imageUrl are required for each product"
+                    )
+                }
+
+                return { url, imageUrl }
+            })
+
+            if (products.length === 0) {
+                setError("No valid products found")
+                return
+            }
+
+            setLoading(true)
+
+            const results = await createBulkPendingProducts({ products })
 
             let message = `Created ${results.created.length} products`
             if (results.duplicates.length > 0) {
@@ -90,14 +124,12 @@ export function BulkImportDialog({
                 console.error("Import errors:", results.errors)
             }
 
-            setUrls("")
+            setInput("")
             onOpenChange(false)
             onSuccess?.()
         } catch (err) {
             setError(
-                err instanceof Error
-                    ? err.message
-                    : "Failed to import URLs"
+                err instanceof Error ? err.message : "Failed to import products"
             )
         } finally {
             setLoading(false)
@@ -105,7 +137,7 @@ export function BulkImportDialog({
     }
 
     const handleClose = () => {
-        setUrls("")
+        setInput("")
         setError("")
         onOpenChange(false)
     }
@@ -119,17 +151,18 @@ export function BulkImportDialog({
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="urls">Product URLs</Label>
+                        <Label htmlFor="products">Products</Label>
                         <Textarea
-                            id="urls"
-                            value={urls}
-                            onChange={(e) => setUrls(e.target.value)}
-                            placeholder="Paste URLs (one per line) or upload JSON file"
+                            id="products"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Format: url|imageUrl (one per line)&#10;Example: https://example.com/product|https://example.com/image.jpg"
                             className="min-h-50 font-mono text-sm"
                             disabled={loading}
                         />
                         <p className="text-xs text-muted-foreground">
-                            Enter one URL per line, or upload a JSON file
+                            Enter one product per line (url|imageUrl), or upload
+                            a JSON file
                         </p>
                     </div>
 
@@ -157,8 +190,8 @@ export function BulkImportDialog({
                             </Button>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Expected format: ["url1", "url2"] or
-                            [{'"url": "url1"'}, {'"url": "url2"'}]
+                            Expected format: {'[{"url": "...", "imageUrl": "..."}]'}
+                            . Both fields required.
                         </p>
                     </div>
 
@@ -184,7 +217,7 @@ export function BulkImportDialog({
                                     Importing...
                                 </>
                             ) : (
-                                "Import URLs"
+                                "Import Products"
                             )}
                         </Button>
                     </div>

@@ -19,6 +19,7 @@ export function ImportProductDialog({
     onSuccess?: () => void
 }) {
     const [url, setUrl] = useState("")
+    const [imageUrl, setImageUrl] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
@@ -31,13 +32,19 @@ export function ImportProductDialog({
             return
         }
 
+        if (!imageUrl.trim()) {
+            setError("Image URL is required")
+            return
+        }
+
         setLoading(true)
 
         try {
-            await createPendingProduct({ url })
+            await createPendingProduct({ url, imageUrl })
 
             toast.success("Product added to pending list!")
             setUrl("")
+            setImageUrl("")
             onOpenChange(false)
             onSuccess?.()
         } catch (err) {
@@ -53,6 +60,7 @@ export function ImportProductDialog({
 
     const handleClose = () => {
         setUrl("")
+        setImageUrl("")
         setError("")
         onOpenChange(false)
     }
@@ -73,7 +81,24 @@ export function ImportProductDialog({
                             onChange={(e) => setUrl(e.target.value)}
                             placeholder="https://example.com/product/..."
                             disabled={loading}
+                            required
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="imageUrl">Image URL</Label>
+                        <Input
+                            id="imageUrl"
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
+                            placeholder="https://example.com/image.jpg"
+                            disabled={loading}
+                            required
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Provide the product image URL to display in the
+                            preview
+                        </p>
                     </div>
 
                     {error && (

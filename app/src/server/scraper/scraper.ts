@@ -84,7 +84,7 @@ export async function scrapeProduct(url: string) {
             priceGross: scrapedProduct.priceGross,
             originalPriceGross: scrapedProduct.originalPriceGross,
             currency: scrapedProduct.currency,
-            type: analyzedProduct.type,
+            category: analyzedProduct.category,
             primaryColorHex: analyzedProduct.primaryColorHex,
             primaryColorCIELAB: hexToCIELAB(analyzedProduct.primaryColorHex),
             productOnlyImageUrl: productOnlyImageUrl,

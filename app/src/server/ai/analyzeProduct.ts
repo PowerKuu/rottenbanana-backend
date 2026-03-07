@@ -64,12 +64,13 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
     const tags = await prisma.preferenceTag.findMany()
     const avalilableTags = tags.map(({tag}) => tag)
     const avalilableSlots = Object.values(ProductSlot)
+    const avalilableCategories = Object.values(ProductCategory)
 
     const AnalyzeProductSchema = z.object({
-        tags: z.array(z.enum(avalilableTags as [string, ...string[]])).describe("Select tags that best describe the product's style, material, occasion, and key features"),
+        tags: z.array(z.enum(avalilableTags)).describe("Select tags that best describe the product's style, material, occasion, and key features"),
         slot: z.enum(avalilableSlots).describe("Product slot based on visual analysis of images (prioritize what you see over the title)"),
+        category: z.enum(avalilableCategories).describe("Product category based on visual analysis of images (prioritize what you see over the title)"),
         description: z.string().describe("A concise description highlighting the product's key features, material, and style (2-3 sentences)"),
-        type: z.string().describe("Specific product type (e.g., 't-shirt', 'sneakers', 'jeans'). Use common, searchable terminology"),
         primaryColorHex: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i).describe("The dominant/most visible color of the product in HEX format (e.g., #FF5733)"),
         keepBackgroundImageIndexes: z.array(z.number()).describe("RARELY USED: Only include indexes where the ENTIRE image IS the product itself with no separation from background (e.g., a product texture filling the entire frame). DO NOT include images with white, solid color, or studio backgrounds - these should have backgrounds removed. This is an uncommon edge case"),
         productOnlyImageIndex: z.number().nullable().describe("Index of the flat-lay or product-only image without a model wearing it, or null if all images show a person"),

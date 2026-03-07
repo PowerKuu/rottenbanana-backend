@@ -158,6 +158,7 @@ enum PendingProductStatus {
   APPROVED
   REJECTED
   PROCCESSING
+  FAILED
 }
 
 model PendingProduct {
@@ -185,7 +186,7 @@ model Product {
   metadata    Json
   url         String @unique
   slot        ProductSlot
-  type       String
+  category       ProductCategory
 
   primaryColorCIELAB Float[]
   primaryColorHex    String

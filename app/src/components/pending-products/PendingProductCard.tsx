@@ -1,17 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Check, X, ExternalLink, Loader2, Trash2 } from "lucide-react"
+import { Check, X, ExternalLink, Trash2 } from "lucide-react"
 import { PendingProduct } from "@/prisma/client"
 import { StatusBadge } from "./StatusBadge"
 import {
     updatePendingProductStatus,
     deletePendingProduct
 } from "@/server/admin/actions/pendingProducts"
-import { fetchOpenGraph, OpenGraphData } from "@/server/scraper/opengraph"
 import { toast } from "sonner"
 
 export function PendingProductCard({
@@ -22,22 +21,13 @@ export function PendingProductCard({
     onSuccess?: () => void
 }) {
     const [loading, setLoading] = useState(false)
-    const [ogData, setOgData] = useState<OpenGraphData | null>(null)
-    const [ogLoading, setOgLoading] = useState(true)
 
-    useEffect(() => {
-        loadOpenGraph()
-    }, [pendingProduct.url])
-
-    const loadOpenGraph = async () => {
-        setOgLoading(true)
+    const getDomainFromUrl = (url: string): string => {
         try {
-            const data = await fetchOpenGraph(pendingProduct.url)
-            setOgData(data)
-        } catch (error) {
-            console.error("Failed to load OpenGraph:", error)
-        } finally {
-            setOgLoading(false)
+            const hostname = new URL(url).hostname
+            return hostname.replace("www.", "")
+        } catch {
+            return "Product"
         }
     }
 
@@ -90,23 +80,14 @@ export function PendingProductCard({
         <Card className="overflow-hidden">
             <CardContent className="p-0">
                 <div className="relative aspect-video w-full overflow-hidden bg-muted">
-                    {ogLoading ? (
-                        <div className="flex h-full items-center justify-center">
-                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                        </div>
-                    ) : ogData?.image ? (
-                        <Image
-                            src={ogData.image}
-                            alt={ogData.title || "Product preview"}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                    ) : (
-                        <div className="flex h-full items-center justify-center text-muted-foreground">
-                            No preview available
-                        </div>
-                    )}
+                    <Image
+                        src={pendingProduct.imageUrl}
+                        alt={getDomainFromUrl(pendingProduct.url)}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        unoptimized
+                    />
                     <div className="absolute top-2 right-2">
                         <StatusBadge status={pendingProduct.status} />
                     </div>
@@ -115,13 +96,11 @@ export function PendingProductCard({
             <CardFooter className="flex flex-col items-start gap-3 p-4">
                 <div className="w-full space-y-1">
                     <h3 className="line-clamp-2 text-sm font-semibold">
-                        {ogData?.title || "Loading..."}
+                        {getDomainFromUrl(pendingProduct.url)}
                     </h3>
-                    {ogData?.description && (
-                        <p className="line-clamp-2 text-xs text-muted-foreground">
-                            {ogData.description}
-                        </p>
-                    )}
+                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                        {pendingProduct.url}
+                    </p>
                     <a
                         href={pendingProduct.url}
                         target="_blank"

@@ -53,10 +53,6 @@ export default function PendingProductsPage() {
         setCurrentPage(1)
     }
 
-    const approvedCount = pendingProducts.filter(
-        (p) => p.status === "APPROVED"
-    ).length
-
     return (
         <>
             <div className="space-y-6">
@@ -88,6 +84,9 @@ export default function PendingProductsPage() {
                                 </SelectItem>
                                 <SelectItem value="PROCCESSING">
                                     Processing
+                                </SelectItem>
+                                <SelectItem value="FAILED">
+                                    Failed
                                 </SelectItem>
                             </SelectContent>
                         </Select>
