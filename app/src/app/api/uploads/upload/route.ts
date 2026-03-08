@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        const result = await upload(buffer, file.name, [namespace], file.type, {
+        const result = await upload(buffer, file.name, [namespace], {
             removeBackground,
         })
 

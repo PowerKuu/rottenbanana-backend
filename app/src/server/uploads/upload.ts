@@ -5,20 +5,21 @@ import axios from "axios"
 import { removeBackground } from "../ai/removeBackground"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
+const ALLOWED_TYPES = ["jpeg", "jpg", "png", "webp", "gif"]
 
 export async function upload(
     buffer: Buffer,
     filename: string,
     path: string[],
-    contentType: string,
     options: UploadOptions = {}
 ): Promise<UploadResult> {
     const maxFileSize = options.maxFileSize || MAX_FILE_SIZE
     const allowedTypes = options.allowedTypes || ALLOWED_TYPES
 
-    if (!allowedTypes.includes(contentType)) {
-        throw new Error(`File type ${contentType} is not allowed`)
+    const fileExtension = extname(filename).slice(1).toLowerCase()
+
+    if (!allowedTypes.includes(fileExtension)) {
+        throw new Error(`File type ${fileExtension} is not allowed`)
     }
 
     if (buffer.length > maxFileSize) {
@@ -62,7 +63,6 @@ export async function uploadFromExternalUrl(
         responseType: "arraybuffer"
     })
 
-    const contentType = response.headers["content-type"]
     const buffer = Buffer.from(response.data)
 
     const urlPath = new URL(externalUrl).pathname
@@ -72,5 +72,5 @@ export async function uploadFromExternalUrl(
         throw new Error("Could not determine original filename from URL")
     }
 
-    return upload(buffer, filename, path, contentType, options)
+    return upload(buffer, filename, path, options)
 }

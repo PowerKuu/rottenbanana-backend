@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         const bytes = await photo.arrayBuffer()
         const buffer = Buffer.from(bytes)
         const processedBuffer = await processeReferenceImage(buffer)
-        const result = await upload(processedBuffer, photo.name, ["private", session.user.id], photo.type)
+        const result = await upload(processedBuffer, photo.name, ["private", session.user.id])
         referenceImageUrl = result.url
     } else if (defaultModel) {
         if (!DEFAULT_MODELS.includes(defaultModel)) {

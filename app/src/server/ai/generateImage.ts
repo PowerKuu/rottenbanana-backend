@@ -7,7 +7,7 @@ if (!GOOGLE_API_KEY) {
     throw new Error("Missing API key for Google")
 }
 
-export async function generateImageGoogleDirect(
+export async function generateImageGoogle(
     prompt: string,
     model: "gemini-3.1-flash-image-preview" | "gemini-3-pro-image-preview" = "gemini-3.1-flash-image-preview",
     images: Buffer[] = [],
