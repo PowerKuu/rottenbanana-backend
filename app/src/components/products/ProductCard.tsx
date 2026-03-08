@@ -69,37 +69,37 @@ export function ProductCard({
                     )}
                 </div>
             </CardContent>
-            <CardFooter className="flex flex-col items-start gap-2 p-4">
-                <h3 className="line-clamp-2 text-sm font-semibold">{name}</h3>
-                {brand && <p className="text-xs text-muted-foreground">{brand}</p>}
-                <div className="flex w-full flex-wrap items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
+            <CardFooter className="flex flex-col items-start gap-2 p-3 sm:p-4">
+                <h3 className="line-clamp-2 text-sm sm:text-base font-semibold leading-tight">{name}</h3>
+                {brand && <p className="text-xs sm:text-sm text-muted-foreground">{brand}</p>}
+                <div className="flex w-full flex-wrap items-center gap-1 sm:gap-2">
+                    <Badge variant="outline" className="text-xs whitespace-nowrap">
                         {slot}
                     </Badge>
-                                        <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs whitespace-nowrap">
                         {category}
                     </Badge>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs whitespace-nowrap">
                         {gender}
                     </Badge>
                 </div>
                 {preferenceTags.length > 0 && (
                     <div className="flex w-full flex-wrap items-center gap-1">
                         {preferenceTags.map((pt) => (
-                            <Badge key={pt.preferenceTag.tag} variant="default" className="text-xs">
+                            <Badge key={pt.preferenceTag.tag} variant="default" className="text-xs whitespace-nowrap">
                                 {pt.preferenceTag.tag}
                             </Badge>
                         ))}
                     </div>
                 )}
-                <div className="flex w-full flex-wrap items-center gap-2">
-                    <p className="text-lg font-bold">{formatPrice(priceGross, currency)}</p>
+                <div className="flex w-full flex-wrap items-center gap-1.5 sm:gap-2">
+                    <p className="text-base sm:text-lg font-bold">{formatPrice(priceGross, currency)}</p>
                     {originalPriceGross && originalPriceGross > priceGross && (
                         <>
                             <p className="text-xs line-through text-muted-foreground">
                                 {formatPrice(originalPriceGross, currency)}
                             </p>
-                            <Badge variant="destructive" className="text-xs">
+                            <Badge variant="destructive" className="text-xs whitespace-nowrap">
                                 -{Math.round((1 - priceGross / originalPriceGross) * 100)}%
                             </Badge>
                         </>

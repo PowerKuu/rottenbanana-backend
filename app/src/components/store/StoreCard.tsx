@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Store, Pencil, Trash2 } from "lucide-react"
+import { Store, Pencil, Trash2, Clock } from "lucide-react"
 
 export function StoreCard({
     id,
@@ -30,14 +30,26 @@ export function StoreCard({
             onClick={() => router.push(`/dashboard/stores/${id}`)}
         >
             <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
+
+                <div className="flex items-start justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                         <CardTitle className="text-lg truncate">{name}</CardTitle>
                         <Badge variant="secondary" className="shrink-0">
                             {productCount} {productCount === 1 ? "product" : "products"}
                         </Badge>
                     </div>
                     <div className="flex gap-1 shrink-0">
+                        <Button
+                            size="icon-sm"
+                            variant="ghost"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                router.push(`/dashboard/stores/${id}/pending`)
+                            }}
+                            title="View pending products"
+                        >
+                            <Clock className="h-4 w-4" />
+                        </Button>
                         <Button
                             size="icon-sm"
                             variant="ghost"

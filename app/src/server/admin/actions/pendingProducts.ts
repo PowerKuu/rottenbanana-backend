@@ -7,14 +7,19 @@ const PAGE_SIZE = 24
 
 export async function getPendingProducts({
     page = 1,
-    status = null
+    status = null,
+    storeId = null
 }: {
     page?: number
     status: PendingProductStatus | null
+    storeId?: string | null
 }) {
     const skip = (page - 1) * PAGE_SIZE
 
-    const where = status ? { status } : {}
+    const where = {
+        ...(status && { status }),
+        ...(storeId && { storeId })
+    }
 
     const [pendingProducts, totalCount] = await Promise.all([
         prisma.pendingProduct.findMany({

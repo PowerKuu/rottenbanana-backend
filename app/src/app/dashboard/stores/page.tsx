@@ -6,7 +6,8 @@ import { StoreCard } from "@/components/store/StoreCard"
 import { StoreFormDialog } from "@/components/store/EditStoreDialog"
 import { DeleteStoreDialog } from "@/components/store/DeleteStoreDialog"
 import { ImportProductDialog } from "@/components/products/ImportProductDialog"
-import { Plus, Download } from "lucide-react"
+import { BulkImportDialog } from "@/components/pending-products/BulkImportDialog"
+import { Plus, Download, FileUp } from "lucide-react"
 import { getAllStores } from "@/server/admin/actions/stores"
 import { Store } from "@/prisma/client"
 
@@ -23,6 +24,7 @@ export default function StoresPage() {
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [importDialogOpen, setImportDialogOpen] = useState(false)
+    const [bulkImportDialogOpen, setBulkImportDialogOpen] = useState(false)
     const [selectedStore, setSelectedStore] = useState<StoreWithCount | null>(null)
 
     useEffect(() => {
@@ -66,6 +68,10 @@ export default function StoresPage() {
                         <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
                             <Download className="h-4 w-4 mr-2" />
                             Import Product
+                        </Button>
+                        <Button variant="outline" onClick={() => setBulkImportDialogOpen(true)}>
+                            <FileUp className="h-4 w-4 mr-2" />
+                            Bulk Import
                         </Button>
                         <Button onClick={() => setCreateDialogOpen(true)}>
                             <Plus className="h-4 w-4 mr-2" />
@@ -116,6 +122,12 @@ export default function StoresPage() {
                           }
                         : null
                 }
+                onSuccess={handleSuccess}
+            />
+
+            <BulkImportDialog
+                open={bulkImportDialogOpen}
+                onOpenChange={setBulkImportDialogOpen}
                 onSuccess={handleSuccess}
             />
         </>
