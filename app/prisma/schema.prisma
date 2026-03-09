@@ -197,7 +197,8 @@ enum PendingProductStatus {
   PENDING
   APPROVED
   REJECTED
-  PROCCESSING
+  PROCESSING
+  COMPLETED
   FAILED
 }
 

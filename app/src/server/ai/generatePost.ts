@@ -27,7 +27,7 @@ async function getSeedPreferenceTag() {
 
     const tags = await prisma.preferenceTag.findMany()
 
-    if (tags.length <= 0) return null
+    if (tags.length <= 0) {return null}
 
     const tagScores = tags.map((tag) => {
         const score = userTags.find((userTag) => userTag.preferenceTagId === tag.id)?._sum.score || 0

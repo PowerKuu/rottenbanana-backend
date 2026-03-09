@@ -5,7 +5,8 @@ const statusConfig = {
     PENDING: { label: "Pending", variant: "secondary" as const },
     APPROVED: { label: "Approved", variant: "default" as const },
     REJECTED: { label: "Rejected", variant: "destructive" as const },
-    PROCCESSING: { label: "Processing", variant: "outline" as const },
+    PROCESSING: { label: "Processing", variant: "outline" as const },
+    COMPLETED: { label: "Completed", variant: "default" as const },
     FAILED: { label: "Failed", variant: "destructive" as const }
 }
 

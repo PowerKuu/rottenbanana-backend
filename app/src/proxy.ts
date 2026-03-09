@@ -6,7 +6,7 @@ export const ALLOWED_ORIGINS = [
     "exp://"
 ]
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
     const origin = request.headers.get("origin") ?? ""
     const isAllowed = ALLOWED_ORIGINS.some((allowedOrigin) => origin === allowedOrigin || origin.startsWith(allowedOrigin))
 

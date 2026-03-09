@@ -65,9 +65,13 @@ export async function scrapeProduct(url: string) {
     const uploadedImages = await Promise.all(
         imagesToUpload.map(async (externalUrl) => {
             try {
-                const keepBackground = analyzedProduct.keepBackgroundImageIndexes.includes(scrapedProduct.imageUrls.indexOf(externalUrl))
+                const keepBackground = analyzedProduct.keepBackgroundImageIndexes.includes(
+                    scrapedProduct.imageUrls.indexOf(externalUrl)
+                )
 
-                const result = await uploadFromExternalUrl(externalUrl, ["products"], { removeBackground: !keepBackground })
+                const result = await uploadFromExternalUrl(externalUrl, ["products"], {
+                    removeBackground: !keepBackground
+                })
                 return result.url
             } catch (error) {
                 console.error(`Failed to upload image ${externalUrl}:`, error)
