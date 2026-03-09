@@ -18,7 +18,7 @@ async function tickPendingProducts() {
 
     const processingJobs = await prisma.pendingProduct.findMany({
         where: {
-            status: PendingProductStatus.PROCESSING,
+            status: PendingProductStatus.PROCESSING
         }
     })
 
@@ -46,7 +46,7 @@ async function tickPendingProducts() {
             await prisma.pendingProduct.update({
                 where: { id: job.id },
                 data: {
-                    status: PendingProductStatus.COMPLETED,
+                    status: PendingProductStatus.COMPLETED
                 }
             })
         })

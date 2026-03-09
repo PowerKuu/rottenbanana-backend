@@ -113,9 +113,7 @@ export function PreferenceTagFormDialog({
                             disabled={loading}
                             autoFocus
                         />
-                        <p className="text-xs text-muted-foreground">
-                            A short, memorable name for this preference tag
-                        </p>
+                        <p className="text-xs text-muted-foreground">A short, memorable name for this preference tag</p>
                     </div>
 
                     <div className="space-y-2">
@@ -136,12 +134,7 @@ export function PreferenceTagFormDialog({
                     {error && <div className="text-sm text-destructive">{error}</div>}
 
                     <div className="flex justify-end gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => onOpenChange(false)}
-                            disabled={loading}
-                        >
+                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
                             Cancel
                         </Button>
                         <Button type="submit" disabled={loading}>

@@ -68,18 +68,22 @@ export function DeletePreferenceTagDialog({
                             </p>
                             <ul className="list-disc list-inside text-muted-foreground space-y-1">
                                 {tag.userCount > 0 && (
-                                    <li>{tag.userCount} user preference{tag.userCount === 1 ? "" : "s"}</li>
+                                    <li>
+                                        {tag.userCount} user preference{tag.userCount === 1 ? "" : "s"}
+                                    </li>
                                 )}
                                 {tag.productCount > 0 && (
-                                    <li>{tag.productCount} product{tag.productCount === 1 ? "" : "s"}</li>
+                                    <li>
+                                        {tag.productCount} product{tag.productCount === 1 ? "" : "s"}
+                                    </li>
                                 )}
                                 {tag.postCount > 0 && (
-                                    <li>{tag.postCount} post{tag.postCount === 1 ? "" : "s"}</li>
+                                    <li>
+                                        {tag.postCount} post{tag.postCount === 1 ? "" : "s"}
+                                    </li>
                                 )}
                             </ul>
-                            <p className="text-muted-foreground pt-2">
-                                All associations will be permanently removed.
-                            </p>
+                            <p className="text-muted-foreground pt-2">All associations will be permanently removed.</p>
                         </div>
                     </div>
                 )}

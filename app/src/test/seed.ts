@@ -19,7 +19,7 @@ const tags = [
     { tag: "Techwear", description: "Functional, futuristic clothing with technical fabrics" },
     { tag: "Vintage", description: "Retro and second-hand inspired styles" },
     { tag: "Workwear", description: "Durable, practical clothes inspired by labour and utility" },
-    { tag: "Y2K", description: "Early 2000s nostalgia with bold colours and low-rise styles" },
+    { tag: "Y2K", description: "Early 2000s nostalgia with bold colours and low-rise styles" }
 ]
 
 async function main() {
@@ -27,7 +27,7 @@ async function main() {
         await prisma.preferenceTag.upsert({
             where: { tag: tag.tag },
             update: { description: tag.description },
-            create: tag,
+            create: tag
         })
     }
 

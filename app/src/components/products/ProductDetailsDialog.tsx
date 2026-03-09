@@ -59,16 +59,21 @@ export function ProductDetailsDialog({
                                         <span className="text-lg font-semibold">
                                             {formatPrice(product.priceGross, product.currency)}
                                         </span>
-                                        {product.originalPriceGross && product.originalPriceGross > product.priceGross && (
-                                            <>
-                                                <span className="text-sm line-through text-muted-foreground">
-                                                    {formatPrice(product.originalPriceGross, product.currency)}
-                                                </span>
-                                                <Badge variant="destructive" className="text-xs">
-                                                    -{Math.round((1 - product.priceGross / product.originalPriceGross) * 100)}%
-                                                </Badge>
-                                            </>
-                                        )}
+                                        {product.originalPriceGross &&
+                                            product.originalPriceGross > product.priceGross && (
+                                                <>
+                                                    <span className="text-sm line-through text-muted-foreground">
+                                                        {formatPrice(product.originalPriceGross, product.currency)}
+                                                    </span>
+                                                    <Badge variant="destructive" className="text-xs">
+                                                        -
+                                                        {Math.round(
+                                                            (1 - product.priceGross / product.originalPriceGross) * 100
+                                                        )}
+                                                        %
+                                                    </Badge>
+                                                </>
+                                            )}
                                     </DialogDescription>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                         <Badge variant="secondary">{product.gender}</Badge>
@@ -76,10 +81,16 @@ export function ProductDetailsDialog({
                                     </div>
                                     {product.preferenceTags && product.preferenceTags.length > 0 && (
                                         <div className="mt-3">
-                                            <span className="text-sm font-medium text-muted-foreground">Preference Tags:</span>
+                                            <span className="text-sm font-medium text-muted-foreground">
+                                                Preference Tags:
+                                            </span>
                                             <div className="mt-1 flex flex-wrap gap-1">
                                                 {product.preferenceTags.map((pt: any) => (
-                                                    <Badge key={pt.preferenceTag.tag} variant="default" className="text-xs">
+                                                    <Badge
+                                                        key={pt.preferenceTag.tag}
+                                                        variant="default"
+                                                        className="text-xs"
+                                                    >
                                                         {pt.preferenceTag.tag}
                                                     </Badge>
                                                 ))}
@@ -116,7 +127,9 @@ export function ProductDetailsDialog({
 
                                 {product.imageUrls && product.imageUrls.length > 0 && (
                                     <div className="space-y-4">
-                                        <h3 className="text-sm font-semibold">All Product Images ({product.imageUrls.length})</h3>
+                                        <h3 className="text-sm font-semibold">
+                                            All Product Images ({product.imageUrls.length})
+                                        </h3>
                                         <div className="grid grid-cols-2 gap-3 max-h-100 overflow-y-auto pr-2">
                                             {product.imageUrls.map((url: string, index: number) => (
                                                 <div
@@ -147,19 +160,27 @@ export function ProductDetailsDialog({
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Price:</span>
-                                            <span className="font-semibold">{formatPrice(product.priceGross, product.currency)}</span>
+                                            <span className="font-semibold">
+                                                {formatPrice(product.priceGross, product.currency)}
+                                            </span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Gender:</span>
-                                            <Badge variant="secondary" className="text-xs">{product.gender}</Badge>
+                                            <Badge variant="secondary" className="text-xs">
+                                                {product.gender}
+                                            </Badge>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Slot:</span>
-                                            <Badge variant="outline" className="text-xs">{product.slot}</Badge>
+                                            <Badge variant="outline" className="text-xs">
+                                                {product.slot}
+                                            </Badge>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground">Category:</span>
-                                            <Badge variant="outline" className="text-xs">{product.category}</Badge>
+                                            <Badge variant="outline" className="text-xs">
+                                                {product.category}
+                                            </Badge>
                                         </div>
                                         {product.brand && (
                                             <div className="flex justify-between">
@@ -240,24 +261,24 @@ export function ProductDetailsDialog({
                                 {product.createdAt && (
                                     <div className="text-xs text-muted-foreground">
                                         <span>Created: </span>
-                                        {new Date(product.createdAt).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
+                                        {new Date(product.createdAt).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit"
                                         })}
                                     </div>
                                 )}
                                 {product.updatedAt && (
                                     <div className="text-xs text-muted-foreground">
                                         <span>Updated: </span>
-                                        {new Date(product.updatedAt).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
+                                        {new Date(product.updatedAt).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit"
                                         })}
                                     </div>
                                 )}

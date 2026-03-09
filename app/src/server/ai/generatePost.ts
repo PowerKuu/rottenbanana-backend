@@ -27,7 +27,9 @@ async function getSeedPreferenceTag() {
 
     const tags = await prisma.preferenceTag.findMany()
 
-    if (tags.length <= 0) {return null}
+    if (tags.length <= 0) {
+        return null
+    }
 
     const tagScores = tags.map((tag) => {
         const score = userTags.find((userTag) => userTag.preferenceTagId === tag.id)?._sum.score || 0
@@ -359,7 +361,7 @@ export async function generatePost() {
     }
 
     const prodcutImageBuffers = await Promise.all(
-        products.map(async ({productOnlyImageUrl}) => {
+        products.map(async ({ productOnlyImageUrl }) => {
             const response = await fetch(productOnlyImageUrl)
             const arrayBuffer = await response.arrayBuffer()
             return Buffer.from(arrayBuffer)

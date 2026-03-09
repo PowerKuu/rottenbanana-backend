@@ -1,12 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { getPostById } from "@/server/admin/actions/posts"
@@ -160,10 +155,7 @@ export function PostDetailsDialog({
                                         {post.products.map((productRelation: any) => {
                                             const product = productRelation.product
                                             return (
-                                                <div
-                                                    key={product.id}
-                                                    className="flex gap-3 rounded-lg border p-3"
-                                                >
+                                                <div key={product.id} className="flex gap-3 rounded-lg border p-3">
                                                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded">
                                                         <Image
                                                             src={product.productOnlyImageUrl}

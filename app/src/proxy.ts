@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 
-export const ALLOWED_ORIGINS = [
-    "http://localhost:8081",
-    "fithappens://",
-    "exp://"
-]
+export const ALLOWED_ORIGINS = ["http://localhost:8081", "fithappens://", "exp://"]
 
 export default function proxy(request: NextRequest) {
     const origin = request.headers.get("origin") ?? ""
-    const isAllowed = ALLOWED_ORIGINS.some((allowedOrigin) => origin === allowedOrigin || origin.startsWith(allowedOrigin))
+    const isAllowed = ALLOWED_ORIGINS.some(
+        (allowedOrigin) => origin === allowedOrigin || origin.startsWith(allowedOrigin)
+    )
 
     if (request.method === "OPTIONS") {
         const response = new NextResponse(null, { status: 204 })

@@ -16,10 +16,7 @@ export function getContentType(filename: string): string {
     return CONTENT_TYPES[ext] || "image/jpeg"
 }
 
-export async function readUploadedFile(
-    path: string[],
-    allowPrivate = false,
-) {
+export async function readUploadedFile(path: string[], allowPrivate = false) {
     if (path.length <= 1) {
         throw new Error("Invalid path")
     }

@@ -87,8 +87,12 @@ function createGenericScraper({
         const brand =
             transformers.brand && brandElement && brandText ? transformers.brand(brandElement, brandText) : brandText
 
-        const originalPriceElement = querySelectors.originalPriceGross ? getElement(querySelectors.originalPriceGross) : undefined
-        const originalPriceText = querySelectors.originalPriceGross ? getText(querySelectors.originalPriceGross) : undefined
+        const originalPriceElement = querySelectors.originalPriceGross
+            ? getElement(querySelectors.originalPriceGross)
+            : undefined
+        const originalPriceText = querySelectors.originalPriceGross
+            ? getText(querySelectors.originalPriceGross)
+            : undefined
         const originalPriceGross =
             transformers.originalPriceGross && originalPriceElement && originalPriceText
                 ? extractPrice(transformers.originalPriceGross(originalPriceElement, originalPriceText))
@@ -175,7 +179,7 @@ export const scrapers: {
                 images: `img[data-testid^="product"]`,
                 gender: `[data-testid="genderLink"] [aria-current="true"]`,
                 brand: `[data-testid="product_title-brand-name"]`,
-                currency: `[data-testid="pdp-price-container"] span`,
+                currency: `[data-testid="pdp-price-container"] span`
             },
             transformers: {
                 gender: (_, text) => (text === "Dame" ? Gender.FEMALE : text === "Herre" ? Gender.MALE : Gender.UNISEX),

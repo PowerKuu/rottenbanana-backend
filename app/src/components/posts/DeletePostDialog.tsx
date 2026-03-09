@@ -1,13 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { deletePost } from "@/server/admin/actions/posts"
 
@@ -68,11 +62,7 @@ export function DeletePostDialog({
                 {error && <div className="text-sm text-destructive">{error}</div>}
 
                 <div className="flex justify-end gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={() => onOpenChange(false)}
-                        disabled={loading}
-                    >
+                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
                         Cancel
                     </Button>
                     <Button variant="destructive" onClick={handleDelete} disabled={loading}>

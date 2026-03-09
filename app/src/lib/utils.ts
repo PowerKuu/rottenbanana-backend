@@ -35,8 +35,8 @@ export function parseTextfieldList(input: string): string[] {
 
     const list = input
         .split(/[,\n]/)
-        .map(s => s.trim())
-        .filter(s => s.length > 0)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)
 
     return list
 }

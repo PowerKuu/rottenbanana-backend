@@ -12,10 +12,7 @@ export async function POST(request: NextRequest) {
     try {
         normalizedUrl = new URL(url).toString()
     } catch (error) {
-        return NextResponse.json(
-            { error: "Invalid URL format" },
-            { status: 400 }
-        )
+        return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
     }
 
     try {
@@ -23,9 +20,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: true, product })
     } catch (error) {
         console.error(error)
-        return NextResponse.json(
-            { error: (error as Error)?.message || "An unknown error occurred" },
-            { status: 500 }
-        )
+        return NextResponse.json({ error: (error as Error)?.message || "An unknown error occurred" }, { status: 500 })
     }
 }

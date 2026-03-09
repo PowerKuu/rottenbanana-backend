@@ -76,7 +76,6 @@ export function PendingProductCard({
         }
     }
 
-
     return (
         <Card className="overflow-hidden w-100">
             <CardContent className="p-0">
@@ -96,9 +95,7 @@ export function PendingProductCard({
             </CardContent>
             <CardFooter className="flex flex-col items-start gap-2 px-2.5">
                 <div className="w-full space-y-0.5">
-                    <p className="line-clamp-1 text-sm text-muted-foreground">
-                        {pendingProduct.url}
-                    </p>
+                    <p className="line-clamp-1 text-sm text-muted-foreground">{pendingProduct.url}</p>
                     <a
                         href={pendingProduct.url}
                         target="_blank"

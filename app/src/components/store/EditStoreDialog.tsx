@@ -12,8 +12,6 @@ import { slugify, validateUrl, parseTextfieldList } from "@/lib/utils"
 import { Store } from "@/prisma/client"
 import { Store as StoreIcon } from "lucide-react"
 
-
-
 export function StoreFormDialog({
     open,
     onOpenChange,

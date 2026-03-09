@@ -46,13 +46,7 @@ export async function getPendingProducts({
     }
 }
 
-export async function createPendingProduct({
-    url,
-    imageUrl
-}: {
-    url: string
-    imageUrl: string
-}) {
+export async function createPendingProduct({ url, imageUrl }: { url: string; imageUrl: string }) {
     const normalizedUrl = new URL(url).toString()
     const hostname = new URL(url).hostname
 
@@ -92,11 +86,7 @@ interface PendingProductInput {
     imageUrl: string
 }
 
-export async function createBulkPendingProducts({
-    products
-}: {
-    products: PendingProductInput[]
-}) {
+export async function createBulkPendingProducts({ products }: { products: PendingProductInput[] }) {
     const results = {
         created: [] as string[],
         duplicates: [] as string[],
@@ -162,8 +152,8 @@ export async function createBulkPendingProducts({
         select: { url: true }
     })
 
-    const existingUrlsSet = new Set(existingProducts.map(p => p.url))
-    const productsToCreate = processedProducts.filter(product => {
+    const existingUrlsSet = new Set(existingProducts.map((p) => p.url))
+    const productsToCreate = processedProducts.filter((product) => {
         if (existingUrlsSet.has(product.url)) {
             results.duplicates.push(product.url)
             return false
@@ -173,7 +163,7 @@ export async function createBulkPendingProducts({
 
     if (productsToCreate.length > 0) {
         await prisma.pendingProduct.createMany({
-            data: productsToCreate.map(p => ({
+            data: productsToCreate.map((p) => ({
                 url: p.url,
                 imageUrl: p.imageUrl,
                 storeId: p.storeId,
@@ -181,19 +171,13 @@ export async function createBulkPendingProducts({
             }))
         })
 
-        results.created.push(...productsToCreate.map(p => p.url))
+        results.created.push(...productsToCreate.map((p) => p.url))
     }
 
     return results
 }
 
-export async function updatePendingProductStatus({
-    id,
-    status
-}: {
-    id: string
-    status: PendingProductStatus
-}) {
+export async function updatePendingProductStatus({ id, status }: { id: string; status: PendingProductStatus }) {
     return await prisma.pendingProduct.update({
         where: { id },
         data: { status }

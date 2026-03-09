@@ -16,25 +16,19 @@ export async function fetchOpenGraph(url: string): Promise<OpenGraphData | null>
         headers: FAKE_HEADERS,
         timeout: 10000
     })
-    
+
     const html = await response.data
     const dom = new JSDOM(html)
     const document = dom.window.document
 
     const getMetaContent = (property: string): string | null => {
-        const element = document.querySelector(
-            `meta[property="${property}"], meta[name="${property}"]`
-        )
+        const element = document.querySelector(`meta[property="${property}"], meta[name="${property}"]`)
         return element?.getAttribute("content") || null
     }
 
     return {
-        title: getMetaContent("og:title") ||
-                document.querySelector("title")?.textContent ||
-                null,
-        description: getMetaContent("og:description") ||
-                    getMetaContent("description") ||
-                    null,
+        title: getMetaContent("og:title") || document.querySelector("title")?.textContent || null,
+        description: getMetaContent("og:description") || getMetaContent("description") || null,
         image: getMetaContent("og:image") || null,
         url
     }

@@ -36,6 +36,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
         preferenceTags: preferenceTags.map(({ preferenceTag }) => preferenceTag),
-        ...rest,
+        ...rest
     })
 }

@@ -30,7 +30,6 @@ export function StoreCard({
             onClick={() => router.push(`/dashboard/stores/${id}`)}
         >
             <CardHeader className="pb-3">
-
                 <div className="flex items-start justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                         <CardTitle className="text-lg truncate">{name}</CardTitle>

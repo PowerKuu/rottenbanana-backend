@@ -95,11 +95,7 @@ export default function StoresPage() {
                 </div>
             </div>
 
-            <ImportProductDialog
-                open={importDialogOpen}
-                onOpenChange={setImportDialogOpen}
-                onSuccess={handleSuccess}
-            />
+            <ImportProductDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} onSuccess={handleSuccess} />
 
             <StoreFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
 

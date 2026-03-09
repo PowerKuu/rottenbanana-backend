@@ -2,10 +2,7 @@ import { getSession } from "@/server/auth/session"
 import { NextRequest, NextResponse } from "next/server"
 import { getContentType, readUploadedFile } from "@/server/uploads/read"
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: Promise<{ userId: string; filename: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string; filename: string }> }) {
     const session = await getSession(request)
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

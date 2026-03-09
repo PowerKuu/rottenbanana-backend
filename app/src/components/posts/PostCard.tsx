@@ -16,15 +16,7 @@ interface PostCardProps {
     onDelete?: () => void
 }
 
-export function PostCard({
-    caption,
-    imageUrl,
-    likeCount,
-    productCount,
-    createdAt,
-    onClick,
-    onDelete
-}: PostCardProps) {
+export function PostCard({ caption, imageUrl, likeCount, productCount, createdAt, onClick, onDelete }: PostCardProps) {
     return (
         <Card
             className="group cursor-pointer overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg"
@@ -32,12 +24,7 @@ export function PostCard({
         >
             <CardContent className="relative aspect-square p-0">
                 {imageUrl ? (
-                    <Image
-                        src={imageUrl}
-                        alt={caption || "Post image"}
-                        fill
-                        className="object-cover"
-                    />
+                    <Image src={imageUrl} alt={caption || "Post image"} fill className="object-cover" />
                 ) : (
                     <div className="flex h-full items-center justify-center bg-muted">
                         <ImageIcon className="h-12 w-12 text-muted-foreground" />
@@ -59,9 +46,7 @@ export function PostCard({
                 )}
             </CardContent>
             <CardFooter className="flex flex-col items-start gap-2 p-3">
-                {caption && (
-                    <p className="line-clamp-2 text-sm font-semibold">{caption}</p>
-                )}
+                {caption && <p className="line-clamp-2 text-sm font-semibold">{caption}</p>}
                 <div className="flex flex-wrap gap-1">
                     <Badge variant="outline" className="text-xs">
                         {format(new Date(createdAt), "MMM d, yyyy")}

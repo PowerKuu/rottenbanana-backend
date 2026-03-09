@@ -1,4 +1,4 @@
-import { startProductCronJob } from "@/server/cronjobs/products";
+import { startProductCronJob } from "@/server/cronjobs/products"
 
 export async function main() {
     startProductCronJob()

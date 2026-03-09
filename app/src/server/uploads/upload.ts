@@ -56,7 +56,7 @@ export async function upload(
 
 export async function uploadFromExternalUrl(
     externalUrl: string,
-        path: string[],
+    path: string[],
     options: UploadOptions = {}
 ): Promise<UploadResult> {
     const response = await axios.get(externalUrl, {

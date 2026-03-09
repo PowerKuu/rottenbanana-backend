@@ -61,9 +61,7 @@ export function PreferenceTagCard({
                         <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted shrink-0">
                             <Tag className="h-6 w-6 text-muted-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
-                            {description}
-                        </p>
+                        <p className="text-sm text-muted-foreground line-clamp-2 flex-1">{description}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-2">

@@ -18,9 +18,7 @@ export default function PostsPage() {
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-    const [selectedPost, setSelectedPost] = useState<{ id: string; caption: string | null } | null>(
-        null
-    )
+    const [selectedPost, setSelectedPost] = useState<{ id: string; caption: string | null } | null>(null)
     const [page, setPage] = useState(1)
     const [createLoading, setCreateLoading] = useState(false)
 
@@ -107,9 +105,7 @@ export default function PostsPage() {
                 <div className="flex min-h-100 flex-col items-center justify-center rounded-lg border border-dashed">
                     <Images className="mb-4 h-12 w-12 text-muted-foreground" />
                     <h3 className="text-lg font-semibold">No posts yet</h3>
-                    <p className="text-sm text-muted-foreground">
-                        Posts will appear here once created
-                    </p>
+                    <p className="text-sm text-muted-foreground">Posts will appear here once created</p>
                 </div>
             ) : (
                 <>
@@ -124,9 +120,7 @@ export default function PostsPage() {
                                 productCount={post._count?.products || 0}
                                 createdAt={post.createdAt}
                                 onClick={() => handlePostClick(post.id)}
-                                onDelete={() =>
-                                    handleDelete({ id: post.id, caption: post.caption })
-                                }
+                                onDelete={() => handleDelete({ id: post.id, caption: post.caption })}
                             />
                         ))}
                     </div>
@@ -143,11 +137,7 @@ export default function PostsPage() {
                 </>
             )}
 
-            <PostDetailsDialog
-                postId={selectedPostId}
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-            />
+            <PostDetailsDialog postId={selectedPostId} open={dialogOpen} onOpenChange={setDialogOpen} />
 
             <DeletePostDialog
                 open={deleteDialogOpen}

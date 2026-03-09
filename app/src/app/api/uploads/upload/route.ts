@@ -14,17 +14,14 @@ export async function POST(request: NextRequest) {
         }
 
         if (!file) {
-            return NextResponse.json(
-                { error: "No file provided" },
-                { status: 400 }
-            )
+            return NextResponse.json({ error: "No file provided" }, { status: 400 })
         }
 
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
         const result = await upload(buffer, file.name, [namespace], {
-            removeBackground,
+            removeBackground
         })
 
         return NextResponse.json({
@@ -33,9 +30,6 @@ export async function POST(request: NextRequest) {
         })
     } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to upload image"
-        return NextResponse.json(
-            { error: message },
-            { status: 400 }
-        )
+        return NextResponse.json({ error: message }, { status: 400 })
     }
 }

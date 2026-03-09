@@ -30,13 +30,7 @@ export async function getPreferenceTagById(tagId: string) {
     return tag
 }
 
-export async function createPreferenceTag({
-    tag,
-    description
-}: {
-    tag: string
-    description: string
-}) {
+export async function createPreferenceTag({ tag, description }: { tag: string; description: string }) {
     const preferenceTag = await prisma.preferenceTag.create({
         data: {
             tag: tag.trim(),

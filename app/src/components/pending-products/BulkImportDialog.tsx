@@ -1,12 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -45,9 +40,7 @@ export function BulkImportDialog({
                 const formatted = json
                     .map((item) => {
                         if (!item.url || !item.imageUrl) {
-                            setError(
-                                "Each item must have both 'url' and 'imageUrl' fields"
-                            )
+                            setError("Each item must have both 'url' and 'imageUrl' fields")
                             return null
                         }
                         return `${item.url}|${item.imageUrl}`
@@ -85,17 +78,13 @@ export function BulkImportDialog({
             const products = lines.map((line) => {
                 const parts = line.split("|")
                 if (parts.length !== 2) {
-                    throw new Error(
-                        `Invalid format: "${line}". Expected: url|imageUrl`
-                    )
+                    throw new Error(`Invalid format: "${line}". Expected: url|imageUrl`)
                 }
                 const url = parts[0].trim()
                 const imageUrl = parts[1].trim()
 
                 if (!url || !imageUrl) {
-                    throw new Error(
-                        "Both url and imageUrl are required for each product"
-                    )
+                    throw new Error("Both url and imageUrl are required for each product")
                 }
 
                 return { url, imageUrl }
@@ -128,9 +117,7 @@ export function BulkImportDialog({
             onOpenChange(false)
             onSuccess?.()
         } catch (err) {
-            setError(
-                err instanceof Error ? err.message : "Failed to import products"
-            )
+            setError(err instanceof Error ? err.message : "Failed to import products")
         } finally {
             setLoading(false)
         }
@@ -161,8 +148,7 @@ export function BulkImportDialog({
                             disabled={loading}
                         />
                         <p className="text-xs text-muted-foreground">
-                            Enter one product per line (url|imageUrl), or upload
-                            a JSON file
+                            Enter one product per line (url|imageUrl), or upload a JSON file
                         </p>
                     </div>
 
@@ -180,9 +166,7 @@ export function BulkImportDialog({
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() =>
-                                    document.getElementById("file")?.click()
-                                }
+                                onClick={() => document.getElementById("file")?.click()}
                                 disabled={loading}
                             >
                                 <Upload className="h-4 w-4 mr-2" />
@@ -190,24 +174,14 @@ export function BulkImportDialog({
                             </Button>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Expected format: {'[{"url": "...", "imageUrl": "..."}]'}
-                            . Both fields required.
+                            Expected format: {'[{"url": "...", "imageUrl": "..."}]'}. Both fields required.
                         </p>
                     </div>
 
-                    {error && (
-                        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                            {error}
-                        </div>
-                    )}
+                    {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
 
                     <div className="flex justify-end gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleClose}
-                            disabled={loading}
-                        >
+                        <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
                             Cancel
                         </Button>
                         <Button type="submit" disabled={loading}>

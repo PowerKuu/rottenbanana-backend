@@ -26,7 +26,7 @@ export async function generateImageGoogle(
         ...images.map((imageBuffer) => ({
             inline_data: {
                 mime_type: output.format === "png" ? "image/png" : "image/jpeg",
-                data: imageBuffer.toString('base64')
+                data: imageBuffer.toString("base64")
             }
         }))
     ]
@@ -60,5 +60,5 @@ export async function generateImageGoogle(
         throw new Error("No image data returned from Google API")
     }
 
-    return Buffer.from(imagePart.inline_data.data as string, 'base64')
+    return Buffer.from(imagePart.inline_data.data as string, "base64")
 }
