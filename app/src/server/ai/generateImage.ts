@@ -11,6 +11,7 @@ export async function generateImageGoogle(
     prompt: string,
     model: "gemini-3.1-flash-image-preview" | "gemini-3-pro-image-preview" = "gemini-3.1-flash-image-preview",
     images: Buffer[] = [],
+    imagesMimeType: "image/png" | "image/jpeg" = "image/png",
     output: Partial<{
         aspectRatio: "1:1" | "3:2" | "2:3" | "3:4" | "4:3" | "4:5" | "5:4" | "9:16" | "16:9" | "21:9"
         imageSize: "1K" | "2K" | "4K"
@@ -22,13 +23,13 @@ export async function generateImageGoogle(
     }
 
     const parts = [
-        { text: prompt },
         ...images.map((imageBuffer) => ({
             inline_data: {
-                mime_type: output.format === "png" ? "image/png" : "image/jpeg",
+                mime_type: imagesMimeType,
                 data: imageBuffer.toString("base64")
             }
-        }))
+        })),
+        { text: prompt },
     ]
 
     const body = {
@@ -52,28 +53,9 @@ export async function generateImageGoogle(
             }
         }
     )
-
-    console.log("Google API response structure:", {
-        candidates: response.data?.candidates?.length,
-        finishReason: response.data?.candidates?.[0]?.finishReason,
-        hasContent: !!response.data?.candidates?.[0]?.content
-    })
-
     const responseParts = response.data?.candidates?.[0]?.content?.parts || []
-    console.log("Number of parts:", responseParts.length)
-    console.log("Part keys:", responseParts.map((part: any) => Object.keys(part)))
 
     const imagePart = responseParts.find((part: any) => !!part.inlineData)
-    console.log("Image part found:", !!imagePart)
-    if (imagePart) {
-        console.log("Image part structure:", {
-            keys: Object.keys(imagePart),
-            hasInlineData: !!imagePart.inlineData,
-            inlineDataKeys: imagePart.inlineData ? Object.keys(imagePart.inlineData) : "none",
-            hasData: !!imagePart.inlineData?.data,
-            dataLength: imagePart.inlineData?.data?.length || 0
-        })
-    }
 
     if (!imagePart?.inlineData?.data) {
         throw new Error("No image data returned from Google API")

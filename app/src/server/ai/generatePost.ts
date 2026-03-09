@@ -296,7 +296,7 @@ SCENE:
 ${prompt}
 
 PRODUCTS:
-${products.map((product) => `- ${product.name} (${product.category})`).join("\n")}
+${products.map((product, index) => `- (Image ${index + 1}): ${product.name} (${product.category})`).join("\n")}
 
 REQUIREMENTS:
 - All products must be clearly visible and recognizable
@@ -311,6 +311,7 @@ async function generatePostImage(prompt: string, products: Product[], images: Bu
         generatePostImagePrompt(prompt, products),
         "gemini-3.1-flash-image-preview",
         images,
+        "image/png",
         {
             aspectRatio: "9:16",
             imageSize: "2K",
@@ -325,7 +326,7 @@ export async function generatePost() {
     const { products, caption } = await generatePostProducts()
 
     const MIN_IMAGES = 2
-    const MAX_IMAGES = 3
+    const MAX_IMAGES = 2
 
     const IMAGE_PROMPTS: string[] = [
         "Products laid out flat on concrete ground, overhead shot, urban setting, natural shadows",
@@ -373,9 +374,9 @@ export async function generatePost() {
     )
 
     const uploadedImageUrls = await Promise.all(
-        imagePrompts.map(async (prompt) => {
+        imagePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, products, prodcutImageBuffers)
-            const uploadedImage = await upload(image, `post-${caption}.jpeg`, ["posts"])
+            const uploadedImage = await upload(image, `post-image-${index}.jpeg`, ["posts"])
             return uploadedImage.url
         })
     )

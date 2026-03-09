@@ -36,8 +36,17 @@ export async function upload(
     }
 
     const timestamp = Date.now()
-    const sanitizedName = processedFilename.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const uniqueFilename = `${timestamp}-${sanitizedName}`
+
+    const sanitizedName = processedFilename
+        .replace(/[^a-zA-Z0-9.-]/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_|_$/g, "")
+
+    const ext = extname(sanitizedName)
+    const baseName = basename(sanitizedName, ext).slice(0, 50)
+    const truncatedName = `${baseName}${ext}`
+
+    const uniqueFilename = `${timestamp}-${truncatedName}`
 
     const uploadDir = join(process.cwd(), "uploads", ...path)
     const filepath = join(uploadDir, uniqueFilename)

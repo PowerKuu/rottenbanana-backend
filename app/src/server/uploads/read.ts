@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises"
 import { join } from "path"
 
-export const PUBLIC_NAMESPACES = ["products", "stores"]
+export const PUBLIC_NAMESPACES = ["products", "stores", "posts"]
 
 export const CONTENT_TYPES: Record<string, string> = {
     jpg: "image/jpeg",
