@@ -5,6 +5,7 @@ import z from "zod"
 import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
 import { upload } from "../uploads/upload"
+import { getExternalUrl } from "../uploads/read"
 
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
@@ -140,11 +141,7 @@ async function getPostProductSelection() {
 
     const requiredSlotCombinations: [ProductSlot, number?][][] = [
         [[ProductSlot.UPPERBODY_LAYER_1], [ProductSlot.UPPERBODY_LAYER_2, 0.5], [ProductSlot.UPPERBODY_LAYER_3, 0.3]],
-        [[ProductSlot.LOWERBODY_LAYER_1]],
-        [
-            [ProductSlot.FOOTWEAR_LAYER_1, 0.2],
-            [ProductSlot.FOOTWEAR_LAYER_2, 0.5]
-        ]
+        [[ProductSlot.LOWERBODY_LAYER_1]]
     ]
 
     const requiredSlots: ProductSlot[] = requiredSlotCombinations
@@ -159,6 +156,9 @@ async function getPostProductSelection() {
         .flat()
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
+            [ProductSlot.FOOTWEAR_LAYER_1],
+            [ProductSlot.FOOTWEAR_LAYER_2],
+
         [ProductSlot.WATCH],
         [ProductSlot.HAT],
         [ProductSlot.BELT],
@@ -169,7 +169,8 @@ async function getPostProductSelection() {
         [ProductSlot.BAG, 0.3],
         [ProductSlot.GLASSES, 0.4],
         [ProductSlot.RING, 0.2],
-        [ProductSlot.EARRINGS, gender === Gender.FEMALE ? 0.2 : 0]
+        [ProductSlot.EARRINGS, gender === Gender.FEMALE ? 0.2 : 0],
+
     ]
 
     const additionalSlots = additionalsSlotOptions
@@ -205,7 +206,7 @@ async function getPostProductSelection() {
             MAX_PRODUCTS_PER_SLOT
         )
 
-        if (products.length <= 0) throw new Error(`Required slot ${slot} has no products`)
+        if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
 
         productSelection[slot] = {
             required,
@@ -239,12 +240,13 @@ SELECTION RULES:
 AVAILABLE PRODUCTS BY SLOT:
 ${Object.entries(selection)
     .map(
-        ([slot, slotData]) => `
-${slot} (${slotData.required ? "REQUIRED" : "OPTIONAL"}):
-${slotData.products.map((product, idx) => `  ${idx + 1}. ID: ${product.id} - ${product.description}`).join("\n")}
+        ([slot, {products, required}]) => products.length > 0 && `
+${slot} (${required ? "REQUIRED" : "OPTIONAL"}):
+${products.map((product, idx) => `  ${idx + 1}. ID: ${product.id} - ${product.description}`).join("\n")}
 `
     )
-    .join("\n\n")}
+    .filter(Boolean)
+    .join("\n")}
 `
 
 async function generatePostProducts() {
@@ -256,7 +258,7 @@ async function generatePostProducts() {
         products: z.array(z.string()).max(MAX_PRODUCTS).describe("Array of selected product IDs"),
         caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style")
     })
-
+    console.log( generatePostProductsPrompt(productSelection, MAX_PRODUCTS))
     const response = await generateText({
         model: "openai/gpt-4o-mini",
         output: Output.object({
@@ -293,7 +295,7 @@ Create a professional fashion photography image for social media.
 SCENE:
 ${prompt}
 
-PRODUCTS (preserve exactly as described):
+PRODUCTS:
 ${products.map((product) => `- ${product.name} (${product.category})`).join("\n")}
 
 REQUIREMENTS:
@@ -323,7 +325,7 @@ export async function generatePost() {
     const { products, caption } = await generatePostProducts()
 
     const MIN_IMAGES = 2
-    const MAX_IMAGES = 4
+    const MAX_IMAGES = 3
 
     const IMAGE_PROMPTS: string[] = [
         "Products laid out flat on concrete ground, overhead shot, urban setting, natural shadows",
@@ -362,7 +364,9 @@ export async function generatePost() {
 
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageUrl }) => {
-            const response = await fetch(productOnlyImageUrl)
+            const url = getExternalUrl(productOnlyImageUrl)
+            console.log(url)
+            const response = await fetch(url)
             const arrayBuffer = await response.arrayBuffer()
             return Buffer.from(arrayBuffer)
         })

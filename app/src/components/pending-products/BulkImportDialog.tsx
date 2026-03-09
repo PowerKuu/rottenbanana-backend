@@ -99,12 +99,12 @@ export function BulkImportDialog({
 
             const results = await createBulkPendingProducts({ products })
 
-            let message = `Created ${results.created.length} products`
+            let message = `Created ${results.created.length} product(s)`
             if (results.duplicates.length > 0) {
-                message += `, ${results.duplicates.length} duplicates skipped`
+                message += `, ${results.duplicates.length} duplicate(s) skipped`
             }
             if (results.errors.length > 0) {
-                message += `, ${results.errors.length} errors`
+                message += `, ${results.errors.length} error(s)`
             }
 
             toast.success(message)

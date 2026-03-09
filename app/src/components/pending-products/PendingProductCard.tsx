@@ -77,7 +77,7 @@ export function PendingProductCard({
     }
 
     return (
-        <Card className="overflow-hidden w-100">
+        <Card className="overflow-hidden flex-1 min-w-100">
             <CardContent className="p-0">
                 <div className="relative aspect-square w-full overflow-hidden bg-muted">
                     <Image

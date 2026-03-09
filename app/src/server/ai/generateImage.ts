@@ -53,12 +53,31 @@ export async function generateImageGoogle(
         }
     )
 
-    const responseParts = response.data?.candidates?.[0]?.content?.parts || []
-    const imagePart = responseParts.find((part: any) => !!part.inline_data)
+    console.log("Google API response structure:", {
+        candidates: response.data?.candidates?.length,
+        finishReason: response.data?.candidates?.[0]?.finishReason,
+        hasContent: !!response.data?.candidates?.[0]?.content
+    })
 
-    if (!imagePart?.inline_data?.data) {
+    const responseParts = response.data?.candidates?.[0]?.content?.parts || []
+    console.log("Number of parts:", responseParts.length)
+    console.log("Part keys:", responseParts.map((part: any) => Object.keys(part)))
+
+    const imagePart = responseParts.find((part: any) => !!part.inlineData)
+    console.log("Image part found:", !!imagePart)
+    if (imagePart) {
+        console.log("Image part structure:", {
+            keys: Object.keys(imagePart),
+            hasInlineData: !!imagePart.inlineData,
+            inlineDataKeys: imagePart.inlineData ? Object.keys(imagePart.inlineData) : "none",
+            hasData: !!imagePart.inlineData?.data,
+            dataLength: imagePart.inlineData?.data?.length || 0
+        })
+    }
+
+    if (!imagePart?.inlineData?.data) {
         throw new Error("No image data returned from Google API")
     }
 
-    return Buffer.from(imagePart.inline_data.data as string, "base64")
+    return Buffer.from(imagePart.inlineData.data as string, "base64")
 }

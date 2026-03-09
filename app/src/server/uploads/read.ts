@@ -11,6 +11,10 @@ export const CONTENT_TYPES: Record<string, string> = {
     gif: "image/gif"
 }
 
+export function getExternalUrl(path: string): string {
+    return new URL(path, process.env.BASE_URL).toString()
+}
+
 export function getContentType(filename: string): string {
     const ext = filename.split(".").pop()?.toLowerCase() || ""
     return CONTENT_TYPES[ext] || "image/jpeg"
