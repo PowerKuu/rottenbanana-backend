@@ -258,12 +258,12 @@ async function generatePostProducts() {
     const response = await generateText({
         model: "openai/gpt-4o-mini",
         output: Output.object({
-            schema: GeneratePostProductsSchema,
+            schema: GeneratePostProductsSchema
         }),
         prompt: generatePostProductsPrompt(productSelection, MAX_PRODUCTS)
     })
 
-    const {products: prodcutsIds, caption} = response.output
+    const { products: prodcutsIds, caption } = response.output
 
     const products = await prisma.product.findMany({
         where: {
@@ -273,7 +273,7 @@ async function generatePostProducts() {
         }
     })
 
-    for (const [slot, {products, required}] of Object.entries(productSelection)) {
+    for (const [slot, { products, required }] of Object.entries(productSelection)) {
         if (required && !products.some((product) => prodcutsIds.includes(product.id))) {
             throw new Error(`Required slot ${slot} does not have a selected product`)
         }
@@ -303,18 +303,23 @@ REQUIREMENTS:
 `
 
 async function generatePostImage(prompt: string, products: Product[], images: Buffer[]) {
-    const image = await generateImageGoogle(generatePostImagePrompt(prompt, products), "gemini-3.1-flash-image-preview", images, {
-        aspectRatio: "9:16",
-        imageSize: "2K",
-        format: "jpeg"
-    })
+    const image = await generateImageGoogle(
+        generatePostImagePrompt(prompt, products),
+        "gemini-3.1-flash-image-preview",
+        images,
+        {
+            aspectRatio: "9:16",
+            imageSize: "2K",
+            format: "jpeg"
+        }
+    )
 
     return image
 }
 
 export async function generatePost() {
     const { products, caption } = await generatePostProducts()
-    
+
     const MIN_IMAGES = 2
     const MAX_IMAGES = 4
 
@@ -353,21 +358,21 @@ export async function generatePost() {
         imagePrompts.push(prompt)
     }
 
-    const uploadedImageUrls = []
-    const productImages = products.map((product) => product.productOnlyImageUrl)
     const prodcutImageBuffers = await Promise.all(
-        productImages.map(async (url) => {
-            const response = await fetch(url)
+        products.map(async ({productOnlyImageUrl}) => {
+            const response = await fetch(productOnlyImageUrl)
             const arrayBuffer = await response.arrayBuffer()
             return Buffer.from(arrayBuffer)
         })
     )
 
-    for (const prompt of imagePrompts) {
-        const image = await generatePostImage(prompt, products, prodcutImageBuffers)
-        const uploadedImage = await upload(image, `post-${caption}.jpeg`, ["posts"])
-        uploadedImageUrls.push(uploadedImage.url)
-    }
+    const uploadedImageUrls = await Promise.all(
+        imagePrompts.map(async (prompt) => {
+            const image = await generatePostImage(prompt, products, prodcutImageBuffers)
+            const uploadedImage = await upload(image, `post-${caption}.jpeg`, ["posts"])
+            return uploadedImage.url
+        })
+    )
 
     const post = await prisma.post.create({
         data: {
@@ -380,7 +385,7 @@ export async function generatePost() {
                 }))
             },
             imageUrls: uploadedImageUrls,
-            isOfficial: true,
+            isOfficial: true
         }
     })
 
