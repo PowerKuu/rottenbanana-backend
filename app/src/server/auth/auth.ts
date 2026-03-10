@@ -5,7 +5,7 @@ import { bearer } from "better-auth/plugins/bearer"
 import { prisma } from "@/server/database/prisma"
 import { resend } from "../mail/resend"
 import { emailTemplates } from "../mail/templates"
-import { ALLOWED_ORIGINS } from "@/middleware"
+import { ALLOWED_ORIGINS } from "@/proxy"
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {

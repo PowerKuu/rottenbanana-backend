@@ -46,6 +46,21 @@ export async function getPendingProducts({
     }
 }
 
+export async function getAllPendingProducts({
+    status = null,
+    storeId = null
+}: {
+    status?: PendingProductStatus | null
+    storeId?: string | null
+}) {
+    const where = {
+        ...(status && { status }),
+        ...(storeId && { storeId })
+    }
+
+    return prisma.pendingProduct.findMany({ where, orderBy: { createdAt: "desc" } })
+}
+
 export async function createPendingProduct({ url, imageUrl }: { url: string; imageUrl: string }) {
     const normalizedUrl = new URL(url).toString()
     const hostname = new URL(url).hostname
