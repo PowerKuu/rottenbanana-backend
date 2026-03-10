@@ -6,6 +6,8 @@ import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
 import { upload } from "../uploads/upload"
 import { getExternalUrl } from "../uploads/read"
+import { randomShuffle } from "@/lib/utils"
+import { productSlotDescriptions } from "./analyzeProduct"
 
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
@@ -26,20 +28,28 @@ async function getSeedPreferenceTag() {
         }
     })
 
-    const tags = await prisma.preferenceTag.findMany()
+    const tags = await prisma.preferenceTag.findMany({
+        where: {
+            productPreferenceTags: {
+                some: {}
+            }
+        }
+    })
 
     if (tags.length <= 0) {
         return null
     }
 
-    const tagScores = tags.map((tag) => {
-        const score = userTags.find((userTag) => userTag.preferenceTagId === tag.id)?._sum.score || 0
+    const tagScores = randomShuffle(tags)
+        .map((tag) => {
+            const score = userTags.find((userTag) => userTag.preferenceTagId === tag.id)?._sum.score || 0
 
-        return {
-            tag,
-            score
-        }
-    })
+            return {
+                tag,
+                score
+            }
+        })
+        .sort((a, b) => b.score - a.score)
 
     const tagProbabilities = tagScores.map((tag, index) => {
         const range = MAX_TAG_PROBABILITY - MIN_TAG_PROBABILITY
@@ -49,6 +59,8 @@ async function getSeedPreferenceTag() {
             probability
         }
     })
+
+    console.log("Calculated tag probabilities for seed preference tag selection:", tagProbabilities)
 
     const totalProbability = tagProbabilities.reduce((sum, tag) => sum + tag.probability, 0)
     const random = Math.random() * totalProbability
@@ -114,8 +126,11 @@ async function getSlotRandomProducts(slot: ProductSlot, gender: Gender, tag: Pre
         return productsWithTag
     }
 
-    const whereAdditional = {
+    const whereAdditional: Prisma.ProductWhereInput = {
         slot,
+        id: {
+            notIn: productsWithTag.map((product) => product.id)
+        },
         gender: {
             in: [gender, Gender.UNISEX]
         }
@@ -134,43 +149,29 @@ async function getSlotRandomProducts(slot: ProductSlot, gender: Gender, tag: Pre
 }
 
 async function getPostProductSelection() {
-    const MAX_SLOTS = 8
-    const MAX_PRODUCTS_PER_SLOT = 3
+    //const MAX_SLOTS = 8
+    const MAX_PRODUCTS_PER_SLOT = 5
     const GENDERS = [Gender.MALE, Gender.FEMALE]
     const gender = GENDERS[Math.floor(Math.random() * GENDERS.length)]
 
-    const requiredSlotCombinations: [ProductSlot, number?][][] = [
-        [[ProductSlot.UPPERBODY_LAYER_1], [ProductSlot.UPPERBODY_LAYER_2, 0.5], [ProductSlot.UPPERBODY_LAYER_3, 0.3]],
-        [[ProductSlot.LOWERBODY_LAYER_1]]
-    ]
-
-    const requiredSlots: ProductSlot[] = requiredSlotCombinations
-        .map((combination) => {
-            return combination
-                .filter(([slot, weight]) => {
-                    const picked = Math.random() <= (weight ?? 1)
-                    return picked
-                })
-                .map(([slot, _]) => slot)
-        })
-        .flat()
+    const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
-            [ProductSlot.FOOTWEAR_LAYER_1],
-            [ProductSlot.FOOTWEAR_LAYER_2],
-
+        [ProductSlot.FOOTWEAR_LAYER_1],
+        [ProductSlot.FOOTWEAR_LAYER_2],
+        [ProductSlot.UPPERBODY_LAYER_2],
+        [ProductSlot.UPPERBODY_LAYER_3],
         [ProductSlot.WATCH],
         [ProductSlot.HAT],
         [ProductSlot.BELT],
         [ProductSlot.SCARF],
         [ProductSlot.BRACELETS],
         [ProductSlot.TIE],
-        [ProductSlot.GLOVES],
+        [ProductSlot.GLOVES, 0.3],
         [ProductSlot.BAG, 0.3],
         [ProductSlot.GLASSES, 0.4],
         [ProductSlot.RING, 0.2],
-        [ProductSlot.EARRINGS, gender === Gender.FEMALE ? 0.2 : 0],
-
+        [ProductSlot.EARRINGS, gender === Gender.FEMALE ? 0.2 : 0]
     ]
 
     const additionalSlots = additionalsSlotOptions
@@ -178,16 +179,15 @@ async function getPostProductSelection() {
             const picked = Math.random() <= (weight ?? 1)
             return picked
         })
-        .slice(0, MAX_SLOTS - requiredSlots.length)
         .map(([slot, _]) => slot)
 
     const slots = [
         ...requiredSlots.map((slot) => ({ slot, required: true })),
         ...additionalSlots.map((slot) => ({ slot, required: false }))
-    ].slice(0, MAX_SLOTS)
+    ]
 
     const seedPreferenceTag = await getSeedPreferenceTag()
-
+    console.log("Selected seed preference tag for product selection:", seedPreferenceTag?.tag)
     const productSelection: {
         [slot in ProductSlot]?: {
             required: boolean
@@ -208,14 +208,17 @@ async function getPostProductSelection() {
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
 
+        const productsWithDescriptions = await Promise.all(
+            products.map(async (product) => ({
+                id: product.id,
+                description: await getProductDescription(product)
+            }))
+        )
+
+
         productSelection[slot] = {
             required,
-            products: await Promise.all(
-                products.map(async (product) => ({
-                    id: product.id,
-                    description: await getProductDescription(product)
-                }))
-            )
+            products: randomShuffle(productsWithDescriptions)
         }
     }
 
@@ -224,50 +227,114 @@ async function getPostProductSelection() {
 
 const generatePostProductsPrompt = (
     selection: Awaited<ReturnType<typeof getPostProductSelection>>,
-    maxProducts: number
+    showcasePrompts: string[],
+    modelShowcasePrompts: string[],
+    maxProducts: number,
+    minProducts: number,
+    maxPrompts: number
 ) => `
-You are selecting products for a fashion outfit post. You must select up to ${maxProducts} products total from the available product slots below.
+You are a creative fashion stylist selecting products for an inspiring outfit post. Your goal is to create a complete, stylish look with ${minProducts}-${maxProducts} products.
 
-SELECTION RULES:
+SLOT SELECTION RULES:
 - REQUIRED slots: You MUST pick exactly 1 product from each required slot
 - OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot
-- ONLY one product can be selected per slot
-- Total products selected must not exceed ${maxProducts}
+- ONLY one product can be selected per slot, multiple layers of the same slot (e.g. upperbody layer 1 and 2) can be used together and often looks good, but not required
+- The total number of products selected must be at least ${minProducts} and no more than ${maxProducts}
 - Prioritize required slots first, then add optional products if space allows
-- Select products that would create a cohesive outfit based on their descriptions. F.ex dont add a formal shoe to a casual outfit.
-- If unsure about optional products, dont pick any! Keep the outfit high quality by only picking products you are confident fit well with the rest of the outfit
+- Select products that would create a cohesive outfit based on their descriptions
+
+SLOT DESCRIPTIONS:
+"""
+${Object.entries(productSlotDescriptions)
+    .map(([slot, description]) => `${slot}: ${description}`)
+    .join("\n")}
+"""
 
 AVAILABLE PRODUCTS BY SLOT:
+"""
 ${Object.entries(selection)
     .map(
-        ([slot, {products, required}]) => products.length > 0 && `
+        ([slot, { products, required }]) =>
+            products.length > 0 &&
+            `
 ${slot} (${required ? "REQUIRED" : "OPTIONAL"}):
-${products.map((product, idx) => `  ${idx + 1}. ID: ${product.id} - ${product.description}`).join("\n")}
-`
+${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${product.description}`).join("\n")}`
     )
+
     .filter(Boolean)
     .join("\n")}
+"""
+
+SHOWCASE PROMPTS:
+"""
+Select ${maxPrompts} showcase prompts for the outfit images. Prefer a combination of model and showcase prompts for variety.
+
+Flat lay:
+${showcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join("\n")}
+
+Model wearing outfit:
+${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join("\n")}
+"""
 `
 
-async function generatePostProducts() {
-    const MAX_PRODUCTS = 6
-
+async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
     const productSelection = await getPostProductSelection()
+    const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
+
+    if (possibleProducts < minProducts) {
+        throw new Error(`Not enough products available to meet the minimum requirement of ${minProducts}`)
+    }
+
+    const IMAGE_PROMPTS: string[] = [
+        "Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting",
+        "Products laid out on wooden floor, minimal background, even lighting",
+        "Products on white marble surface, clean background, professional studio lighting",
+        "Products displayed on neutral fabric surface, simple flat lay, soft lighting",
+        "Products arranged on light wood table, minimal styling, natural window light",
+        "Products on solid gray background, centered composition, even lighting"
+    ]
+
+    const MODEL_IMAGE_PROMPTS: string[] = [
+        "Model standing against plain wall, natural pose, good lighting, clean background",
+        "Model sitting on concrete steps, casual pose, urban setting, natural light",
+        "Model standing in neutral indoor space, relaxed pose, soft even lighting",
+        "Model leaning against brick wall, confident stance, simple background",
+        "Model standing outdoors, natural environment, soft daylight, clean composition",
+        "Model sitting cross-legged, simple background, studio lighting",
+        "Model walking naturally, urban street background, good natural lighting",
+        "Model standing in doorway, casual pose, architectural framing, natural light"
+    ]
 
     const GeneratePostProductsSchema = z.object({
-        products: z.array(z.string()).max(MAX_PRODUCTS).describe("Array of selected product IDs"),
-        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style")
+        products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
+        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style"),
+        showcasePrompts: z
+            .array(z.string())
+            .min(prompts)
+            .max(prompts)
+            .describe("Selected showcase prompts from the available options")
     })
-    console.log( generatePostProductsPrompt(productSelection, MAX_PRODUCTS))
+
+    const prompt = generatePostProductsPrompt(
+        productSelection,
+        IMAGE_PROMPTS,
+        MODEL_IMAGE_PROMPTS,
+        minProducts,
+        maxProducts,
+        prompts
+    )
+
+    console.log("Generated prompt for product selection:", prompt)
+
     const response = await generateText({
         model: "openai/gpt-4o-mini",
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
-        prompt: generatePostProductsPrompt(productSelection, MAX_PRODUCTS)
+        prompt,
     })
 
-    const { products: prodcutsIds, caption } = response.output
+    const { products: prodcutsIds, caption, showcasePrompts } = response.output
 
     const products = await prisma.product.findMany({
         where: {
@@ -285,25 +352,27 @@ async function generatePostProducts() {
 
     return {
         caption,
-        products
+        products,
+        showcasePrompts
     }
 }
 
 const generatePostImagePrompt = (prompt: string, products: Product[]) => `
-Create a professional fashion photography image for social media.
+Create a professional fashion photography image for social media. Based on the prompt.
 
-SCENE:
+PROMPT:
 ${prompt}
 
-PRODUCTS:
-${products.map((product, index) => `- (Image ${index + 1}): ${product.name} (${product.category})`).join("\n")}
+PRODUCTS TO INCLUDE:
+The first ${products.length} image(s) show the products to include in this outfit:
+${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
 
-REQUIREMENTS:
+CRITICAL REQUIREMENTS:
+- Use the EXACT colors, patterns, and details shown in the product images above
+- Do NOT make assumptions about colors based on product type - use the actual images
 - All products must be clearly visible and recognizable
-- Accurate colors, textures, and shapes
 - Professional photography quality with good lighting
-- Natural and realistic product presentation
-- Complementary background that doesn't overwhelm products
+- Natural and realistic product presentation matching the source images
 `
 
 async function generatePostImage(prompt: string, products: Product[], images: Buffer[]) {
@@ -323,58 +392,30 @@ async function generatePostImage(prompt: string, products: Product[], images: Bu
 }
 
 export async function generatePost() {
-    const { products, caption } = await generatePostProducts()
-
     const MIN_IMAGES = 2
     const MAX_IMAGES = 2
 
-    const IMAGE_PROMPTS: string[] = [
-        "Products laid out flat on concrete ground, overhead shot, urban setting, natural shadows",
-        "Products arranged on wooden floor boards, minimalist aesthetic, warm indoor lighting",
-        "Products styled on marble surface, luxury presentation, clean background, professional lighting",
-        "Products placed on grass field, nature aesthetic, soft outdoor lighting, organic composition",
-        "Products displayed on vintage rug, cozy interior vibe, warm tones, lifestyle setting",
-        "Products arranged on white bed sheets, relaxed home aesthetic, soft natural light from window",
-        "Products laid out on sand beach, summer vacation vibe, ocean backdrop, golden hour",
-        "Products styled on dark leather surface, sophisticated look, dramatic lighting, modern aesthetic",
-        "Products arranged on colorful tiles, vibrant urban setting, street photography style",
-        "Products displayed on industrial metal surface, edgy aesthetic, harsh shadows, contemporary style"
-    ]
+    const MIN_PRODUCTS = 3
+    const MAX_PRODUCTS = 6
 
-    const MODEL_IMAGE_PROMPTS: string[] = [
-        "Model laying on the ground outdoors, relaxed casual pose, natural lighting, overhead shot",
-        "Model sitting on concrete steps in urban environment, leaning back casually, street style aesthetic",
-        "Model laying on wooden floor indoors, sprawled out naturally, warm indoor lighting, minimalist background",
-        "Model standing against brick wall, arms crossed, confident pose, city street backdrop",
-        "Model sitting on rooftop edge, legs dangling, golden hour lighting, skyline in background",
-        "Model laying in grass field, arms spread out, peaceful expression, nature setting, soft sunlight",
-        "Model leaning against vintage car, one leg crossed, cool relaxed vibe, urban parking lot",
-        "Model sitting on beach sand, knees up, contemplative look, ocean waves in background, sunset lighting",
-        "Model walking down empty street, mid-stride, dynamic movement, blurred background, fashion editorial style",
-        "Model laying on modern couch, casual lounge pose, contemporary interior, soft studio lighting"
-    ]
+    const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const images = Math.random() * (MAX_IMAGES - MIN_IMAGES) + MIN_IMAGES
-    const imagePrompts: string[] = []
+    const { products, caption, showcasePrompts } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
-    for (let i = 0; i < images; i++) {
-        const allPrompts = [...IMAGE_PROMPTS, ...MODEL_IMAGE_PROMPTS]
-        const prompt = allPrompts[Math.floor(Math.random() * allPrompts.length)]
-        imagePrompts.push(prompt)
-    }
+    console.log(products, caption, showcasePrompts)
 
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageUrl }) => {
             const url = getExternalUrl(productOnlyImageUrl)
-            console.log(url)
+
             const response = await fetch(url)
             const arrayBuffer = await response.arrayBuffer()
             return Buffer.from(arrayBuffer)
         })
     )
-
+  //  return
     const uploadedImageUrls = await Promise.all(
-        imagePrompts.map(async (prompt, index) => {
+        showcasePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, products, prodcutImageBuffers)
             const uploadedImage = await upload(image, `post-image-${index}.jpeg`, ["posts"])
             return uploadedImage.url

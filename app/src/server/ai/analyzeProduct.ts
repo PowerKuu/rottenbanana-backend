@@ -5,7 +5,7 @@ import { generateText, Output } from "ai"
 import { ScrapedProduct } from "../scraper/types"
 import { PreferenceTag } from "@/prisma/client"
 
-const productSlotDescriptions: Record<ProductSlot, string> = {
+export const productSlotDescriptions: Record<ProductSlot, string> = {
     [ProductSlot.UPPERBODY_LAYER_1]:
         "Base layer worn directly on skin. Examples: t-shirts, tank tops, polo shirts, dress shirts, button-ups, training shirts, wool shirts, long sleeve tees, graphic tees, henleys.",
     [ProductSlot.UPPERBODY_LAYER_2]:
@@ -77,7 +77,7 @@ const productCategoryDescriptions: Record<ProductCategory, string> = {
 }
 
 const analyzeProductPrompt = (scrapedProduct: ScrapedProduct, tags: PreferenceTag[]) => `
-Analyze this product:
+ANALYZE THIS PRODUCT:
 Name: ${scrapedProduct.name}
 Gender: ${scrapedProduct.gender}
 ${scrapedProduct.description ? `Description: ${scrapedProduct.description}` : ""}
@@ -85,7 +85,7 @@ ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ""}
 
 I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
 
-Category with descriptions:
+CATEGORY DESCRIPTIONS:
 """
 ${Object.entries(productCategoryDescriptions)
     .map(([category, description]) => `${category}: ${description}`)
@@ -94,7 +94,7 @@ ${Object.entries(productCategoryDescriptions)
 IMPORTANT: When determining the category, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie). Always base your category selection on what you see in the images, not what the title says.
 """
 
-Slots with descriptions:
+SLOT DESCRIPTIONS:
 """
 ${Object.entries(productSlotDescriptions)
     .map(([slot, description]) => `${slot}: ${description}`)
@@ -103,7 +103,7 @@ ${Object.entries(productSlotDescriptions)
 IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = UPPERBODY_LAYER_2). Always base your slot selection on what you see in the images, not what the title says.
 """
 
-Tags with descriptions:
+TAG DESCRIPTIONS:
 """
 ${tags.map((tag) => `${tag.tag}: ${tag.description}`).join("\n")}
 """

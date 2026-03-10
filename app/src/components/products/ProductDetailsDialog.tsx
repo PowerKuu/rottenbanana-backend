@@ -249,7 +249,7 @@ export function ProductDetailsDialog({
                                             <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
                                                 View Raw Metadata
                                             </summary>
-                                            <pre className="mt-2 text-xs max-h-96 overflow-auto p-2 bg-background rounded border whitespace-pre-wrap break-words w-full">
+                                            <pre className="mt-2 text-xs max-h-96 overflow-auto p-2 bg-background rounded border whitespace-pre-wrap wrap-break-words w-full">
                                                 {JSON.stringify(product.metadata, null, 2)}
                                             </pre>
                                         </details>

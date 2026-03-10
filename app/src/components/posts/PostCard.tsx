@@ -24,7 +24,7 @@ export function PostCard({ caption, imageUrl, likeCount, productCount, createdAt
         >
             <CardContent className="relative aspect-square p-0">
                 {imageUrl ? (
-                    <Image src={imageUrl} alt={caption || "Post image"} fill className="object-cover" />
+                    <Image src={imageUrl} alt={caption || "Post image"} fill className="object-cover object-top" />
                 ) : (
                     <div className="flex h-full items-center justify-center bg-muted">
                         <ImageIcon className="h-12 w-12 text-muted-foreground" />
