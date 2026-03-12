@@ -25,10 +25,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid gender" }, { status: 400 })
     }
 
-    if (!photo && !defaultModel) {
-        return NextResponse.json({ error: "A photo or default model is required" }, { status: 400 })
-    }
-
     let referenceImageUrl: string | null = null
 
     if (photo) {
