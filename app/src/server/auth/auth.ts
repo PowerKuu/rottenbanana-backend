@@ -5,7 +5,7 @@ import { bearer } from "better-auth/plugins/bearer"
 import { prisma } from "@/server/database/prisma"
 import { resend } from "../mail/resend"
 import { emailTemplates } from "../mail/templates"
-import { ALLOWED_ORIGINS } from "@/middleware"
+import { ALLOWED_ORIGINS } from "@/proxy"
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -25,18 +25,9 @@ export const auth = betterAuth({
                 ...template
             })
         },
-        password: {
-            verify: async ({ password }: { password: string }) => {
-                if (password.length < 8) return false
-                if (!/\d/.test(password)) return false
-                if (!/[^a-zA-Z0-9]/.test(password)) return false
-                return true
-            }
-        }
     },
     emailVerification: {
         sendOnSignUp: true,
-        callbackURL: "/auth/email-verified",
         async sendVerificationEmail(data) {
             const template = emailTemplates.verifyEmail(data.url)
             await resend.emails.send({
@@ -56,5 +47,35 @@ export const auth = betterAuth({
             }
         }
     },
-    plugins: [bearer()]
+    plugins: [bearer()],
+    hooks: {
+        before: createAuthMiddleware(async (ctx) => {
+            if (ctx.path === "/sign-up/email") {
+                const password = ctx.body?.password as string | undefined
+                if (!password || password.length < 8 || !/\d/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
+                    throw new APIError("BAD_REQUEST", {
+                        message: "Password must be at least 8 characters and include a number and a special character"
+                    })
+                }
+            }
+
+            if (ctx.path === "/sign-in/email") {
+                // Revoke any existing session before processing sign-in so that
+                // Better Auth cannot return an active session without validating
+                // the provided credentials (happens when a bearer token or session
+                // cookie is present in the request).
+                const authHeader = ctx.headers?.get("authorization") ?? ""
+                const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null
+
+                const cookieHeader = ctx.headers?.get("cookie") ?? ""
+                const cookieMatch = cookieHeader.match(/better-auth\.session_token=([^;]+)/)
+                const cookieToken = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null
+
+                const sessionToken = bearerToken || cookieToken
+                if (sessionToken) {
+                    await prisma.session.deleteMany({ where: { token: sessionToken } }).catch(() => {})
+                }
+            }
+        })
+    }
 })
