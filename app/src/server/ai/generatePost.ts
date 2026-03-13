@@ -11,7 +11,7 @@ import { productSlotDescriptions } from "./analyzeProduct"
 
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
-    const MAX_TAG_PROBABILITY = 0.5
+    const MAX_TAG_PROBABILITY = 0.1
 
     const userTags = await prisma.userPreferenceTag.groupBy({
         by: "preferenceTagId",
@@ -402,7 +402,7 @@ export async function generatePost() {
 
     const { products, caption, showcasePrompts } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
-    console.log(products, caption, showcasePrompts)
+    console.log(products.map((product) => product.url), caption, showcasePrompts)
 
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageUrl }) => {
@@ -413,7 +413,7 @@ export async function generatePost() {
             return Buffer.from(arrayBuffer)
         })
     )
-  //  return
+    return
     const uploadedImageUrls = await Promise.all(
         showcasePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, products, prodcutImageBuffers)

@@ -16,6 +16,11 @@ enum Gender {
   UNISEX
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 // ── AUTH MODELS — DO NOT MODIFY ────────────────────────────────────────────
 // Managed by better-auth. Only domain back-reference fields added to User.
 model User {
@@ -24,7 +29,7 @@ model User {
   email         String
   emailVerified Boolean @default(false)
   image         String?
-  role          String  @default("USER")
+  role          Role   @default(USER)
 
   sessions       Session[]
   accounts       Account[]
@@ -36,6 +41,9 @@ model User {
   referenceImageUrl             String?
   aiNormalizedReferenceImageUrl String?
   onboardingCompleted            Boolean @default(false)
+
+  regionId String?
+  region   Region? @relation(fields: [regionId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -105,6 +113,19 @@ model PreferenceTag {
   userPreferenceTags    UserPreferenceTag[]
   postPreferenceTags    PostPreferenceTag[]
   productPreferenceTags ProductPreferenceTag[]
+  musicPreferenceTags   MusicPreferenceTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Region {
+  id   String @id @default(cuid())
+  name String @unique
+
+  posts  Post[]
+  stores Store[]
+  users  User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -122,9 +143,10 @@ model Store {
 
   products        Product[]
   pendingProducts PendingProduct[]
+  regions         Region[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt 
 }
 
 enum ProductSlot {
@@ -296,6 +318,18 @@ model PostProduct {
   @@index([productId])
 }
 
+model Music {
+  id        String   @id @default(cuid())
+  name      String
+  musicUrl String
+
+  posts          Post[]
+  preferenceTags MusicPreferenceTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Post {
   id        String   @id @default(cuid())
   caption   String?
@@ -308,6 +342,12 @@ model Post {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  regionId String
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Restrict)
+
+  musicId String
+  music   Music @relation(fields: [musicId], references: [id], onDelete: Restrict)
 
   isOfficial Boolean @default(false)
 }
@@ -365,5 +405,18 @@ model ProductPreferenceTag {
   createdAt DateTime @default(now())
 
   @@id([productId, preferenceTagId])
+  @@index([preferenceTagId])
+}
+
+model MusicPreferenceTag {
+  musicId String
+  music   Music @relation(fields: [musicId], references: [id], onDelete: Cascade)
+
+  preferenceTagId String
+  preferenceTag   PreferenceTag @relation(fields: [preferenceTagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([musicId, preferenceTagId])
   @@index([preferenceTagId])
 }
