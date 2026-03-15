@@ -163,7 +163,7 @@ export default function ProductsPage() {
                                 priceGross={product.priceGross}
                                 originalPriceGross={product.originalPriceGross}
                                 currency={product.currency}
-                                imageUrl={product.productOnlyImageUrl}
+                                productOnlyImageId={product.productOnlyImageId}
                                 slot={product.slot}
                                 category={product.category}
                                 gender={product.gender}

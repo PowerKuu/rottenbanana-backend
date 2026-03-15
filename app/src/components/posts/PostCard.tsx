@@ -1,14 +1,18 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Trash2, Heart, Package, Image as ImageIcon } from "lucide-react"
 import Image from "next/image"
 import { format } from "date-fns"
+import { getFile, getFileUrl } from "@/server/uploads/read"
 
 interface PostCardProps {
     id: string
     caption: string | null
-    imageUrl: string | null
+    firstImageId: string | null
     likeCount: number
     productCount: number
     createdAt: Date
@@ -16,7 +20,22 @@ interface PostCardProps {
     onDelete?: () => void
 }
 
-export function PostCard({ caption, imageUrl, likeCount, productCount, createdAt, onClick, onDelete }: PostCardProps) {
+export function PostCard({ caption, firstImageId, likeCount, productCount, createdAt, onClick, onDelete }: PostCardProps) {
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+
+    useEffect(() => {
+        const loadImage = async () => {
+            if (!firstImageId) return
+            try {
+                const file = await getFile(firstImageId)
+                const url = getFileUrl(file)
+                setImageUrl(url)
+            } catch (error) {
+                console.error("Failed to load post image:", error)
+            }
+        }
+        loadImage()
+    }, [firstImageId])
     return (
         <Card
             className="group cursor-pointer overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg"

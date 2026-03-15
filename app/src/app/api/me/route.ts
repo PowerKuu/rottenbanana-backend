@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
             email: true,
             emailVerified: true,
             gender: true,
-            referenceImageUrl: true,
+            referenceImageId: true,
             onboardingCompleted: true,
             preferenceTags: {
                 select: {

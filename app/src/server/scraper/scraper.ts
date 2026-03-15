@@ -62,17 +62,18 @@ export async function scrapeProduct(url: string) {
 
     const imagesToUpload: string[] = [...specialImages, ...additionalImagesSliced]
 
-    const uploadedImages = await Promise.all(
+    const uploadedImagesIds = await Promise.all(
         imagesToUpload.map(async (externalUrl) => {
             try {
                 const keepBackground = analyzedProduct.keepBackgroundImageIndexes.includes(
                     scrapedProduct.imageUrls.indexOf(externalUrl)
                 )
 
-                const result = await uploadFromExternalUrl(externalUrl, ["products"], {
+                const result = await uploadFromExternalUrl(externalUrl, {
                     removeBackground: !keepBackground
                 })
-                return result.url
+
+                return result.id
             } catch (error) {
                 console.error(`Failed to upload image ${externalUrl}:`, error)
                 throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`)
@@ -80,7 +81,7 @@ export async function scrapeProduct(url: string) {
         })
     )
 
-    const [productOnlyImageUrl] = uploadedImages
+    const [productOnlyImageId] = uploadedImagesIds
 
     const product = await prisma.product.create({
         data: {
@@ -91,8 +92,8 @@ export async function scrapeProduct(url: string) {
             category: analyzedProduct.category,
             primaryColorHex: analyzedProduct.primaryColorHex,
             primaryColorCIELAB: hexToCIELAB(analyzedProduct.primaryColorHex),
-            productOnlyImageUrl: productOnlyImageUrl,
-            imageUrls: uploadedImages,
+            productOnlyImageId: productOnlyImageId,
+            imageIds: uploadedImagesIds,
             description: scrapedProduct.description,
             brand: scrapedProduct.brand,
             gender: scrapedProduct.gender,

@@ -6,23 +6,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Store, Pencil, Trash2, Clock } from "lucide-react"
+import { getFile, getFileUrl } from "@/server/uploads/read"
+import { useEffect, useState } from "react"
 
 export function StoreCard({
     id,
     name,
-    imageUrl,
+    imageId,
     productCount,
     onEdit,
     onDelete
 }: {
     id: string
     name: string
-    imageUrl: string
+    imageId: string
     productCount: number
     onEdit?: () => void
     onDelete?: () => void
 }) {
     const router = useRouter()
+
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+
+    useEffect(() => {
+        const loadImage = async () => {
+            if (!imageId) return
+            try {   
+                const file = await getFile(imageId)
+                const url = getFileUrl(file)
+                setImageUrl(url)
+            } catch (error) {
+                console.error("Failed to load store image:", error)
+            }
+        }
+        loadImage()
+    }, [imageId])
 
     return (
         <Card

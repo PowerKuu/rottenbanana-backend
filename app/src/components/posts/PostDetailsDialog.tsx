@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getPostById } from "@/server/admin/actions/posts"
+import { getFile, getFileUrl } from "@/server/uploads/read"
 import Image from "next/image"
 import Link from "next/link"
 import { format } from "date-fns"
@@ -25,12 +26,16 @@ export function PostDetailsDialog({
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
+    const [imageUrls, setImageUrls] = useState<string[]>([])
+    const [productImageUrls, setProductImageUrls] = useState<{ [key: string]: string }>({})
 
     useEffect(() => {
         if (!open || !postId) {
             setPost(null)
             setError(null)
             setCurrentImageIndex(0)
+            setImageUrls([])
+            setProductImageUrls({})
             return
         }
 
@@ -38,12 +43,50 @@ export function PostDetailsDialog({
             setLoading(true)
             setError(null)
             setCurrentImageIndex(0)
+            setImageUrls([])
+            setProductImageUrls({})
             try {
                 const data = await getPostById(postId)
                 if (!data) {
                     setError("Post not found")
                 } else {
                     setPost(data)
+
+                    // Load post images
+                    if (data.imageIds && data.imageIds.length > 0) {
+                        const urls = await Promise.all(
+                            data.imageIds.map(async (id: string) => {
+                                try {
+                                    const file = await getFile(id)
+                                    return getFileUrl(file)
+                                } catch (error) {
+                                    console.error("Failed to load post image:", error)
+                                    return null
+                                }
+                            })
+                        )
+                        setImageUrls(urls.filter((url): url is string => url !== null))
+                    }
+
+                    // Load product images
+                    if (data.products && data.products.length > 0) {
+                        const productUrls: { [key: string]: string } = {}
+                        await Promise.all(
+                            data.products.map(async (productRelation: any) => {
+                                const product = productRelation.product
+                                if (product.productOnlyImageId) {
+                                    try {
+                                        const file = await getFile(product.productOnlyImageId)
+                                        const url = getFileUrl(file)
+                                        productUrls[product.id] = url
+                                    } catch (error) {
+                                        console.error("Failed to load product image:", error)
+                                    }
+                                }
+                            })
+                        )
+                        setProductImageUrls(productUrls)
+                    }
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Failed to load post details")
@@ -84,27 +127,27 @@ export function PostDetailsDialog({
 
                         <div className="space-y-6">
                             {/* Images Carousel */}
-                            {post.imageUrls && post.imageUrls.length > 0 && (
+                            {imageUrls.length > 0 && (
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold">Images</h3>
                                     <div className="relative mx-auto max-w-md">
                                         <div className="relative aspect-9/16 overflow-hidden rounded-lg bg-black">
                                             <Image
-                                                src={post.imageUrls[currentImageIndex]}
+                                                src={imageUrls[currentImageIndex]}
                                                 alt={`Post image ${currentImageIndex + 1}`}
                                                 fill
                                                 className="object-cover"
                                             />
                                         </div>
 
-                                        {post.imageUrls.length > 1 && (
+                                        {imageUrls.length > 1 && (
                                             <>
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
                                                     className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
                                                     onClick={() => setCurrentImageIndex((prev) =>
-                                                        prev === 0 ? post.imageUrls.length - 1 : prev - 1
+                                                        prev === 0 ? imageUrls.length - 1 : prev - 1
                                                     )}
                                                 >
                                                     <ChevronLeft className="h-4 w-4" />
@@ -114,13 +157,13 @@ export function PostDetailsDialog({
                                                     size="icon"
                                                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
                                                     onClick={() => setCurrentImageIndex((prev) =>
-                                                        prev === post.imageUrls.length - 1 ? 0 : prev + 1
+                                                        prev === imageUrls.length - 1 ? 0 : prev + 1
                                                     )}
                                                 >
                                                     <ChevronRight className="h-4 w-4" />
                                                 </Button>
                                                 <div className="mt-2 flex justify-center gap-1">
-                                                    {post.imageUrls.map((_: string, index: number) => (
+                                                    {imageUrls.map((_: string, index: number) => (
                                                         <button
                                                             key={index}
                                                             onClick={() => setCurrentImageIndex(index)}
@@ -192,6 +235,7 @@ export function PostDetailsDialog({
                                     <div className="space-y-3">
                                         {post.products.map((productRelation: any) => {
                                             const product = productRelation.product
+                                            const productImageUrl = productImageUrls[product.id]
                                             return (
                                                 <Link
                                                     key={product.id}
@@ -200,14 +244,16 @@ export function PostDetailsDialog({
                                                     rel="noopener noreferrer"
                                                     className="flex gap-4 rounded-lg border p-4 min-w-0 hover:bg-accent transition-colors"
                                                 >
-                                                    <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded">
-                                                        <Image
-                                                            src={product.productOnlyImageUrl}
-                                                            alt={product.name}
-                                                            fill
-                                                            className="object-cover"
-                                                        />
-                                                    </div>
+                                                    {productImageUrl && (
+                                                        <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded">
+                                                            <Image
+                                                                src={productImageUrl}
+                                                                alt={product.name}
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                        </div>
+                                                    )}
                                                     <div className="flex-1 flex flex-col justify-between min-w-0 overflow-hidden">
                                                         <div className="space-y-1 min-w-0">
                                                             <p className="text-sm font-semibold line-clamp-2 wrap-break-word">

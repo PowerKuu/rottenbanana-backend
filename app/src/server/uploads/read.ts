@@ -1,42 +1,20 @@
+import { File } from "@/prisma/client"
+import { prisma } from "../database/prisma"
 import { readFile } from "fs/promises"
 import { join } from "path"
+import { UPLOAD_DIR } from "./upload"
 
-export const PUBLIC_NAMESPACES = ["products", "stores", "posts"]
+export async function getFile(id: string): Promise<File> {
+    const file = await prisma.file.findUnique({ where: { id } })
 
-export const CONTENT_TYPES: Record<string, string> = {
-    jpg: "image/jpeg",
-    jpeg: "image/jpeg",
-    png: "image/png",
-    webp: "image/webp",
-    gif: "image/gif"
-}
-
-export function getExternalUrl(path: string): string {
-    return new URL(path, process.env.BASE_URL).toString()
-}
-
-export function getContentType(filename: string): string {
-    const ext = filename.split(".").pop()?.toLowerCase() || ""
-    return CONTENT_TYPES[ext] || "image/jpeg"
-}
-
-export async function readUploadedFile(path: string[], allowPrivate = false) {
-    if (path.length <= 1) {
-        throw new Error("Invalid path")
+    if (!file) {
+        throw new Error("File not found")
     }
 
-    const [namespace] = path
+    return file
+}
 
-    if (!PUBLIC_NAMESPACES.includes(namespace) && !allowPrivate) {
-        throw new Error("Invalid namespace")
-    }
-    for (const segment of path) {
-        const sanitized = segment.replace(/[^a-zA-Z0-9._-]/g, "")
-        if (sanitized !== segment || segment.includes("..")) {
-            throw new Error("Invalid path segment")
-        }
-    }
-
-    const filepath = join(process.cwd(), "uploads", ...path)
-    return await readFile(filepath)
+export async function readFileBuffer(file: File): Promise<Buffer> {
+    const buffer = await readFile(join(UPLOAD_DIR, file.name))
+    return buffer
 }

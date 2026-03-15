@@ -11,6 +11,7 @@ import { createStore, updateStore } from "@/server/admin/actions/stores"
 import { slugify, validateUrl, parseTextfieldList } from "@/lib/utils"
 import { Store } from "@/prisma/client"
 import { Store as StoreIcon } from "lucide-react"
+import { getFile, getFileUrl } from "@/server/uploads/read"
 
 export function StoreFormDialog({
     open,
@@ -39,8 +40,13 @@ export function StoreFormDialog({
             setIdentifier(store.identifier)
             setWebsiteUrl(store.websiteUrl)
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
-            setImagePreview(store.imageUrl)
             setIdentifierManuallyEdited(true)
+
+            ;(async () => {
+                const file = await getFile(store.imageId)
+                const url = getFileUrl(file)
+                setImagePreview(url)
+            })()
         } else {
             setName("")
             setIdentifier("")
@@ -131,7 +137,7 @@ export function StoreFormDialog({
 
         setLoading(true)
 
-        let imageUrl = store?.imageUrl || ""
+        let imageId = store?.imageId || ""
 
         if (image) {
             const formData = new FormData()
@@ -146,11 +152,11 @@ export function StoreFormDialog({
 
             const uploadData = await uploadResponse.json()
 
-            if (!uploadData.success) {
+            if (uploadData.error) {
                 throw new Error(uploadData.error || "Failed to upload image")
             }
 
-            imageUrl = uploadData.url
+            imageId = uploadData.id
         }
 
         const hostnames = parseTextfieldList(websiteHostnames)
@@ -162,7 +168,7 @@ export function StoreFormDialog({
                 identifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
-                imageUrl
+                imageId
             })
         } else {
             await createStore({
@@ -170,7 +176,7 @@ export function StoreFormDialog({
                 identifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
-                imageUrl
+                imageId
             })
         }
 

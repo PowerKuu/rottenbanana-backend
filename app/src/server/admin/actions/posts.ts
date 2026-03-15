@@ -53,7 +53,7 @@ export async function getPostById(postId: string) {
                             name: true,
                             priceGross: true,
                             currency: true,
-                            productOnlyImageUrl: true,
+                            productOnlyImageId: true,
                             url: true,
                             store: {
                                 select: { name: true }

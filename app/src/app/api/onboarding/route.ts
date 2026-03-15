@@ -1,12 +1,11 @@
 import { Gender } from "@/prisma/enums"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
-import { upload } from "@/server/uploads/upload"
+import { uploadFile } from "@/server/uploads/upload"
 import { NextRequest, NextResponse } from "next/server"
 import { join } from "path"
 import sharp from "sharp"
 
-const DEFAULT_MODELS = ["male-model.jpg", "female-model.jpg"]
 const INITIAL_TAG_SCORE = 1
 
 export async function POST(request: NextRequest) {
@@ -19,26 +18,17 @@ export async function POST(request: NextRequest) {
     const gender = formData.get("gender") as Gender
     const tagIds = formData.getAll("tagIds") as string[]
     const photo = formData.get("photo") as File | null
-    const defaultModel = formData.get("defaultModel") as string | null
 
     if (!gender || !Object.values(Gender).includes(gender)) {
         return NextResponse.json({ error: "Invalid gender" }, { status: 400 })
     }
 
-    let referenceImageUrl: string | null = null
+
+    let referenceImageId: string | null = null
 
     if (photo) {
-        const bytes = await photo.arrayBuffer()
-        const buffer = Buffer.from(bytes)
-        const processedBuffer = await processeReferenceImage(buffer)
-        const result = await upload(processedBuffer, photo.name, ["private", session.user.id])
-        referenceImageUrl = result.url
-    } else if (defaultModel) {
-        if (!DEFAULT_MODELS.includes(defaultModel)) {
-            return NextResponse.json({ error: "Invalid default model" }, { status: 400 })
-        }
-
-        referenceImageUrl = join("default-models", defaultModel)
+        const file = await uploadFile(photo)
+        referenceImageId = file.id
     }
 
     await prisma.$transaction(async (tx) => {
@@ -60,7 +50,7 @@ export async function POST(request: NextRequest) {
             where: { id: session.user.id },
             data: {
                 gender,
-                referenceImageUrl,
+                referenceImageId,
                 onboardingCompleted: true
             }
         })

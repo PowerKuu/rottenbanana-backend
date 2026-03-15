@@ -86,7 +86,7 @@ export default function StoresPage() {
                             key={store.id}
                             id={store.id}
                             name={store.name}
-                            imageUrl={store.imageUrl}
+                            imageId={store.imageId}
                             productCount={store._count.products}
                             onEdit={() => handleEdit(store)}
                             onDelete={() => handleDelete(store)}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ExternalLink, Package } from "lucide-react"
 import { getProductById } from "@/server/admin/actions/products"
+import { getFile, getFileUrl } from "@/server/uploads/read"
 import { formatPrice } from "@/lib/utils"
 
 export function ProductDetailsDialog({
@@ -21,17 +22,45 @@ export function ProductDetailsDialog({
 }) {
     const [product, setProduct] = useState<any>(null)
     const [loading, setLoading] = useState(false)
+    const [productOnlyImageUrl, setProductOnlyImageUrl] = useState<string | null>(null)
+    const [imageUrls, setImageUrls] = useState<string[]>([])
 
     useEffect(() => {
         if (productId && open) {
             setLoading(true)
             getProductById(productId)
-                .then((result) => {
+                .then(async (result) => {
                     setProduct(result)
+
+                    if (result?.productOnlyImageId) {
+                        try {
+                            const file = await getFile(result.productOnlyImageId)
+                            const url = getFileUrl(file)
+                            setProductOnlyImageUrl(url)
+                        } catch (error) {
+                            console.error("Failed to load product image:", error)
+                        }
+                    }
+
+                    if (result?.imageIds && result.imageIds.length > 0) {
+                        try {
+                            const urls = await Promise.all(
+                                result.imageIds.map(async (id: string) => {
+                                    const file = await getFile(id)
+                                    return getFileUrl(file)
+                                })
+                            )
+                            setImageUrls(urls)
+                        } catch (error) {
+                            console.error("Failed to load product images:", error)
+                        }
+                    }
                 })
                 .finally(() => setLoading(false))
         } else {
             setProduct(null)
+            setProductOnlyImageUrl(null)
+            setImageUrls([])
         }
     }, [productId, open])
 
@@ -109,9 +138,9 @@ export function ProductDetailsDialog({
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-semibold">Product Image</h3>
                                     <div className="relative w-full h-100 overflow-hidden rounded-lg bg-muted">
-                                        {product.productOnlyImageUrl ? (
+                                        {productOnlyImageUrl ? (
                                             <Image
-                                                src={product.productOnlyImageUrl}
+                                                src={productOnlyImageUrl}
                                                 alt={product.name}
                                                 fill
                                                 className="object-contain"
@@ -125,13 +154,13 @@ export function ProductDetailsDialog({
                                     </div>
                                 </div>
 
-                                {product.imageUrls && product.imageUrls.length > 0 && (
+                                {imageUrls.length > 0 && (
                                     <div className="space-y-4">
                                         <h3 className="text-sm font-semibold">
-                                            All Product Images ({product.imageUrls.length})
+                                            All Product Images ({imageUrls.length})
                                         </h3>
                                         <div className="grid grid-cols-2 gap-3 max-h-100 overflow-y-auto pr-2">
-                                            {product.imageUrls.map((url: string, index: number) => (
+                                            {imageUrls.map((url: string, index: number) => (
                                                 <div
                                                     key={index}
                                                     className="relative aspect-square overflow-hidden rounded-md bg-muted"

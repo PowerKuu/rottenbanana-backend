@@ -1,37 +1,31 @@
-import { writeFile, mkdir } from "fs/promises"
-import { join, basename, extname } from "path"
-import { UploadOptions, UploadResult } from "./types"
-import axios from "axios"
+import { writeFile } from "fs/promises"
+import { basename, extname, join } from "path"
+import { prisma } from "../database/prisma"
 import { removeBackground } from "../ai/removeBackground"
 
-const MAX_FILE_SIZE = 15 * 1024 * 1024 // 15MB
-const ALLOWED_TYPES = ["jpeg", "jpg", "png", "webp", "gif"]
+const ALLOWED_FILE_TYPES = ["jpg", "jpeg", "png", "webp"]
+export const UPLOAD_DIR = join(process.cwd(), "uploads")
+const MAX_FILE_SIZE = 15 * 1024 * 1024
 
-export async function upload(
-    buffer: Buffer,
-    filename: string,
-    path: string[],
-    options: UploadOptions = {}
-): Promise<UploadResult> {
-    const maxFileSize = options.maxFileSize || MAX_FILE_SIZE
-    const allowedTypes = options.allowedTypes || ALLOWED_TYPES
+export async function uploadFile(file: File, options: { removeBackground?: boolean } = {}) {
+    const extension = extname(file.name).slice(1).toLowerCase()
 
-    const fileExtension = extname(filename).slice(1).toLowerCase()
+    if (!ALLOWED_FILE_TYPES.includes(extension)) {
+        throw new Error("Unsupported file type")
+    }
+    const buffer = Buffer.from(await file.arrayBuffer())
 
-    if (!allowedTypes.includes(fileExtension)) {
-        throw new Error(`File type ${fileExtension} is not allowed`)
+    if (buffer.length > MAX_FILE_SIZE) {
+        throw new Error(`File size ${buffer.length} exceeds maximum of ${MAX_FILE_SIZE}`)
     }
 
-    if (buffer.length > maxFileSize) {
-        throw new Error(`File size ${buffer.length} exceeds maximum of ${maxFileSize}`)
-    }
-
-    let processedBuffer = buffer
-    let processedFilename = filename
+    let processedBuffer: Buffer = buffer
+    let processedFilename = file.name
+    
     if (options.removeBackground) {
         processedBuffer = await removeBackground(buffer)
 
-        const nameWithoutExt = basename(filename, extname(filename))
+        const nameWithoutExt = basename(file.name, extname(file.name))
         processedFilename = `${nameWithoutExt}.png`
     }
 
@@ -47,39 +41,33 @@ export async function upload(
     const truncatedName = `${baseName}${ext}`
 
     const uniqueFilename = `${timestamp}-${truncatedName}`
+    
+    await writeFile(join(UPLOAD_DIR, uniqueFilename), processedBuffer)
 
-    const uploadDir = join(process.cwd(), "uploads", ...path)
-    const filepath = join(uploadDir, uniqueFilename)
-
-    await mkdir(uploadDir, { recursive: true })
-
-    await writeFile(filepath, processedBuffer)
-
-    return {
-        success: true,
-        url: `/api/uploads/${path.join("/")}/${uniqueFilename}`,
-        path: filepath,
-        filename
-    }
+    return await prisma.file.create({
+        data: {
+            name: uniqueFilename,
+            type: file.type
+        }
+    })
 }
 
-export async function uploadFromExternalUrl(
-    externalUrl: string,
-    path: string[],
-    options: UploadOptions = {}
-): Promise<UploadResult> {
-    const response = await axios.get(externalUrl, {
-        responseType: "arraybuffer"
-    })
+export async function uploadFromExternalUrl(url: string, options: { removeBackground?: boolean } = {}) {
+    const response = await fetch(url)
 
-    const buffer = Buffer.from(response.data)
-
-    const urlPath = new URL(externalUrl).pathname
-    const filename = urlPath.split("/").pop()
-
-    if (!filename) {
-        throw new Error("Could not determine original filename from URL")
+    if (!response.ok) {
+        throw new Error(`Failed to fetch image from URL: ${response.statusText}`)
     }
 
-    return upload(buffer, filename, path, options)
+    const contentType = response.headers.get("Content-Type")
+    const extension = new URL(url).pathname.split(".").pop()
+
+    if (!contentType || !extension) {
+        throw new Error("Could not determine file type from URL")
+    }
+
+    const blob = await response.blob()
+    const file = new File([blob], `external.${extension}`, { type: contentType })
+
+    return await uploadFile(file, options)
 }

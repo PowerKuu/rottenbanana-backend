@@ -115,7 +115,7 @@ export default function PostsPage() {
                                 key={post.id}
                                 id={post.id}
                                 caption={post.caption}
-                                imageUrl={post.imageUrls?.[0] || null}
+                                firstImageId={post.imageIds?.[0] || null}
                                 likeCount={post._count?.likes || 0}
                                 productCount={post._count?.products || 0}
                                 createdAt={post.createdAt}

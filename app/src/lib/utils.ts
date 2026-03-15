@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import convert from "color-convert"
+import { File } from "@/prisma/client"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -62,4 +63,14 @@ export function randomShuffle<T>(array: T[]): T[] {
 export function randomDraw<T>(array: T[]): T {
     const index = Math.floor(Math.random() * array.length)
     return array[index]
+}
+
+
+export function getFileUrl(id: string): string {
+    return `/api/uploads/${id}`
+}
+
+export function getExternalFileUrl(id: string): string {
+    const url = process.env.BASE_URL
+    return `${url}/api/uploads/${id}`
 }

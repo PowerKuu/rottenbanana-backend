@@ -38,8 +38,8 @@ model User {
   preferenceTags UserPreferenceTag[]
 
   gender                        Gender?
-  referenceImageUrl             String?
-  aiNormalizedReferenceImageUrl String?
+  referenceImageId             String?
+  aiNormalizedReferenceImageId String?
   onboardingCompleted            Boolean @default(false)
 
   regionId String?
@@ -131,6 +131,15 @@ model Region {
   updatedAt DateTime @updatedAt
 }
 
+model File {
+  id        String   @id @default(cuid())
+  name     String
+  type      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Store {
   id         String @id @default(cuid())
   identifier String @unique
@@ -139,7 +148,7 @@ model Store {
   websiteUrl String
   websiteHostnames String[]
 
-  imageUrl   String
+  imageId   String
 
   products        Product[]
   pendingProducts PendingProduct[]
@@ -227,7 +236,7 @@ enum PendingProductStatus {
 model PendingProduct {
   id              String   @id @default(cuid())
   url             String   @unique
-  imageUrl       String
+  imageUrl      String
   status          PendingProductStatus @default(PENDING)
 
   storeId String
@@ -246,8 +255,8 @@ model Product {
   originalPriceGross Float?
 
   currency        String
-  productOnlyImageUrl String
-  imageUrls       String[]
+  productOnlyImageId String
+  imageIds       String[]
 
   description String?
   brand       String?
@@ -275,9 +284,8 @@ model Product {
 
 model TryOnOutfit {
   id                String   @id @default(cuid())
-  referenceImageUrl String
-  resultImageUrls   String[]
-
+  referenceImageId String
+  resultImageIds   String[]
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -321,7 +329,7 @@ model PostProduct {
 model Music {
   id        String   @id @default(cuid())
   name      String
-  musicUrl String
+  musicId   String
 
   posts          Post[]
   preferenceTags MusicPreferenceTag[]
@@ -333,7 +341,7 @@ model Music {
 model Post {
   id        String   @id @default(cuid())
   caption   String?
-  imageUrls String[]
+  imageIds String[]
 
 
   likes PostLike[]

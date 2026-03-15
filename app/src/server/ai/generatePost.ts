@@ -4,10 +4,11 @@ import { PreferenceTag, Prisma, Product } from "@/prisma/client"
 import z from "zod"
 import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
-import { upload } from "../uploads/upload"
-import { getExternalUrl } from "../uploads/read"
+import { uploadFile } from "../uploads/upload"
+import { getFile, readFileBuffer } from "../uploads/read"
 import { randomShuffle } from "@/lib/utils"
 import { productSlotDescriptions } from "./analyzeProduct"
+import { arrayBuffer } from "stream/consumers"
 
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
@@ -403,39 +404,51 @@ export async function generatePost() {
     const { products, caption, showcasePrompts } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
     console.log(products.map((product) => product.url), caption, showcasePrompts)
-
+    
     const prodcutImageBuffers = await Promise.all(
-        products.map(async ({ productOnlyImageUrl }) => {
-            const url = getExternalUrl(productOnlyImageUrl)
-
-            const response = await fetch(url)
-            const arrayBuffer = await response.arrayBuffer()
-            return Buffer.from(arrayBuffer)
+        products.map(async ({ productOnlyImageId }) => {
+            const file = await getFile(productOnlyImageId)
+            const buffer = await readFileBuffer(file)
+            return Buffer.from(buffer)
         })
     )
-    return
-    const uploadedImageUrls = await Promise.all(
+    
+    const uploadedImageIds = await Promise.all(
         showcasePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, products, prodcutImageBuffers)
-            const uploadedImage = await upload(image, `post-image-${index}.jpeg`, ["posts"])
-            return uploadedImage.url
+            const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
+            const uploadedImage = await uploadFile(imageFile)
+            return uploadedImage.id
         })
     )
+
+    const region = await prisma.region.findFirst()
+    const music = await prisma.music.findFirst()
+
+    if (!region || !music) {
+        throw new Error("No region or music found in database")
+    }
 
     const post = await prisma.post.create({
         data: {
             caption,
-            products: {
-                create: products.map((product) => ({
-                    product: {
-                        connect: { id: product.id }
-                    }
-                }))
-            },
-            imageUrls: uploadedImageUrls,
+            imageIds: uploadedImageIds,
+            regionId: region.id,
+            musicId: music.id,
             isOfficial: true
         }
     })
+
+    await Promise.all(
+        products.map((product) =>
+            prisma.postProduct.create({
+                data: {
+                    postId: post.id,
+                    productId: product.id
+                }
+            })
+        )
+    )
 
     return post
 }

@@ -1,11 +1,13 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Package, Trash2 } from "lucide-react"
 import { formatPrice } from "@/lib/utils"
+import { getFile, getFileUrl } from "@/server/uploads/read"
 
 export function ProductCard({
     id,
@@ -13,7 +15,7 @@ export function ProductCard({
     priceGross,
     originalPriceGross,
     currency,
-    imageUrl,
+    productOnlyImageId,
     slot,
     category,
     gender,
@@ -27,7 +29,7 @@ export function ProductCard({
     priceGross: number
     originalPriceGross?: number | null
     currency: string
-    imageUrl: string
+    productOnlyImageId: string
     slot: string
     category: string
     gender: string
@@ -36,6 +38,21 @@ export function ProductCard({
     onClick: () => void
     onDelete?: () => void
 }) {
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+
+    useEffect(() => {
+        const loadImage = async () => {
+            if (!productOnlyImageId) return
+            try {
+                const file = await getFile(productOnlyImageId)
+                const url = getFileUrl(file)
+                setImageUrl(url)
+            } catch (error) {
+                console.error("Failed to load product image:", error)
+            }
+        }
+        loadImage()
+    }, [productOnlyImageId])
     return (
         <Card className="cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] group" onClick={onClick}>
             <CardContent className="p-0">
