@@ -26,6 +26,51 @@ async function getRegion() {
     return regions[randomIndex]
 }
 
+async function getPostMusicSelection(tag: PreferenceTag | null, take: number) {
+    const whereWithTag: Prisma.MusicWhereInput = {
+        ...(tag && {
+            preferenceTags: {
+                some: {
+                    preferenceTagId: tag.id
+                }
+            }
+        })
+    }
+
+    const countWithTag = await prisma.music.count({ where: whereWithTag })
+    const randomOffset = countWithTag > take ? Math.floor(Math.random() * (countWithTag - take)) : 0
+
+    const musicWithTag = await prisma.music.findMany({
+        where: whereWithTag,
+        skip: randomOffset,
+        take
+    })
+
+    const remainingTake = take - musicWithTag.length
+
+    if (remainingTake <= 0) {
+        return musicWithTag
+    }
+
+    const whereAdditional: Prisma.MusicWhereInput = {
+        id: {
+            notIn: musicWithTag.map((music) => music.id)
+        }
+    }
+
+    const countAdditional = await prisma.music.count({ where: whereAdditional })
+    const randomOffsetAdditional =
+        countAdditional > remainingTake ? Math.floor(Math.random() * (countAdditional - remainingTake)) : 0
+
+    const additionalMusic = await prisma.music.findMany({
+        where: whereAdditional,
+        skip: randomOffsetAdditional,
+        take: remainingTake
+    })
+
+    return [...musicWithTag, ...additionalMusic]
+}
+
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
     const MAX_TAG_PROBABILITY = 0.1
@@ -86,13 +131,13 @@ async function getSeedPreferenceTag() {
     for (const tag of tagProbabilities) {
         cumulativeProbability += tag.probability
         if (random <= cumulativeProbability) {
-            return tag
+            return tag.tag
         }
     }
 
     const [firstTag] = tagProbabilities
 
-    return firstTag
+    return firstTag.tag
 }
 
 async function getProductDescription(product: Product) {
@@ -179,9 +224,7 @@ async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: 
     return [...productsWithTag, ...additionalProducts]
 }
 
-async function getPostProductSelection() {
-    //const MAX_SLOTS = 8
-    const MAX_PRODUCTS_PER_SLOT = 5
+async function getPostProductSelection(region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
     const GENDERS = [Gender.MALE, Gender.FEMALE]
     const gender = GENDERS[Math.floor(Math.random() * GENDERS.length)]
 
@@ -217,10 +260,7 @@ async function getPostProductSelection() {
         ...additionalSlots.map((slot) => ({ slot, required: false }))
     ]
 
-    const seedPreferenceTag = await getSeedPreferenceTag()
-    const region = await getRegion()
-    console.log("Selected seed preference tag for product selection:", seedPreferenceTag?.tag)
-    console.log("Selected region for product selection:", region?.name)
+
     const productSelection: {
         [slot in ProductSlot]?: {
             required: boolean
@@ -236,8 +276,8 @@ async function getPostProductSelection() {
             slot,
             region,
             gender,
-            seedPreferenceTag?.tag || null,
-            MAX_PRODUCTS_PER_SLOT
+            seedPreferenceTag,
+            take
         )
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
@@ -256,18 +296,19 @@ async function getPostProductSelection() {
         }
     }
 
-    return {productSelection, region, seedPreferenceTag}
+    return productSelection
 }
 
 const generatePostProductsPrompt = (
-    selection: Awaited<ReturnType<typeof getPostProductSelection>>["productSelection"],
+    selection: Awaited<ReturnType<typeof getPostProductSelection>>,
+    musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
     showcasePrompts: string[],
     modelShowcasePrompts: string[],
-    maxProducts: number,
     minProducts: number,
+    maxProducts: number,
     maxPrompts: number
 ) => `
-You are a creative fashion stylist selecting products for an inspiring outfit post. Your goal is to create a complete, stylish look with ${minProducts}-${maxProducts} products.
+You are a creative fashion stylist selecting products for an inspiring outfit post. Your goal is to create a complete, stylish look with ${minProducts}-${maxProducts} products and matching music.
 
 SLOT SELECTION RULES:
 - REQUIRED slots: You MUST pick exactly 1 product from each required slot
@@ -299,6 +340,12 @@ ${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${produc
     .join("\n")}
 """
 
+AVAILABLE MUSIC:
+"""
+Select 1 music track that matches the vibe and style of the outfit.
+${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.name} - ${music.description}`).join("\n")}
+"""
+
 SHOWCASE PROMPTS:
 """
 Select ${maxPrompts} showcase prompts for the outfit images. Prefer a combination of model and showcase prompts for variety.
@@ -312,7 +359,13 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 `
 
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
-    const {productSelection, region} = await getPostProductSelection()
+    const MAX_PRODUCT_SELECTION_PER_SLOT = 5
+    const MAX_MUSIC_SELECTION = 5
+
+    const region = await getRegion()
+    const seedPreferenceTag = await getSeedPreferenceTag()
+    const musicSelection = await getPostMusicSelection(seedPreferenceTag, MAX_MUSIC_SELECTION)
+    const productSelection = await getPostProductSelection(region, seedPreferenceTag, MAX_PRODUCT_SELECTION_PER_SLOT)
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
     if (possibleProducts < minProducts) {
@@ -342,6 +395,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     const GeneratePostProductsSchema = z.object({
         products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
         caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style"),
+        musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
             .min(prompts)
@@ -351,6 +405,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
 
     const prompt = generatePostProductsPrompt(
         productSelection,
+        musicSelection,
         IMAGE_PROMPTS,
         MODEL_IMAGE_PROMPTS,
         minProducts,
@@ -368,7 +423,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         prompt,
     })
 
-    const { products: prodcutsIds, caption, showcasePrompts } = response.output
+    const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
 
     const products = await prisma.product.findMany({
         where: {
@@ -377,6 +432,16 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
             }
         }
     })
+
+    const music = await prisma.music.findUnique({
+        where: {
+            id: musicId
+        }
+    })
+
+    if (!music) {
+        throw new Error(`Selected music with ID ${musicId} not found`)
+    }
 
     for (const [slot, { products, required }] of Object.entries(productSelection)) {
         if (required && !products.some((product) => prodcutsIds.includes(product.id))) {
@@ -387,6 +452,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     return {
         caption,
         products,
+        music,
         showcasePrompts,
         region
     }
@@ -435,10 +501,10 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, showcasePrompts, region } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, music, showcasePrompts, region } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
-    console.log(products.map((product) => product.url), caption, showcasePrompts, region)
-    
+    console.log(products.map((product) => product.url), caption, music, showcasePrompts, region)
+
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageId }) => {
             const file = await getFile(productOnlyImageId)
@@ -446,7 +512,7 @@ export async function generatePost() {
             return Buffer.from(buffer)
         })
     )
-    
+
     const uploadedImageIds = await Promise.all(
         showcasePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, products, prodcutImageBuffers)
@@ -455,8 +521,6 @@ export async function generatePost() {
             return uploadedImage.id
         })
     )
-
-    const music = await prisma.music.findFirst()
 
     if (!region || !music) {
         throw new Error("No region or music found in database")
