@@ -14,6 +14,13 @@ type MusicWithCount = Music & {
         posts: number
         preferenceTags: number
     }
+    preferenceTags: {
+        preferenceTag: {
+            id: string
+            tag: string
+            description: string
+        }
+    }[]
 }
 
 export default function MusicPage() {
@@ -69,12 +76,15 @@ export default function MusicPage() {
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {music.map((item) => (
                         <MusicCard
                             key={item.id}
                             id={item.id}
                             name={item.name}
+                            musicId={item.musicId}
+                            description={item.description}
+                            tags={item.preferenceTags.map((pt) => pt.preferenceTag.tag)}
                             postCount={item._count.posts}
                             tagCount={item._count.preferenceTags}
                             onEdit={() => handleEdit(item)}

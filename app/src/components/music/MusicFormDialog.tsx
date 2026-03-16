@@ -159,7 +159,7 @@ export function MusicFormDialog({
                         <p className="text-xs text-muted-foreground">
                             {music
                                 ? "Upload a new file to replace the current one (optional)"
-                                : "Supported formats: mp3, wav, m4a, ogg, flac (max 30MB)"
+                                : "Supported formats: mp3, wav, m4a, ogg, flac"
                             }
                         </p>
                         {audioFile && (
