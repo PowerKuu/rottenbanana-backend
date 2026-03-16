@@ -18,16 +18,22 @@ export async function POST(request: NextRequest) {
     const gender = formData.get("gender") as Gender
     const tagIds = formData.getAll("tagIds") as string[]
     const photo = formData.get("photo") as File | null
+    const regionId = formData.get("regionId") as string
 
     if (!gender || !Object.values(Gender).includes(gender)) {
         return NextResponse.json({ error: "Invalid gender" }, { status: 400 })
+    }
+
+    if (!regionId) {
+        return NextResponse.json({ error: "Region is required" }, { status: 400 })
     }
 
 
     let referenceImageId: string | null = null
 
     if (photo) {
-        const file = await uploadFile(photo, {
+        const processedPhoto = await processeReferenceImage(photo)
+        const file = await uploadFile(processedPhoto, {
             privateUserId: session.user.id
         })
         referenceImageId = file.id
@@ -53,6 +59,7 @@ export async function POST(request: NextRequest) {
             data: {
                 gender,
                 referenceImageId,
+                regionId,
                 onboardingCompleted: true
             }
         })
@@ -61,12 +68,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
 }
 
-async function processeReferenceImage(image: Buffer) {
+async function processeReferenceImage(image: File) {
     const targetWidth = 720
     const targetHeight = 1280
     const targetRatio = 9 / 16
 
-    const metadata = await sharp(image).metadata()
+    const buffer = await image.arrayBuffer()
+
+    const metadata = await sharp(buffer).metadata()
     const imgWidth = metadata.width!
     const imgHeight = metadata.height!
     const imgRatio = imgWidth / imgHeight
@@ -84,11 +93,11 @@ async function processeReferenceImage(image: Buffer) {
     const left = Math.round((imgWidth - cropWidth) / 2)
     const top = Math.round((imgHeight - cropHeight) / 2)
 
-    const processedBuffer = await sharp(image)
+    const processedBuffer = await sharp(buffer)
         .extract({ left, top, width: cropWidth, height: cropHeight })
         .resize(targetWidth, targetHeight)
         .jpeg({ quality: 85 })
         .toBuffer()
 
-    return processedBuffer
+    return new File([new Uint8Array(processedBuffer)], image.name, { type: "image/jpeg" })
 }

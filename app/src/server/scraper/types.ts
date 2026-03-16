@@ -1,4 +1,5 @@
 import { Gender } from "@/prisma/client"
+import { SCRAPER_IDENTIFIERS } from "./constants"
 
 export type ScrapedProduct = {
     name: string
@@ -18,3 +19,5 @@ export type ScrapedProduct = {
 export type Scraper = (productUrl: string) => Promise<ScrapedProduct>
 
 export type Transformer<T = string> = (element: Element, text: string) => T
+
+export type ScraperIdentifier = (typeof SCRAPER_IDENTIFIERS)[number]

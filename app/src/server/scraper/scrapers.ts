@@ -1,7 +1,7 @@
 import { Gender } from "@/prisma/enums"
 import axios from "axios"
 import { JSDOM } from "jsdom"
-import { Scraper, Transformer } from "./types"
+import { Scraper, ScraperIdentifier, Transformer } from "./types"
 import { FAKE_HEADERS } from "./utils"
 
 function createGenericScraper({
@@ -166,7 +166,7 @@ function createGenericScraper({
 }
 
 export const scrapers: {
-    scraperIdentifier: string
+    scraperIdentifier: ScraperIdentifier
     scrape: Scraper
 }[] = [
     {
@@ -193,5 +193,3 @@ export const scrapers: {
         })
     }
 ]
-
-export const scraperIdentifiers = scrapers.map((s) => s.scraperIdentifier)

@@ -8,9 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { MultiSelect } from "@/components/ui/multi-select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createStore, updateStore } from "@/server/admin/actions/stores"
 import { getAllRegions } from "@/server/admin/actions/regions"
-import { slugify, validateUrl, parseTextfieldList, getFileUrl } from "@/lib/utils"
+import { SCRAPER_IDENTIFIERS } from "@/server/scraper/constants"
+import { validateUrl, parseTextfieldList, getFileUrl } from "@/lib/utils"
 import { Store } from "@/prisma/client"
 import { Store as StoreIcon } from "lucide-react"
 
@@ -31,7 +33,6 @@ export function StoreFormDialog({
     const [websiteHostnames, setWebsiteHostnames] = useState("")
     const [image, setImage] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
-    const [scraperIdentifierManuallyEdited, setScraperIdentifierManuallyEdited] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [selectedRegionIds, setSelectedRegionIds] = useState<string[]>([])
@@ -58,7 +59,6 @@ export function StoreFormDialog({
             setScraperIdentifier(store.scraperIdentifier)
             setWebsiteUrl(store.websiteUrl)
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
-            setScraperIdentifierManuallyEdited(true)
             setImagePreview(getFileUrl(store.imageId))
             // @ts-expect-error - Store type doesn't include regions yet
             setSelectedRegionIds(store.regions?.map((r: { id: string }) => r.id) || [])
@@ -69,23 +69,11 @@ export function StoreFormDialog({
             setWebsiteHostnames("")
             setImage(null)
             setImagePreview(null)
-            setScraperIdentifierManuallyEdited(false)
             setSelectedRegionIds([])
         }
         setError("")
     }, [store, open])
 
-    const handleNameChange = (value: string) => {
-        setName(value)
-        if (!scraperIdentifierManuallyEdited) {
-            setScraperIdentifier(slugify(value))
-        }
-    }
-
-    const handleScraperIdentifierChange = (value: string) => {
-        setScraperIdentifier(value)
-        setScraperIdentifierManuallyEdited(true)
-    }
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -126,13 +114,8 @@ export function StoreFormDialog({
             return
         }
 
-        if (!scraperIdentifier.trim()) {
-            setError("ScraperIdentifier is required")
-            return
-        }
-
-        if (!/^[a-z0-9-]+$/.test(scraperIdentifier)) {
-            setError("ScraperIdentifier must contain only lowercase letters, numbers, and hyphens")
+        if (!scraperIdentifier) {
+            setError("Scraper Identifier is required")
             return
         }
 
@@ -231,7 +214,7 @@ export function StoreFormDialog({
                         <Input
                             id="name"
                             value={name}
-                            onChange={(e) => handleNameChange(e.target.value)}
+                            onChange={(e) => setName(e.target.value)}
                             placeholder="Nike Store"
                             disabled={loading}
                         />
@@ -239,13 +222,22 @@ export function StoreFormDialog({
 
                     <div className="space-y-2">
                         <Label htmlFor="scraperIdentifier">Scraper Identifier</Label>
-                        <Input
-                            id="scraperIdentifier"
+                        <Select
                             value={scraperIdentifier}
-                            onChange={(e) => handleScraperIdentifierChange(e.target.value)}
-                            placeholder="nike-store"
+                            onValueChange={setScraperIdentifier}
                             disabled={loading}
-                        />
+                        >
+                            <SelectTrigger id="scraperIdentifier" className="w-full">
+                                <SelectValue placeholder="Select a scraper" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {SCRAPER_IDENTIFIERS.map((identifier: string) => (
+                                    <SelectItem key={identifier} value={identifier}>
+                                        {identifier}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div className="space-y-2">

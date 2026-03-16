@@ -35,6 +35,7 @@ model User {
   accounts       Account[]
   tryOnOutfits   TryOnOutfit[]
   postLikes      PostLike[]
+  postViews      PostView[]
   preferenceTags UserPreferenceTag[]
 
   gender                        Gender?
@@ -349,6 +350,7 @@ model Post {
 
 
   likes PostLike[]
+  views PostView[]
   preferenceTags PostPreferenceTag[]
   products PostProduct[]
 
@@ -365,6 +367,19 @@ model Post {
 }
 
 model PostLike {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
+  @@index([postId])
+}
+
+model PostView {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
