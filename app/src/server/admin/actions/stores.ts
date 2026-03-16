@@ -6,6 +6,7 @@ import { slugify, removeUndefinedValues } from "@/lib/utils"
 export async function getAllStores() {
     const stores = await prisma.store.findMany({
         include: {
+            regions: true,
             _count: {
                 select: {
                     products: true
@@ -22,7 +23,10 @@ export async function getAllStores() {
 
 export async function getStoreById(storeId: string) {
     const store = await prisma.store.findUnique({
-        where: { id: storeId }
+        where: { id: storeId },
+        include: {
+            regions: true
+        }
     })
 
     return store
@@ -33,21 +37,30 @@ export async function createStore({
     identifier,
     websiteUrl,
     websiteHostnames,
-    imageId
+    imageId,
+    regionIds
 }: {
     name: string
     identifier?: string
     websiteUrl: string
     websiteHostnames?: string[]
     imageId: string
+    regionIds?: string[]
 }) {
+    if (!regionIds || regionIds.length === 0) {
+        throw new Error("At least one region is required")
+    }
+
     const store = await prisma.store.create({
         data: {
             name,
             identifier: identifier || slugify(name),
             websiteUrl,
             websiteHostnames: websiteHostnames || [],
-            imageId
+            imageId,
+            regions: {
+                connect: regionIds.map((id) => ({ id }))
+            }
         }
     })
 
@@ -60,7 +73,8 @@ export async function updateStore({
     identifier,
     websiteUrl,
     websiteHostnames,
-    imageId
+    imageId,
+    regionIds
 }: {
     id: string
     name?: string
@@ -68,7 +82,12 @@ export async function updateStore({
     websiteUrl?: string
     websiteHostnames?: string[]
     imageId?: string
+    regionIds?: string[]
 }) {
+    if (regionIds !== undefined && regionIds.length === 0) {
+        throw new Error("At least one region is required")
+    }
+
     const store = await prisma.store.update({
         where: { id },
         data: removeUndefinedValues({
@@ -76,7 +95,8 @@ export async function updateStore({
             identifier,
             websiteUrl,
             websiteHostnames,
-            imageId
+            imageId,
+            regions: regionIds !== undefined ? { set: regionIds.map((id) => ({ id })) } : undefined
         })
     })
 

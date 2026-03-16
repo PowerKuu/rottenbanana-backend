@@ -1,6 +1,6 @@
 import { Gender, ProductSlot } from "@/prisma/enums"
 import { prisma } from "../database/prisma"
-import { PreferenceTag, Prisma, Product } from "@/prisma/client"
+import { PreferenceTag, Prisma, Product, Region } from "@/prisma/client"
 import z from "zod"
 import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
@@ -8,7 +8,23 @@ import { uploadFile } from "../uploads/upload"
 import { getFile, readFileBuffer } from "../uploads/read"
 import { randomShuffle } from "@/lib/utils"
 import { productSlotDescriptions } from "./analyzeProduct"
-import { arrayBuffer } from "stream/consumers"
+
+async function getRegion() {
+    const regions = await prisma.region.findMany({
+        where: {
+            stores: {
+                some: {}
+            }
+        }
+    })
+
+    if (regions.length <= 0) {
+        throw new Error("No regions found in database")
+    }
+
+    const randomIndex = Math.floor(Math.random() * regions.length)
+    return regions[randomIndex]
+}
 
 async function getSeedPreferenceTag() {
     const MIN_TAG_PROBABILITY = 0.05
@@ -95,13 +111,20 @@ async function getProductDescription(product: Product) {
     return [product.name, product.gender, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
-async function getSlotRandomProducts(slot: ProductSlot, gender: Gender, tag: PreferenceTag | null, take: number) {
+async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: Gender, tag: PreferenceTag | null, take: number) {
     const MAX_PER_STORE = Math.ceil(take / 2)
 
     const whereWithTag: Prisma.ProductWhereInput = {
         slot,
         gender: {
             in: [gender, Gender.UNISEX]
+        },
+        store: {
+            regions: {
+                some: {
+                    id: region.id
+                }
+            }
         },
         ...(tag && {
             preferenceTags: {
@@ -131,6 +154,13 @@ async function getSlotRandomProducts(slot: ProductSlot, gender: Gender, tag: Pre
         slot,
         id: {
             notIn: productsWithTag.map((product) => product.id)
+        },
+                store: {
+            regions: {
+                some: {
+                    id: region.id
+                }
+            }
         },
         gender: {
             in: [gender, Gender.UNISEX]
@@ -188,7 +218,9 @@ async function getPostProductSelection() {
     ]
 
     const seedPreferenceTag = await getSeedPreferenceTag()
+    const region = await getRegion()
     console.log("Selected seed preference tag for product selection:", seedPreferenceTag?.tag)
+    console.log("Selected region for product selection:", region?.name)
     const productSelection: {
         [slot in ProductSlot]?: {
             required: boolean
@@ -202,6 +234,7 @@ async function getPostProductSelection() {
     for (const { slot, required } of slots) {
         const products = await getSlotRandomProducts(
             slot,
+            region,
             gender,
             seedPreferenceTag?.tag || null,
             MAX_PRODUCTS_PER_SLOT
@@ -223,11 +256,11 @@ async function getPostProductSelection() {
         }
     }
 
-    return productSelection
+    return {productSelection, region, seedPreferenceTag}
 }
 
 const generatePostProductsPrompt = (
-    selection: Awaited<ReturnType<typeof getPostProductSelection>>,
+    selection: Awaited<ReturnType<typeof getPostProductSelection>>["productSelection"],
     showcasePrompts: string[],
     modelShowcasePrompts: string[],
     maxProducts: number,
@@ -279,7 +312,7 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 `
 
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
-    const productSelection = await getPostProductSelection()
+    const {productSelection, region} = await getPostProductSelection()
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
     if (possibleProducts < minProducts) {
@@ -354,7 +387,8 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     return {
         caption,
         products,
-        showcasePrompts
+        showcasePrompts,
+        region
     }
 }
 
@@ -401,9 +435,9 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, showcasePrompts } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, showcasePrompts, region } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
-    console.log(products.map((product) => product.url), caption, showcasePrompts)
+    console.log(products.map((product) => product.url), caption, showcasePrompts, region)
     
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageId }) => {
@@ -422,7 +456,6 @@ export async function generatePost() {
         })
     )
 
-    const region = await prisma.region.findFirst()
     const music = await prisma.music.findFirst()
 
     if (!region || !music) {

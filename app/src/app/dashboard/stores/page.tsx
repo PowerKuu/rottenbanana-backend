@@ -12,6 +12,7 @@ import { getAllStores } from "@/server/admin/actions/stores"
 import { Store } from "@/prisma/client"
 
 type StoreWithCount = Store & {
+    regions: { id: string; name: string }[]
     _count: {
         products: number
     }
@@ -88,6 +89,7 @@ export default function StoresPage() {
                             name={store.name}
                             imageId={store.imageId}
                             productCount={store._count.products}
+                            regions={store.regions}
                             onEdit={() => handleEdit(store)}
                             onDelete={() => handleDelete(store)}
                         />

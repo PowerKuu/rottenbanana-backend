@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { MultiSelect } from "@/components/ui/multi-select"
 import { createStore, updateStore } from "@/server/admin/actions/stores"
+import { getAllRegions } from "@/server/admin/actions/regions"
 import { slugify, validateUrl, parseTextfieldList, getFileUrl } from "@/lib/utils"
 import { Store } from "@/prisma/client"
 import { Store as StoreIcon } from "lucide-react"
@@ -32,6 +34,23 @@ export function StoreFormDialog({
     const [identifierManuallyEdited, setIdentifierManuallyEdited] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [selectedRegionIds, setSelectedRegionIds] = useState<string[]>([])
+    const [availableRegions, setAvailableRegions] = useState<{ id: string; name: string }[]>([])
+
+    // Fetch regions on mount
+    useEffect(() => {
+        const loadRegions = async () => {
+            try {
+                const regions = await getAllRegions()
+                setAvailableRegions(regions.map(r => ({ id: r.id, name: r.name })))
+            } catch (err) {
+                console.error("Failed to load regions:", err)
+            }
+        }
+        if (open) {
+            loadRegions()
+        }
+    }, [open])
 
     useEffect(() => {
         if (store) {
@@ -41,6 +60,8 @@ export function StoreFormDialog({
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
             setIdentifierManuallyEdited(true)
             setImagePreview(getFileUrl(store.imageId))
+            // @ts-expect-error - Store type doesn't include regions yet
+            setSelectedRegionIds(store.regions?.map((r: { id: string }) => r.id) || [])
         } else {
             setName("")
             setIdentifier("")
@@ -49,6 +70,7 @@ export function StoreFormDialog({
             setImage(null)
             setImagePreview(null)
             setIdentifierManuallyEdited(false)
+            setSelectedRegionIds([])
         }
         setError("")
     }, [store, open])
@@ -93,6 +115,11 @@ export function StoreFormDialog({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
+
+        if (selectedRegionIds.length === 0) {
+            setError("At least one region is required")
+            return
+        }
 
         if (!name.trim()) {
             setError("Store name is required")
@@ -162,7 +189,8 @@ export function StoreFormDialog({
                 identifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
-                imageId
+                imageId,
+                regionIds: selectedRegionIds
             })
         } else {
             await createStore({
@@ -170,7 +198,8 @@ export function StoreFormDialog({
                 identifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
-                imageId
+                imageId,
+                regionIds: selectedRegionIds
             })
         }
 
@@ -240,6 +269,22 @@ export function StoreFormDialog({
                             disabled={loading}
                             className="min-h-24"
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="regions">
+                            Regions <span className="text-destructive">*</span>
+                        </Label>
+                        <MultiSelect
+                            options={availableRegions}
+                            value={selectedRegionIds}
+                            onChange={setSelectedRegionIds}
+                            placeholder="Select regions"
+                            disabled={loading}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Select which regions this store operates in
+                        </p>
                     </div>
 
                     <div className="space-y-2">

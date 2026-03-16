@@ -13,6 +13,7 @@ export function StoreCard({
     name,
     imageId,
     productCount,
+    regions,
     onEdit,
     onDelete
 }: {
@@ -20,6 +21,7 @@ export function StoreCard({
     name: string
     imageId: string
     productCount: number
+    regions?: { id: string; name: string }[]
     onEdit?: () => void
     onDelete?: () => void
 }) {
@@ -32,11 +34,27 @@ export function StoreCard({
         >
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                        <CardTitle className="text-lg truncate">{name}</CardTitle>
-                        <Badge variant="secondary" className="shrink-0">
-                            {productCount} {productCount === 1 ? "product" : "products"}
-                        </Badge>
+                    <div className="flex flex-col gap-2 min-w-0">
+                        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                            <CardTitle className="text-lg truncate">{name}</CardTitle>
+                            <Badge variant="secondary" className="shrink-0">
+                                {productCount} {productCount === 1 ? "product" : "products"}
+                            </Badge>
+                        </div>
+                        {regions && regions.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                                {regions.slice(0, 3).map((region) => (
+                                    <Badge key={region.id} variant="outline" className="text-xs">
+                                        {region.name}
+                                    </Badge>
+                                ))}
+                                {regions.length > 3 && (
+                                    <Badge variant="outline" className="text-xs">
+                                        +{regions.length - 3} more
+                                    </Badge>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <div className="flex gap-1 shrink-0">
                         <Button
