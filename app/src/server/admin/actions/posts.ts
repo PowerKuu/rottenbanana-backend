@@ -19,6 +19,11 @@ export async function getPosts({ page = 1 }: { page?: number }) {
                         likes: true,
                         products: true
                     }
+                },
+                region: {
+                    select: {
+                        name: true
+                    }
                 }
             }
         }),

@@ -118,6 +118,7 @@ export default function PostsPage() {
                                 firstImageId={post.imageIds?.[0] || null}
                                 likeCount={post._count?.likes || 0}
                                 productCount={post._count?.products || 0}
+                                regionName={post.region?.name || "Unknown"}
                                 createdAt={post.createdAt}
                                 onClick={() => handlePostClick(post.id)}
                                 onDelete={() => handleDelete({ id: post.id, caption: post.caption })}

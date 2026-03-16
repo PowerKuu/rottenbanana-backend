@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trash2, Heart, Package, Image as ImageIcon } from "lucide-react"
+import { Trash2, Heart, Package, Image as ImageIcon, MapPin } from "lucide-react"
 import Image from "next/image"
 import { format } from "date-fns"
 import { getFileUrl } from "@/lib/utils"
@@ -14,12 +14,13 @@ interface PostCardProps {
     firstImageId: string | null
     likeCount: number
     productCount: number
+    regionName: string
     createdAt: Date
     onClick: () => void
     onDelete?: () => void
 }
 
-export function PostCard({ caption, firstImageId, likeCount, productCount, createdAt, onClick, onDelete }: PostCardProps) {
+export function PostCard({ caption, firstImageId, likeCount, productCount, regionName, createdAt, onClick, onDelete }: PostCardProps) {
     return (
         <Card
             className="group cursor-pointer overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg"
@@ -53,6 +54,10 @@ export function PostCard({ caption, firstImageId, likeCount, productCount, creat
                 <div className="flex flex-wrap gap-1">
                     <Badge variant="outline" className="text-xs">
                         {format(new Date(createdAt), "MMM d, yyyy")}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                        <MapPin className="mr-1 h-3 w-3" />
+                        {regionName}
                     </Badge>
                     <Badge variant="secondary" className="text-xs">
                         <Heart className="mr-1 h-3 w-3" />
