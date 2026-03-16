@@ -3,9 +3,8 @@ import { prisma } from "../database/prisma"
 import { generateText, Output } from "ai"
 import { PreferenceTag } from "@/prisma/client"
 
-const analyzeMusicPrompt = (name: string, tags: PreferenceTag[]) => `
+const analyzeMusicPrompt = (tags: PreferenceTag[]) => `
 ANALYZE THIS MUSIC TRACK:
-Name: ${name}
 
 I will provide an audio file below. Analyze and provide: tags that describe the music's style, mood, genre, and characteristics, along with a description.
 
@@ -15,7 +14,7 @@ ${tags.map((tag) => `${tag.tag}: ${tag.description}`).join("\n")}
 """
 `
 
-export async function analyzeMusic(name: string, music: Buffer) {
+export async function analyzeMusic(music: Buffer) {
     const tags = await prisma.preferenceTag.findMany()
     const availableTags = tags.map(({ tag }) => tag)
 
@@ -33,7 +32,7 @@ export async function analyzeMusic(name: string, music: Buffer) {
     const system = `You are a music analyzer. Analyze the provided audio track to extract relevant metadata including genre, mood, instrumentation, and style.`
 
     const response = await generateText({
-        model: "openai/gpt-4o-mini",
+        model: "google/gemini-3-flash",
         output: Output.object({
             schema: AnalyzeMusicSchema
         }),
@@ -47,7 +46,7 @@ export async function analyzeMusic(name: string, music: Buffer) {
                 content: [
                     {
                         type: "text",
-                        text: analyzeMusicPrompt(name, tags)
+                        text: analyzeMusicPrompt(tags)
                     },
                     {
                         type: "file",

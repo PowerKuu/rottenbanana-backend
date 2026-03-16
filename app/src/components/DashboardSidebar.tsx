@@ -10,14 +10,15 @@ import {
     SidebarMenuButton,
     SidebarHeader
 } from "@/components/ui/sidebar"
-import { FileText, Tag, Store } from "lucide-react"
+import { FileText, Tag, Store, Music } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const items = [
     { title: "Stores", url: "/dashboard/stores", icon: Store },
     { title: "Tags", url: "/dashboard/tags", icon: Tag },
-    { title: "Posts", url: "/dashboard/posts", icon: FileText }
+    { title: "Posts", url: "/dashboard/posts", icon: FileText },
+    { title: "Music", url: "/dashboard/music", icon: Music }
 ]
 
 export function DashboardSidebar() {

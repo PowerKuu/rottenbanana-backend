@@ -332,12 +332,14 @@ model Music {
   id        String   @id @default(cuid())
   name      String
   musicId   String
-
+  description String
   posts          Post[]
   preferenceTags MusicPreferenceTag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([name])
 }
 
 model Post {

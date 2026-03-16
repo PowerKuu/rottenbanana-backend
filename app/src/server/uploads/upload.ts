@@ -3,9 +3,11 @@ import { basename, extname, join } from "path"
 import { prisma } from "../database/prisma"
 import { removeBackground } from "../ai/removeBackground"
 
-const ALLOWED_FILE_TYPES = ["jpg", "jpeg", "png", "webp"]
+const ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png", "webp"]
+const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, "mp3", "wav", "m4a", "ogg", "flac"]
+
 export const UPLOAD_DIR = join(process.cwd(), "uploads")
-const MAX_FILE_SIZE = 15 * 1024 * 1024
+const MAX_FILE_SIZE = 50 * 1024 * 1024
 
 export async function uploadFile(file: File, options: UploadFileOptions = {}) {
     const extension = extname(file.name).slice(1).toLowerCase()
@@ -21,8 +23,8 @@ export async function uploadFile(file: File, options: UploadFileOptions = {}) {
 
     let processedBuffer: Buffer = buffer
     let processedFilename = file.name
-    
-    if (options.removeBackground) {
+
+    if (options.removeBackground && ALLOWED_IMAGE_TYPES.includes(extension)) {
         processedBuffer = await removeBackground(buffer)
 
         const nameWithoutExt = basename(file.name, extname(file.name))
