@@ -225,7 +225,7 @@ export function PostDetailsDialog({
                                                     className="flex gap-4 rounded-lg border p-4 min-w-0 hover:bg-accent transition-colors"
                                                 >
                                                     {productImageUrl && (
-                                                        <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded">
+                                                        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded">
                                                             <Image
                                                                 src={productImageUrl}
                                                                 alt={product.name}
