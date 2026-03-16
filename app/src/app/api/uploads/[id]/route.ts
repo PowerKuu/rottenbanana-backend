@@ -1,3 +1,4 @@
+import { getSession } from "@/server/auth/session"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -7,8 +8,15 @@ export async function GET(
 ) {
     const {id } = await params
 
+    const session = await getSession(request)
+
     try {
         const file = await getFile(id)
+
+        if (file.privateUserId && file.privateUserId !== session?.user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 })
+        }
+
         const buffer = await readFileBuffer(file)
 
         return new NextResponse(new Uint8Array(buffer), {

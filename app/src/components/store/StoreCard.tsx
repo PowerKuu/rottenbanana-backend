@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Store, Pencil, Trash2, Clock } from "lucide-react"
-import { getFile, getFileUrl } from "@/server/uploads/read"
-import { useEffect, useState } from "react"
+import { getFileUrl } from "@/lib/utils"
 
 export function StoreCard({
     id,
@@ -25,22 +24,6 @@ export function StoreCard({
     onDelete?: () => void
 }) {
     const router = useRouter()
-
-    const [imageUrl, setImageUrl] = useState<string | null>(null)
-
-    useEffect(() => {
-        const loadImage = async () => {
-            if (!imageId) return
-            try {   
-                const file = await getFile(imageId)
-                const url = getFileUrl(file)
-                setImageUrl(url)
-            } catch (error) {
-                console.error("Failed to load store image:", error)
-            }
-        }
-        loadImage()
-    }, [imageId])
 
     return (
         <Card
@@ -92,9 +75,9 @@ export function StoreCard({
             </CardHeader>
             <CardContent>
                 <div className="relative aspect-video w-full overflow-hidden rounded-md bg-muted">
-                    {imageUrl ? (
+                    {imageId ? (
                         <Image
-                            src={imageUrl}
+                            src={getFileUrl(imageId)}
                             alt={name}
                             fill
                             className="object-cover"

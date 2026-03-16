@@ -42,20 +42,22 @@ async function tickPendingProducts() {
     })
 
     for (const job of jobsToProcess) {
-        scrapeProduct(job.url).catch(async (error) => {
+        scrapeProduct(job.url)
+        .then(async () => {
+            await prisma.pendingProduct.update({
+                where: { id: job.id },
+                data: {
+                    status: PendingProductStatus.COMPLETED
+                }
+            })
+        })
+        .catch(async (error) => {
             console.error(`Failed to process product ${job.url}:`, error)
 
             await prisma.pendingProduct.update({
                 where: { id: job.id },
                 data: {
                     status: PendingProductStatus.FAILED,
-                }
-            })
-        }).then(async () => {
-            await prisma.pendingProduct.update({
-                where: { id: job.id },
-                data: {
-                    status: PendingProductStatus.COMPLETED
                 }
             })
         })

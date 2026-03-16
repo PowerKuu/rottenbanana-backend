@@ -8,10 +8,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { createStore, updateStore } from "@/server/admin/actions/stores"
-import { slugify, validateUrl, parseTextfieldList } from "@/lib/utils"
+import { slugify, validateUrl, parseTextfieldList, getFileUrl } from "@/lib/utils"
 import { Store } from "@/prisma/client"
 import { Store as StoreIcon } from "lucide-react"
-import { getFile, getFileUrl } from "@/server/uploads/read"
 
 export function StoreFormDialog({
     open,
@@ -41,12 +40,7 @@ export function StoreFormDialog({
             setWebsiteUrl(store.websiteUrl)
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
             setIdentifierManuallyEdited(true)
-
-            ;(async () => {
-                const file = await getFile(store.imageId)
-                const url = getFileUrl(file)
-                setImagePreview(url)
-            })()
+            setImagePreview(getFileUrl(store.imageId))
         } else {
             setName("")
             setIdentifier("")

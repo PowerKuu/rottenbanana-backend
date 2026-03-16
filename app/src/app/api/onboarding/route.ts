@@ -27,7 +27,9 @@ export async function POST(request: NextRequest) {
     let referenceImageId: string | null = null
 
     if (photo) {
-        const file = await uploadFile(photo)
+        const file = await uploadFile(photo, {
+            privateUserId: session.user.id
+        })
         referenceImageId = file.id
     }
 

@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ExternalLink, Package } from "lucide-react"
 import { getProductById } from "@/server/admin/actions/products"
-import { getFile, getFileUrl } from "@/server/uploads/read"
-import { formatPrice } from "@/lib/utils"
+import { formatPrice, getFileUrl } from "@/lib/utils"
 
 export function ProductDetailsDialog({
     productId,
@@ -29,31 +28,15 @@ export function ProductDetailsDialog({
         if (productId && open) {
             setLoading(true)
             getProductById(productId)
-                .then(async (result) => {
+                .then((result) => {
                     setProduct(result)
 
                     if (result?.productOnlyImageId) {
-                        try {
-                            const file = await getFile(result.productOnlyImageId)
-                            const url = getFileUrl(file)
-                            setProductOnlyImageUrl(url)
-                        } catch (error) {
-                            console.error("Failed to load product image:", error)
-                        }
+                        setProductOnlyImageUrl(getFileUrl(result.productOnlyImageId))
                     }
 
                     if (result?.imageIds && result.imageIds.length > 0) {
-                        try {
-                            const urls = await Promise.all(
-                                result.imageIds.map(async (id: string) => {
-                                    const file = await getFile(id)
-                                    return getFileUrl(file)
-                                })
-                            )
-                            setImageUrls(urls)
-                        } catch (error) {
-                            console.error("Failed to load product images:", error)
-                        }
+                        setImageUrls(result.imageIds.map((id: string) => getFileUrl(id)))
                     }
                 })
                 .finally(() => setLoading(false))

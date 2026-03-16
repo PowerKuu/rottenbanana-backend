@@ -6,12 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getPostById } from "@/server/admin/actions/posts"
-import { getFile, getFileUrl } from "@/server/uploads/read"
 import Image from "next/image"
 import Link from "next/link"
 import { format } from "date-fns"
 import { Heart, Package, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react"
-import { formatPrice } from "@/lib/utils"
+import { formatPrice, getFileUrl } from "@/lib/utils"
 
 export function PostDetailsDialog({
     postId,
@@ -54,37 +53,18 @@ export function PostDetailsDialog({
 
                     // Load post images
                     if (data.imageIds && data.imageIds.length > 0) {
-                        const urls = await Promise.all(
-                            data.imageIds.map(async (id: string) => {
-                                try {
-                                    const file = await getFile(id)
-                                    return getFileUrl(file)
-                                } catch (error) {
-                                    console.error("Failed to load post image:", error)
-                                    return null
-                                }
-                            })
-                        )
-                        setImageUrls(urls.filter((url): url is string => url !== null))
+                        setImageUrls(data.imageIds.map((id: string) => getFileUrl(id)))
                     }
 
                     // Load product images
                     if (data.products && data.products.length > 0) {
                         const productUrls: { [key: string]: string } = {}
-                        await Promise.all(
-                            data.products.map(async (productRelation: any) => {
-                                const product = productRelation.product
-                                if (product.productOnlyImageId) {
-                                    try {
-                                        const file = await getFile(product.productOnlyImageId)
-                                        const url = getFileUrl(file)
-                                        productUrls[product.id] = url
-                                    } catch (error) {
-                                        console.error("Failed to load product image:", error)
-                                    }
-                                }
-                            })
-                        )
+                        data.products.forEach((productRelation: any) => {
+                            const product = productRelation.product
+                            if (product.productOnlyImageId) {
+                                productUrls[product.id] = getFileUrl(product.productOnlyImageId)
+                            }
+                        })
                         setProductImageUrls(productUrls)
                     }
                 }

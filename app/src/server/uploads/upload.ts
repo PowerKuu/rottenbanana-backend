@@ -7,7 +7,7 @@ const ALLOWED_FILE_TYPES = ["jpg", "jpeg", "png", "webp"]
 export const UPLOAD_DIR = join(process.cwd(), "uploads")
 const MAX_FILE_SIZE = 15 * 1024 * 1024
 
-export async function uploadFile(file: File, options: { removeBackground?: boolean } = {}) {
+export async function uploadFile(file: File, options: UploadFileOptions = {}) {
     const extension = extname(file.name).slice(1).toLowerCase()
 
     if (!ALLOWED_FILE_TYPES.includes(extension)) {
@@ -47,12 +47,13 @@ export async function uploadFile(file: File, options: { removeBackground?: boole
     return await prisma.file.create({
         data: {
             name: uniqueFilename,
-            type: file.type
+            type: file.type,
+            privateUserId: options.privateUserId
         }
     })
 }
 
-export async function uploadFromExternalUrl(url: string, options: { removeBackground?: boolean } = {}) {
+export async function uploadFromExternalUrl(url: string, options:UploadFileOptions= {}) {
     const response = await fetch(url)
 
     if (!response.ok) {
