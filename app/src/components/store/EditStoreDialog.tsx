@@ -26,12 +26,12 @@ export function StoreFormDialog({
     onSuccess?: () => void
 }) {
     const [name, setName] = useState("")
-    const [identifier, setIdentifier] = useState("")
+    const [scraperIdentifier, setScraperIdentifier] = useState("")
     const [websiteUrl, setWebsiteUrl] = useState("")
     const [websiteHostnames, setWebsiteHostnames] = useState("")
     const [image, setImage] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
-    const [identifierManuallyEdited, setIdentifierManuallyEdited] = useState(false)
+    const [scraperIdentifierManuallyEdited, setScraperIdentifierManuallyEdited] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [selectedRegionIds, setSelectedRegionIds] = useState<string[]>([])
@@ -55,21 +55,21 @@ export function StoreFormDialog({
     useEffect(() => {
         if (store) {
             setName(store.name)
-            setIdentifier(store.identifier)
+            setScraperIdentifier(store.scraperIdentifier)
             setWebsiteUrl(store.websiteUrl)
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
-            setIdentifierManuallyEdited(true)
+            setScraperIdentifierManuallyEdited(true)
             setImagePreview(getFileUrl(store.imageId))
             // @ts-expect-error - Store type doesn't include regions yet
             setSelectedRegionIds(store.regions?.map((r: { id: string }) => r.id) || [])
         } else {
             setName("")
-            setIdentifier("")
+            setScraperIdentifier("")
             setWebsiteUrl("")
             setWebsiteHostnames("")
             setImage(null)
             setImagePreview(null)
-            setIdentifierManuallyEdited(false)
+            setScraperIdentifierManuallyEdited(false)
             setSelectedRegionIds([])
         }
         setError("")
@@ -77,14 +77,14 @@ export function StoreFormDialog({
 
     const handleNameChange = (value: string) => {
         setName(value)
-        if (!identifierManuallyEdited) {
-            setIdentifier(slugify(value))
+        if (!scraperIdentifierManuallyEdited) {
+            setScraperIdentifier(slugify(value))
         }
     }
 
-    const handleIdentifierChange = (value: string) => {
-        setIdentifier(value)
-        setIdentifierManuallyEdited(true)
+    const handleScraperIdentifierChange = (value: string) => {
+        setScraperIdentifier(value)
+        setScraperIdentifierManuallyEdited(true)
     }
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,13 +126,13 @@ export function StoreFormDialog({
             return
         }
 
-        if (!identifier.trim()) {
-            setError("Identifier is required")
+        if (!scraperIdentifier.trim()) {
+            setError("ScraperIdentifier is required")
             return
         }
 
-        if (!/^[a-z0-9-]+$/.test(identifier)) {
-            setError("Identifier must contain only lowercase letters, numbers, and hyphens")
+        if (!/^[a-z0-9-]+$/.test(scraperIdentifier)) {
+            setError("ScraperIdentifier must contain only lowercase letters, numbers, and hyphens")
             return
         }
 
@@ -186,7 +186,7 @@ export function StoreFormDialog({
             await updateStore({
                 id: store.id,
                 name,
-                identifier,
+                scraperIdentifier: scraperIdentifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
                 imageId,
@@ -195,7 +195,7 @@ export function StoreFormDialog({
         } else {
             await createStore({
                 name,
-                identifier,
+                scraperIdentifier: scraperIdentifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
                 imageId,
@@ -238,11 +238,11 @@ export function StoreFormDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="identifier">Identifier</Label>
+                        <Label htmlFor="scraperIdentifier">Scraper Identifier</Label>
                         <Input
-                            id="identifier"
-                            value={identifier}
-                            onChange={(e) => handleIdentifierChange(e.target.value)}
+                            id="scraperIdentifier"
+                            value={scraperIdentifier}
+                            onChange={(e) => handleScraperIdentifierChange(e.target.value)}
                             placeholder="nike-store"
                             disabled={loading}
                         />

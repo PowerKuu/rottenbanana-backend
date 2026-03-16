@@ -19,7 +19,7 @@ export async function scrapeProduct(url: string) {
         throw new Error("No store found for the given URL")
     }
 
-    const scraper = scrapers.find((scraper) => scraper.storeIdentifier === store.identifier)
+    const scraper = scrapers.find((scraper) => scraper.scraperIdentifier === store.scraperIdentifier)
 
     if (!scraper) {
         throw new Error("No scraper found for the given store")

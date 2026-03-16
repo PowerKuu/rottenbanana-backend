@@ -360,7 +360,7 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 5
-    const MAX_MUSIC_SELECTION = 5
+    const MAX_MUSIC_SELECTION = 3
 
     const region = await getRegion()
     const seedPreferenceTag = await getSeedPreferenceTag()

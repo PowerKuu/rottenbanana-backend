@@ -34,14 +34,14 @@ export async function getStoreById(storeId: string) {
 
 export async function createStore({
     name,
-    identifier,
+    scraperIdentifier,
     websiteUrl,
     websiteHostnames,
     imageId,
     regionIds
 }: {
     name: string
-    identifier?: string
+    scraperIdentifier?: string
     websiteUrl: string
     websiteHostnames?: string[]
     imageId: string
@@ -54,7 +54,7 @@ export async function createStore({
     const store = await prisma.store.create({
         data: {
             name,
-            identifier: identifier || slugify(name),
+            scraperIdentifier: scraperIdentifier || slugify(name),
             websiteUrl,
             websiteHostnames: websiteHostnames || [],
             imageId,
@@ -70,7 +70,7 @@ export async function createStore({
 export async function updateStore({
     id,
     name,
-    identifier,
+    scraperIdentifier,
     websiteUrl,
     websiteHostnames,
     imageId,
@@ -78,7 +78,7 @@ export async function updateStore({
 }: {
     id: string
     name?: string
-    identifier?: string
+    scraperIdentifier?: string
     websiteUrl?: string
     websiteHostnames?: string[]
     imageId?: string
@@ -92,7 +92,7 @@ export async function updateStore({
         where: { id },
         data: removeUndefinedValues({
             name,
-            identifier,
+            scraperIdentifier,
             websiteUrl,
             websiteHostnames,
             imageId,

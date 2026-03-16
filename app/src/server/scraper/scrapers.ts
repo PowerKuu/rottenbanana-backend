@@ -166,11 +166,11 @@ function createGenericScraper({
 }
 
 export const scrapers: {
-    storeIdentifier: string
+    scraperIdentifier: string
     scrape: Scraper
 }[] = [
     {
-        storeIdentifier: "zalando",
+        scraperIdentifier: "zalando",
         scrape: createGenericScraper({
             querySelectors: {
                 name: `[data-testid="product_title-product-name"]`,
@@ -193,3 +193,5 @@ export const scrapers: {
         })
     }
 ]
+
+export const scraperIdentifiers = scrapers.map((s) => s.scraperIdentifier)

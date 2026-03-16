@@ -144,7 +144,7 @@ model File {
 
 model Store {
   id         String @id @default(cuid())
-  identifier String @unique
+  scraperIdentifier String
 
   name       String
   websiteUrl String
