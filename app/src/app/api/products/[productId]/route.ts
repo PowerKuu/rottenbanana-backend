@@ -1,11 +1,12 @@
-import { recommendPost } from "@/server/ai/recommendPost"
+import { getFullPost, recommendPost } from "@/server/ai/recommendPost"
+import { getFullProduct } from "@/server/ai/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function GET(request: NextRequest) {
-    const RECOMMEND_AMOUNT = 10
+export async function GET(request: NextRequest, { params }: { params: Promise<{ productId: string }> }) {
+    const { productId } = await params
     const session = await getSession(request)
 
     if (!session?.user) {
@@ -21,10 +22,10 @@ export async function GET(request: NextRequest) {
             return new NextResponse("User not found", { status: 404 })
         }
 
-        const recommendedPosts = await recommendPost(user, RECOMMEND_AMOUNT)
+        const product = await getFullProduct(productId)
 
-        return NextResponse.json({ postsIds: recommendedPosts.map(post => post.id) })
+        return NextResponse.json({ product })
     } catch (error) {
-        return new NextResponse(error instanceof Error ? error.message : "Error recommending posts", { status: 404 })
+        return new NextResponse(error instanceof Error ? error.message : "Error fetching product", { status: 404 })
     }
 }

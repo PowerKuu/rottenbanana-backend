@@ -52,8 +52,8 @@ export function PostDetailsDialog({
                     setPost(data)
 
                     // Load post images
-                    if (data.imageIds && data.imageIds.length > 0) {
-                        setImageUrls(data.imageIds.map((id: string) => getFileUrl(id)))
+                    if (data.mediaIds && data.mediaIds.length > 0) {
+                        setImageUrls(data.mediaIds.map((id: string) => getFileUrl(id)))
                     }
 
                     // Load product images

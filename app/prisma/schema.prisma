@@ -350,7 +350,7 @@ model Music {
 model Post {
   id        String   @id @default(cuid())
   caption   String?
-  imageIds String[]
+  mediaIds String[]
 
 
   likes PostLike[]

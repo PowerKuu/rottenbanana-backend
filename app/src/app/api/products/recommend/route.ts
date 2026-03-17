@@ -1,4 +1,4 @@
-import { recommendPost } from "@/server/ai/recommendPost"
+import { recommendProducts } from "@/server/ai/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
@@ -21,10 +21,10 @@ export async function GET(request: NextRequest) {
             return new NextResponse("User not found", { status: 404 })
         }
 
-        const recommendedPosts = await recommendPost(user, RECOMMEND_AMOUNT)
+        const recommendedProducts = await recommendProducts(user, RECOMMEND_AMOUNT)
 
-        return NextResponse.json({ postsIds: recommendedPosts.map(post => post.id) })
+        return NextResponse.json({ productsIds: recommendedProducts.map(product => product.id) })
     } catch (error) {
-        return new NextResponse(error instanceof Error ? error.message : "Error recommending posts", { status: 404 })
+        return new NextResponse(error instanceof Error ? error.message : "Error recommending products", { status: 404 })
     }
 }
