@@ -121,8 +121,10 @@ model PreferenceTag {
 }
 
 model Region {
-  id   String @id @default(cuid())
-  name String @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
+  countryCode String? @unique
+  flagImageId String?
 
   posts  Post[]
   stores Store[]

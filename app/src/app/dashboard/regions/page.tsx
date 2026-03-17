@@ -76,6 +76,7 @@ export default function RegionsPage() {
                             key={region.id}
                             id={region.id}
                             name={region.name}
+                            flagImageId={region.flagImageId}
                             postCount={region._count.posts}
                             storeCount={region._count.stores}
                             userCount={region._count.users}

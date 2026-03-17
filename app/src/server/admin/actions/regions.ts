@@ -30,10 +30,12 @@ export async function getRegionById(regionId: string) {
     return region
 }
 
-export async function createRegion({ name }: { name: string }) {
+export async function createRegion({ name, countryCode, flagImageId }: { name: string; countryCode?: string; flagImageId?: string }) {
     const region = await prisma.region.create({
         data: {
-            name: name.trim()
+            name: name.trim(),
+            countryCode: countryCode?.trim().toUpperCase() || null,
+            flagImageId: flagImageId || null
         }
     })
 
@@ -42,15 +44,21 @@ export async function createRegion({ name }: { name: string }) {
 
 export async function updateRegion({
     id,
-    name
+    name,
+    countryCode,
+    flagImageId
 }: {
     id: string
     name?: string
+    countryCode?: string | null
+    flagImageId?: string | null
 }) {
     const region = await prisma.region.update({
         where: { id },
         data: removeUndefinedValues({
-            name: name?.trim()
+            name: name?.trim(),
+            countryCode: countryCode === null ? null : countryCode?.trim().toUpperCase(),
+            flagImageId: flagImageId === null ? null : flagImageId
         })
     })
 
