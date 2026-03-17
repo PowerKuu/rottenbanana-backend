@@ -308,15 +308,16 @@ const generatePostProductsPrompt = (
     maxProducts: number,
     maxPrompts: number
 ) => `
-You are a creative fashion stylist selecting products for an inspiring outfit post. Your goal is to create a complete, stylish look with ${minProducts}-${maxProducts} products and matching music.
+You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
 
 SLOT SELECTION RULES:
 - REQUIRED slots: You MUST pick exactly 1 product from each required slot
 - OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot
-- ONLY one product can be selected per slot, multiple layers of the same slot (e.g. upperbody layer 1 and 2) can be used together and often looks good, but not required
-- The total number of products selected must be at least ${minProducts} and no more than ${maxProducts}
-- Prioritize required slots first, then add optional products if space allows
-- Select products that would create a cohesive outfit based on their descriptions
+- ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
+- The total number of products must be between ${minProducts} and ${maxProducts}
+- Create natural variety: some outfits should be minimal and clean, others can have more layers or accessories depending on the style
+- Choose what feels right for a cohesive look - not every outfit needs maximum products or layers
+- Select products that create a cohesive outfit based on their descriptions and style
 
 SLOT DESCRIPTIONS:
 """

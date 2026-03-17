@@ -126,9 +126,11 @@ export function PostDetailsDialog({
                                                     variant="outline"
                                                     size="icon"
                                                     className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
-                                                    onClick={() => setCurrentImageIndex((prev) =>
-                                                        prev === 0 ? imageUrls.length - 1 : prev - 1
-                                                    )}
+                                                    onClick={() =>
+                                                        setCurrentImageIndex((prev) =>
+                                                            prev === 0 ? imageUrls.length - 1 : prev - 1
+                                                        )
+                                                    }
                                                 >
                                                     <ChevronLeft className="h-4 w-4" />
                                                 </Button>
@@ -136,9 +138,11 @@ export function PostDetailsDialog({
                                                     variant="outline"
                                                     size="icon"
                                                     className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
-                                                    onClick={() => setCurrentImageIndex((prev) =>
-                                                        prev === imageUrls.length - 1 ? 0 : prev + 1
-                                                    )}
+                                                    onClick={() =>
+                                                        setCurrentImageIndex((prev) =>
+                                                            prev === imageUrls.length - 1 ? 0 : prev + 1
+                                                        )
+                                                    }
                                                 >
                                                     <ChevronRight className="h-4 w-4" />
                                                 </Button>
@@ -158,6 +162,17 @@ export function PostDetailsDialog({
                                             </>
                                         )}
                                     </div>
+                                </div>
+                            )}
+
+                            {/* Music Player */}
+                            {post.musicId && (
+                                <div className="space-y-2">
+                                    <h3 className="text-lg font-semibold">Music ({post.music.name})</h3>
+                                    <audio controls className="w-full" preload="metadata">
+                                        <source src={getFileUrl(post.music.musicId)} type="audio/mpeg" />
+                                        Your browser does not support the audio element.
+                                    </audio>
                                 </div>
                             )}
 

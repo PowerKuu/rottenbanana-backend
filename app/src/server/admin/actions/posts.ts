@@ -64,14 +64,15 @@ export async function getPostById(postId: string) {
                                 select: { name: true }
                             }
                         }
-                    }
-                }
+                    },
+                },
             },
             preferenceTags: {
                 include: {
                     preferenceTag: true
                 }
-            }
+            },
+            music: true
         }
     })
 
