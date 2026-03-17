@@ -88,8 +88,7 @@ async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, 
 }
 
 async function getSeedPreferenceTag() {
-    const MIN_TAG_PROBABILITY = 0.05
-    const MAX_TAG_PROBABILITY = 0.1
+    const PREFERENCE_BIAS = 0.05 // 0 = equal distribution, 1 = strong bias toward top items
 
     const userTags = await prisma.userPreferenceTag.groupBy({
         by: "preferenceTagId",
@@ -130,8 +129,7 @@ async function getSeedPreferenceTag() {
         .sort((a, b) => b.score - a.score)
 
     const tagProbabilities = tagScores.map((tag, index) => {
-        const range = MAX_TAG_PROBABILITY - MIN_TAG_PROBABILITY
-        const probability = MAX_TAG_PROBABILITY - (index * range) / Math.max(tagScores.length - 1, 1)
+        const probability = Math.exp(-PREFERENCE_BIAS * index)
         return {
             ...tag,
             probability
@@ -377,7 +375,7 @@ Example showcase prompts:
 
 async function generatePostData(minProducts: number, maxProducts: number) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 3
-    const MAX_MUSIC_SELECTION = 3
+    const MAX_MUSIC_SELECTION = 6
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
     const MAX_SHOWCASE_PROMPTS = 3
@@ -486,7 +484,8 @@ async function generatePostData(minProducts: number, maxProducts: number) {
         showcasePrompts,
         region,
         tags,
-        gender
+        gender,
+        seedPreferenceTag
     }
 }
 
@@ -527,7 +526,7 @@ export async function generatePost() {
     const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = 6
 
-    const { products, caption, music, showcasePrompts, region, tags, gender } = await generatePostData(
+    const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } = await generatePostData(
         MIN_PRODUCTS,
         MAX_PRODUCTS
     )
@@ -537,7 +536,8 @@ export async function generatePost() {
         caption,
         music,
         showcasePrompts,
-        region
+        region,
+        seedPreferenceTag
     )
 
     const prodcutImageBuffers = await Promise.all(

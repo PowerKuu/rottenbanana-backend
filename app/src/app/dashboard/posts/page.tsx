@@ -117,6 +117,7 @@ export default function PostsPage() {
                                 caption={post.caption}
                                 firstImageId={post.mediaIds?.[0] || null}
                                 likeCount={post._count?.likes || 0}
+                                viewCount={post._count?.views || 0}
                                 productCount={post._count?.products || 0}
                                 regionName={post.region?.name || "Unknown"}
                                 createdAt={post.createdAt}

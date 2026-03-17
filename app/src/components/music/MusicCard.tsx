@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Music, Pencil, Trash2, Download } from "lucide-react"
@@ -32,11 +32,9 @@ export function MusicCard({
     return (
         <Card className="transition-all gap-0 hover:shadow-lg hover:scale-[1.02] h-full flex flex-col">
             <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <CardTitle className="text-lg truncate">{name}</CardTitle>
-                    </div>
-                    <div className="flex gap-1 shrink-0">
+                <CardTitle className="text-lg">{name}</CardTitle>
+                <CardAction>
+                    <div className="flex gap-1">
                         <Button size="icon-sm" variant="ghost" asChild>
                             <a href={getFileUrl(musicId)} download>
                                 <Download className="h-4 w-4" />
@@ -63,7 +61,7 @@ export function MusicCard({
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
-                </div>
+                </CardAction>
             </CardHeader>
             <CardContent className="p-0 flex-1 flex flex-col">
                 <div className="space-y-3">

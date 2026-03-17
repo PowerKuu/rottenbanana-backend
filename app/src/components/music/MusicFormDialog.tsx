@@ -80,6 +80,12 @@ export function MusicFormDialog({
 
         setAudioFile(file)
         setError("")
+
+        // Auto-fill name if empty
+        if (!name.trim()) {
+            const fileNameWithoutExt = file.name.slice(0, file.name.lastIndexOf("."))
+            setName(fileNameWithoutExt)
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {

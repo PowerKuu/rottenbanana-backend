@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Trash2, Heart, Package, Image as ImageIcon, MapPin } from "lucide-react"
+import { Trash2, Heart, Package, Image as ImageIcon, MapPin, Eye } from "lucide-react"
 import Image from "next/image"
 import { format } from "date-fns"
 import { getFileUrl } from "@/lib/utils"
@@ -13,6 +13,7 @@ interface PostCardProps {
     caption: string | null
     firstImageId: string | null
     likeCount: number
+    viewCount: number
     productCount: number
     regionName: string
     createdAt: Date
@@ -24,6 +25,7 @@ export function PostCard({
     caption,
     firstImageId,
     likeCount,
+    viewCount,
     productCount,
     regionName,
     createdAt,
@@ -76,6 +78,10 @@ export function PostCard({
                     <Badge variant="secondary" className="text-xs">
                         <Heart className="mr-1 h-3 w-3" />
                         {likeCount}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                        <Eye className="mr-1 h-3 w-3" />
+                        {viewCount}
                     </Badge>
                     <Badge variant="secondary" className="text-xs">
                         <Package className="mr-1 h-3 w-3" />

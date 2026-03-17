@@ -9,7 +9,7 @@ import { getPostById } from "@/server/admin/actions/posts"
 import Image from "next/image"
 import Link from "next/link"
 import { format } from "date-fns"
-import { Heart, Package, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, Package, Calendar, Tag, ChevronLeft, ChevronRight, Eye } from "lucide-react"
 import { formatPrice, getFileUrl } from "@/lib/utils"
 
 export function PostDetailsDialog({
@@ -195,6 +195,10 @@ export function PostDetailsDialog({
                                     <Badge variant="secondary">
                                         <Heart className="mr-1 h-3 w-3" />
                                         {post.likes?.length || 0} likes
+                                    </Badge>
+                                    <Badge variant="secondary">
+                                        <Eye className="mr-1 h-3 w-3" />
+                                        {post.views?.length || 0} views
                                     </Badge>
                                     <Badge variant="secondary">
                                         <Package className="mr-1 h-3 w-3" />

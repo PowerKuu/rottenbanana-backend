@@ -17,6 +17,7 @@ export async function getPosts({ page = 1 }: { page?: number }) {
                 _count: {
                     select: {
                         likes: true,
+                        views: true,
                         products: true
                     }
                 },
@@ -48,6 +49,9 @@ export async function getPostById(postId: string) {
         where: { id: postId },
         include: {
             likes: {
+                select: { userId: true }
+            },
+            views: {
                 select: { userId: true }
             },
             products: {
