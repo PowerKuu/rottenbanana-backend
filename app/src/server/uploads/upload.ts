@@ -2,6 +2,7 @@ import { writeFile } from "fs/promises"
 import { basename, extname, join } from "path"
 import { prisma } from "../database/prisma"
 import { removeBackground } from "../ai/removeBackground"
+import sharp from "sharp"
 
 const ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png", "webp"]
 const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, "mp3", "wav", "m4a", "ogg", "flac"]
@@ -9,7 +10,14 @@ const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, "mp3", "wav", "m4a", "ogg", 
 export const UPLOAD_DIR = join(process.cwd(), "uploads")
 const MAX_FILE_SIZE = 50 * 1024 * 1024
 
-export async function uploadFile(file: File, options: UploadFileOptions = {}) {
+const DEFAULT_UPLOAD_OPTIONS: UploadFileOptions = {
+    compress: true,
+    normalize: true
+}
+
+export async function uploadFile(file: File, options: UploadFileOptions = DEFAULT_UPLOAD_OPTIONS) {
+    options = { ...DEFAULT_UPLOAD_OPTIONS, ...options }
+
     const extension = extname(file.name).slice(1).toLowerCase()
 
     if (!ALLOWED_FILE_TYPES.includes(extension)) {
@@ -23,12 +31,28 @@ export async function uploadFile(file: File, options: UploadFileOptions = {}) {
 
     let processedBuffer: Buffer = buffer
     let processedFilename = file.name
+    let processedType = file.type
 
     if (options.removeBackground && ALLOWED_IMAGE_TYPES.includes(extension)) {
         processedBuffer = await removeBackground(buffer)
 
         const nameWithoutExt = basename(file.name, extname(file.name))
         processedFilename = `${nameWithoutExt}.png`
+        processedType = "image/png"
+    }
+
+    if (options.compress && ALLOWED_IMAGE_TYPES.includes(extension)) {
+        processedBuffer = await sharp(processedBuffer)
+            .resize({ width: 1080, height: 1080, withoutEnlargement: true, fit: "inside" })
+            .toBuffer()
+    }
+
+    if (options.normalize && ALLOWED_IMAGE_TYPES.includes(extension)) {
+        processedBuffer = await sharp(processedBuffer).webp().toBuffer()
+
+        const nameWithoutExt = basename(file.name, extname(file.name))
+        processedFilename = `${nameWithoutExt}.webp`
+        processedType = "image/webp"
     }
 
     const timestamp = Date.now()
@@ -43,19 +67,21 @@ export async function uploadFile(file: File, options: UploadFileOptions = {}) {
     const truncatedName = `${baseName}${ext}`
 
     const uniqueFilename = `${timestamp}-${truncatedName}`
-    
+
     await writeFile(join(UPLOAD_DIR, uniqueFilename), processedBuffer)
 
     return await prisma.file.create({
         data: {
             name: uniqueFilename,
-            type: file.type,
+            type: processedType,
             privateUserId: options.privateUserId
         }
     })
 }
 
-export async function uploadFromExternalUrl(url: string, options:UploadFileOptions= {}) {
+export async function uploadFromExternalUrl(url: string, options: UploadFileOptions = DEFAULT_UPLOAD_OPTIONS) {
+    options = { ...DEFAULT_UPLOAD_OPTIONS, ...options }
+
     const response = await fetch(url)
 
     if (!response.ok) {

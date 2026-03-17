@@ -1,28 +1,35 @@
 import { prisma } from "@/server/database/prisma"
 
 const tags = [
-    { tag: "Athleisure", description: "Athletic-inspired clothing worn as everyday wear" },
-    { tag: "Beach & Resort", description: "Relaxed holiday and coastal-inspired styles" },
-    { tag: "Bohemian", description: "Free-spirited, earthy and eclectic fashion" },
-    { tag: "Cottagecore", description: "Romantic rural aesthetics with florals and natural textures" },
-    { tag: "Dark Academia", description: "Moody, scholarly aesthetics with earthy and dark tones" },
-    { tag: "Formal", description: "Business and office-ready attire" },
-    { tag: "Grunge", description: "Edgy, layered looks with distressed fabrics and dark palettes" },
-    { tag: "Luxury", description: "High-end designer and premium fashion" },
-    { tag: "Minimalist", description: "Clean lines, neutral tones and understated looks" },
-    { tag: "Old Money", description: "Understated elegance and timeless classic pieces" },
-    { tag: "Preppy", description: "Classic collegiate looks with a polished finish" },
-    { tag: "Scandinavian", description: "Nordic minimalism with functional, clean aesthetics" },
-    { tag: "Smart Casual", description: "Polished but relaxed — think chinos and a blazer" },
-    { tag: "Streetwear", description: "Urban-inspired styles with hoodies, sneakers and graphic tees" },
-    { tag: "Sustainable", description: "Eco-friendly and ethically produced clothing" },
-    { tag: "Techwear", description: "Functional, futuristic clothing with technical fabrics" },
-    { tag: "Vintage", description: "Retro and second-hand inspired styles" },
-    { tag: "Workwear", description: "Durable, practical clothes inspired by labour and utility" },
-    { tag: "Y2K", description: "Early 2000s nostalgia with bold colours and low-rise styles" }
+    { tag: "Minimalist", description: "Clean lines, neutral palettes and understated elegance" },
+    { tag: "Maximalist", description: "Bold patterns, clashing prints and more-is-more layering" },
+    { tag: "Dark Academia", description: "Scholarly moody aesthetics with vintage academia vibes" },
+    { tag: "Old Money", description: "Timeless elegance and understated luxury" },
+    { tag: "Grunge", description: "90s rebel spirit with distressed fabrics and layered looks" },
+    { tag: "Bohemian", description: "Free-spirited eclectic with earthy tones and flowing silhouettes" },
+    { tag: "Cottagecore", description: "Countryside living with florals, gingham and pastoral charm" },
+    { tag: "Techwear", description: "Futuristic functionality with technical fabrics and modular design" },
+    { tag: "Y2K", description: "Early 2000s nostalgia with low-rise, metallics and baby tees" },
+    { tag: "Preppy", description: "Classic collegiate polish with blazers, loafers and crisp lines" },
+    { tag: "Gorpcore", description: "Outdoor performance gear styled for urban life" },
+    { tag: "Quiet Luxury", description: "Expensive minimalism with impeccable tailoring and subtle details" },
+    { tag: "Opulent Maximalism", description: "Luxe glamour with furs, velvet, gold and dramatic volume" },
+    { tag: "Indie Sleaze", description: "Messy cool-kid energy with skinny jeans and vintage band tees" },
+    { tag: "Punk", description: "Rebellious DIY attitude with leather, studs and anti-establishment edge" },
+    { tag: "Romantic", description: "Soft dreamy aesthetics with lace, ruffles and delicate fabrics" },
+    { tag: "Western", description: "Frontier spirit with cowboy boots, denim and ranch-inspired pieces" },
+    { tag: "Skater", description: "Laid-back skate culture with baggy pants and graphic tees" },
+    { tag: "Artsy Vintage", description: "Creative expression through thrifted vintage and artistic flair" },
+    { tag: "Normcore", description: "Intentionally ordinary basics without trying too hard" },
+    { tag: "Scandinavian", description: "Nordic simplicity with functional design and muted elegance" },
+    { tag: "Cyberpunk", description: "Dystopian futurism with neon, leather and tech-noir edge" },
+    { tag: "Rockstar", description: "Performative glamour with leather pants, mesh and stage presence" },
+    { tag: "Americana", description: "Classic American heritage with denim, varsity and vintage workwear" },
+    { tag: "Monochrome", description: "Single-color or tonal dressing for bold cohesive impact" }
 ]
 
 async function main() {
+    await prisma.preferenceTag.deleteMany()
     for (const tag of tags) {
         await prisma.preferenceTag.upsert({
             where: { tag: tag.tag },

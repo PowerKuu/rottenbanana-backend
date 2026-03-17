@@ -308,15 +308,16 @@ const generatePostProductsPrompt = (
     maxProducts: number,
     maxPrompts: number
 ) => `
-You are a creative fashion stylist selecting products for an inspiring outfit post. Your goal is to create a complete, stylish look with ${minProducts}-${maxProducts} products and matching music.
+You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
 
 SLOT SELECTION RULES:
 - REQUIRED slots: You MUST pick exactly 1 product from each required slot
 - OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot
-- ONLY one product can be selected per slot, multiple layers of the same slot (e.g. upperbody layer 1 and 2) can be used together and often looks good, but not required
-- The total number of products selected must be at least ${minProducts} and no more than ${maxProducts}
-- Prioritize required slots first, then add optional products if space allows
-- Select products that would create a cohesive outfit based on their descriptions
+- ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
+- The total number of products must be between ${minProducts} and ${maxProducts}
+- Create natural variety: some outfits should be minimal and clean, others can have more layers or accessories depending on the style
+- Choose what feels right for a cohesive look - not every outfit needs maximum products or layers
+- Select products that create a cohesive outfit based on their descriptions and style
 
 SLOT DESCRIPTIONS:
 """
@@ -361,6 +362,7 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 5
     const MAX_MUSIC_SELECTION = 3
+    const MAX_TAGS = 3
 
     const region = await getRegion()
     const seedPreferenceTag = await getSeedPreferenceTag()
@@ -394,7 +396,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
 
     const GeneratePostProductsSchema = z.object({
         products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
-        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style"),
+        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style. Don't include hashtags!"),
         musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
@@ -416,7 +418,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     console.log("Generated prompt for product selection:", prompt)
 
     const response = await generateText({
-        model: "openai/gpt-4o-mini",
+        model: "google/gemini-3-flash",
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
@@ -426,9 +428,29 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
 
     const products = await prisma.product.findMany({
+        include: {
+            preferenceTags: true
+        },
         where: {
             id: {
                 in: prodcutsIds
+            }
+        }
+    })
+
+    const tagCounts: Record<string, number> = {}
+
+    for (const { preferenceTags } of products) {
+        for (const { preferenceTagId } of preferenceTags) {
+            tagCounts[preferenceTagId] = (tagCounts[preferenceTagId] || 0) + 1
+        }
+    }
+
+    const sortedTagCounts = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])
+    const tags = await prisma.preferenceTag.findMany({
+        where: {
+            id: {
+                in: sortedTagCounts.slice(0, MAX_TAGS).map(([tagId]) => tagId)
             }
         }
     })
@@ -454,7 +476,8 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         products,
         music,
         showcasePrompts,
-        region
+        region,
+        tags
     }
 }
 
@@ -464,14 +487,10 @@ Create a professional fashion photography image for social media. Based on the p
 PROMPT:
 ${prompt}
 
-PRODUCTS TO INCLUDE:
-The first ${products.length} image(s) show the products to include in this outfit:
+THE ${products.length} PRODUCT IMAGE(S):
 ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
 
 CRITICAL REQUIREMENTS:
-- Use the EXACT colors, patterns, and details shown in the product images above
-- Do NOT make assumptions about colors based on product type - use the actual images
-- All products must be clearly visible and recognizable
 - Professional photography quality with good lighting
 - Natural and realistic product presentation matching the source images
 `
@@ -501,7 +520,7 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, music, showcasePrompts, region } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, music, showcasePrompts, region, tags } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
     console.log(products.map((product) => product.url), caption, music, showcasePrompts, region)
 
@@ -535,6 +554,17 @@ export async function generatePost() {
             isOfficial: true
         }
     })
+
+    await Promise.all(
+        tags.map((tag) =>
+            prisma.postPreferenceTag.create({
+                data: {
+                    postId: post.id,
+                    preferenceTagId: tag.id
+                }
+            })
+        )
+    )
 
     await Promise.all(
         products.map((product) =>
