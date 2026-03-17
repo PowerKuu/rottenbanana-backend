@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
         const recommendedProducts = await recommendProducts(user, RECOMMEND_AMOUNT)
 
-        return NextResponse.json({ products: recommendedProducts })
+        return NextResponse.json({ productsIds: recommendedProducts.map(product => product.id) })
     } catch (error) {
         return new NextResponse(error instanceof Error ? error.message : "Error recommending products", { status: 404 })
     }
