@@ -43,7 +43,7 @@ export function StoreFormDialog({
         const loadRegions = async () => {
             try {
                 const regions = await getAllRegions()
-                setAvailableRegions(regions.map(r => ({ id: r.id, name: r.name })))
+                setAvailableRegions(regions.map((r) => ({ id: r.id, name: r.name })))
             } catch (err) {
                 console.error("Failed to load regions:", err)
             }
@@ -73,7 +73,6 @@ export function StoreFormDialog({
         }
         setError("")
     }, [store, open])
-
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -222,11 +221,7 @@ export function StoreFormDialog({
 
                     <div className="space-y-2">
                         <Label htmlFor="scraperIdentifier">Scraper Identifier</Label>
-                        <Select
-                            value={scraperIdentifier}
-                            onValueChange={setScraperIdentifier}
-                            disabled={loading}
-                        >
+                        <Select value={scraperIdentifier} onValueChange={setScraperIdentifier} disabled={loading}>
                             <SelectTrigger id="scraperIdentifier" className="w-full">
                                 <SelectValue placeholder="Select a scraper" />
                             </SelectTrigger>
@@ -274,9 +269,7 @@ export function StoreFormDialog({
                             placeholder="Select regions"
                             disabled={loading}
                         />
-                        <p className="text-xs text-muted-foreground">
-                            Select which regions this store operates in
-                        </p>
+                        <p className="text-xs text-muted-foreground">Select which regions this store operates in</p>
                     </div>
 
                     <div className="space-y-2">

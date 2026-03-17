@@ -77,12 +77,14 @@ export function DeleteRegionDialog({
                             <ul className="list-disc list-inside text-muted-foreground space-y-1">
                                 {region.postCount > 0 && (
                                     <li>
-                                        {region.postCount} post{region.postCount === 1 ? "" : "s"} (DELETE WILL BE BLOCKED)
+                                        {region.postCount} post{region.postCount === 1 ? "" : "s"} (DELETE WILL BE
+                                        BLOCKED)
                                     </li>
                                 )}
                                 {region.storeCount > 0 && (
                                     <li>
-                                        {region.storeCount} store{region.storeCount === 1 ? "" : "s"} (associations removed)
+                                        {region.storeCount} store{region.storeCount === 1 ? "" : "s"} (associations
+                                        removed)
                                     </li>
                                 )}
                                 {region.userCount > 0 && (

@@ -30,7 +30,15 @@ export async function getRegionById(regionId: string) {
     return region
 }
 
-export async function createRegion({ name, countryCode, flagImageId }: { name: string; countryCode?: string; flagImageId?: string }) {
+export async function createRegion({
+    name,
+    countryCode,
+    flagImageId
+}: {
+    name: string
+    countryCode?: string
+    flagImageId?: string
+}) {
     const region = await prisma.region.create({
         data: {
             name: name.trim(),

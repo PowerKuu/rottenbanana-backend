@@ -82,7 +82,7 @@ export default function StorePendingProductsPage() {
     const handleShuffle = async () => {
         if (shuffleMode) {
             // Re-shuffle in place
-            setAllShuffled(prev => [...prev].sort(() => Math.random() - 0.5))
+            setAllShuffled((prev) => [...prev].sort(() => Math.random() - 0.5))
             setShufflePage(1)
             return
         }
@@ -105,9 +105,7 @@ export default function StorePendingProductsPage() {
     // Compute current page of shuffled products
     const shuffleTotalPages = Math.ceil(allShuffled.length / PAGE_SIZE)
     const shuffleStart = (shufflePage - 1) * PAGE_SIZE
-    const currentProducts = shuffleMode
-        ? allShuffled.slice(shuffleStart, shuffleStart + PAGE_SIZE)
-        : pendingProducts
+    const currentProducts = shuffleMode ? allShuffled.slice(shuffleStart, shuffleStart + PAGE_SIZE) : pendingProducts
 
     const activePagination = shuffleMode
         ? {
@@ -184,7 +182,11 @@ export default function StorePendingProductsPage() {
                 <>
                     <div className="flex flex-wrap gap-4">
                         {currentProducts.map((product) => (
-                            <PendingProductCard key={product.id} pendingProduct={product} onSuccess={loadPendingProducts} />
+                            <PendingProductCard
+                                key={product.id}
+                                pendingProduct={product}
+                                onSuccess={loadPendingProducts}
+                            />
                         ))}
                     </div>
 

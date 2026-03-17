@@ -53,11 +53,7 @@ export function MultiSelect({
     const selectedOptions = options.filter((option) => value.includes(option.id))
 
     const displayText =
-        value.length === 0
-            ? placeholder
-            : value.length === 1
-              ? "1 item selected"
-              : `${value.length} items selected`
+        value.length === 0 ? placeholder : value.length === 1 ? "1 item selected" : `${value.length} items selected`
 
     return (
         <div className="space-y-2">
@@ -67,10 +63,7 @@ export function MultiSelect({
                     variant="outline"
                     role="combobox"
                     aria-expanded={isOpen}
-                    className={cn(
-                        "w-full justify-between",
-                        !value.length && "text-muted-foreground"
-                    )}
+                    className={cn("w-full justify-between", !value.length && "text-muted-foreground")}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
                     disabled={disabled}
                 >
@@ -82,9 +75,7 @@ export function MultiSelect({
                     <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
                         <div className="max-h-60 overflow-y-auto p-1">
                             {options.length === 0 ? (
-                                <div className="py-6 text-center text-sm text-muted-foreground">
-                                    No items available
-                                </div>
+                                <div className="py-6 text-center text-sm text-muted-foreground">No items available</div>
                             ) : (
                                 options.map((option) => {
                                     const isSelected = value.includes(option.id)
@@ -100,9 +91,7 @@ export function MultiSelect({
                                             <div
                                                 className={cn(
                                                     "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                                    isSelected
-                                                        ? "bg-primary text-primary-foreground"
-                                                        : "opacity-50"
+                                                    isSelected ? "bg-primary text-primary-foreground" : "opacity-50"
                                                 )}
                                             >
                                                 {isSelected && <Check className="h-3 w-3" />}
@@ -120,11 +109,7 @@ export function MultiSelect({
             {selectedOptions.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                     {selectedOptions.map((option) => (
-                        <Badge
-                            key={option.id}
-                            variant="secondary"
-                            className="gap-1 pr-1"
-                        >
+                        <Badge key={option.id} variant="secondary" className="gap-1 pr-1">
                             <span>{option.name}</span>
                             <button
                                 type="button"

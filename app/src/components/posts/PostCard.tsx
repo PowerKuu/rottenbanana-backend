@@ -20,7 +20,16 @@ interface PostCardProps {
     onDelete?: () => void
 }
 
-export function PostCard({ caption, firstImageId, likeCount, productCount, regionName, createdAt, onClick, onDelete }: PostCardProps) {
+export function PostCard({
+    caption,
+    firstImageId,
+    likeCount,
+    productCount,
+    regionName,
+    createdAt,
+    onClick,
+    onDelete
+}: PostCardProps) {
     return (
         <Card
             className="group cursor-pointer overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg"
@@ -28,7 +37,12 @@ export function PostCard({ caption, firstImageId, likeCount, productCount, regio
         >
             <CardContent className="relative aspect-square p-0">
                 {firstImageId ? (
-                    <Image src={getFileUrl(firstImageId)} alt={caption || "Post image"} fill className="object-cover object-top" />
+                    <Image
+                        src={getFileUrl(firstImageId)}
+                        alt={caption || "Post image"}
+                        fill
+                        className="object-cover object-top"
+                    />
                 ) : (
                     <div className="flex h-full items-center justify-center bg-muted">
                         <ImageIcon className="h-12 w-12 text-muted-foreground" />

@@ -7,7 +7,7 @@ export async function GET() {
             id: true,
             name: true,
             countryCode: true,
-            flagImageId: true,
+            flagImageId: true
         },
         orderBy: { name: "asc" }
     })

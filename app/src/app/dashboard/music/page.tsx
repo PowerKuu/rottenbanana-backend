@@ -67,9 +67,7 @@ export default function MusicPage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Music</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Manage music tracks for posts and preferences
-                        </p>
+                        <p className="text-sm text-muted-foreground">Manage music tracks for posts and preferences</p>
                     </div>
                     <Button onClick={() => setCreateDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
@@ -96,11 +94,7 @@ export default function MusicPage() {
                 </div>
             </div>
 
-            <MusicFormDialog
-                open={createDialogOpen}
-                onOpenChange={setCreateDialogOpen}
-                onSuccess={handleSuccess}
-            />
+            <MusicFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
 
             <MusicFormDialog
                 open={editDialogOpen}

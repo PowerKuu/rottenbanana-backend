@@ -4,9 +4,7 @@ import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function GET(
-    request: NextRequest,
-) {
+export async function GET(request: NextRequest) {
     const RECOMMEND_AMOUNT = 10
     const session = await getSession(request)
 
@@ -16,7 +14,7 @@ export async function GET(
 
     try {
         const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
+            where: { id: session.user.id }
         })
 
         if (!user) {

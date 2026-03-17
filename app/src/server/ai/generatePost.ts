@@ -27,7 +27,7 @@ async function getRegion() {
 }
 
 async function getGender() {
-        const GENDERS = [Gender.MALE, Gender.FEMALE]
+    const GENDERS = [Gender.MALE, Gender.FEMALE]
     const gender = GENDERS[Math.floor(Math.random() * GENDERS.length)]
     return gender
 }
@@ -41,11 +41,11 @@ async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, 
                 }
             }
         }),
-                    regions: {
-                some: {
-                    id: region.id
-                }
+        regions: {
+            some: {
+                id: region.id
             }
+        }
     }
 
     const countWithTag = await prisma.music.count({ where: whereWithTag })
@@ -67,11 +67,11 @@ async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, 
         id: {
             notIn: musicWithTag.map((music) => music.id)
         },
-                    regions: {
-                some: {
-                    id: region.id
-                }
+        regions: {
+            some: {
+                id: region.id
             }
+        }
     }
 
     const countAdditional = await prisma.music.count({ where: whereAdditional })
@@ -172,7 +172,13 @@ async function getProductDescription(product: Product) {
     return [product.name, product.gender, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
-async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: Gender, tag: PreferenceTag | null, take: number) {
+async function getSlotRandomProducts(
+    slot: ProductSlot,
+    region: Region,
+    gender: Gender,
+    tag: PreferenceTag | null,
+    take: number
+) {
     const MAX_PER_STORE = Math.ceil(take / 2)
 
     const whereWithTag: Prisma.ProductWhereInput = {
@@ -216,7 +222,7 @@ async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: 
         id: {
             notIn: productsWithTag.map((product) => product.id)
         },
-                store: {
+        store: {
             regions: {
                 some: {
                     id: region.id
@@ -240,7 +246,12 @@ async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: 
     return [...productsWithTag, ...additionalProducts]
 }
 
-async function getPostProductSelection(gender: Gender, region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
+async function getPostProductSelection(
+    gender: Gender,
+    region: Region,
+    seedPreferenceTag: PreferenceTag | null = null,
+    take: number
+) {
     const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
@@ -273,7 +284,6 @@ async function getPostProductSelection(gender: Gender, region: Region, seedPrefe
         ...additionalSlots.map((slot) => ({ slot, required: false }))
     ]
 
-
     const productSelection: {
         [slot in ProductSlot]?: {
             required: boolean
@@ -285,13 +295,7 @@ async function getPostProductSelection(gender: Gender, region: Region, seedPrefe
     } = {}
 
     for (const { slot, required } of slots) {
-        const products = await getSlotRandomProducts(
-            slot,
-            region,
-            gender,
-            seedPreferenceTag,
-            take
-        )
+        const products = await getSlotRandomProducts(slot, region, gender, seedPreferenceTag, take)
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
 
@@ -301,7 +305,6 @@ async function getPostProductSelection(gender: Gender, region: Region, seedPrefe
                 description: await getProductDescription(product)
             }))
         )
-
 
         productSelection[slot] = {
             required,
@@ -382,7 +385,12 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
 
     const seedPreferenceTag = await getSeedPreferenceTag()
     const musicSelection = await getPostMusicSelection(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
-    const productSelection = await getPostProductSelection(gender, region, seedPreferenceTag, MAX_PRODUCT_SELECTION_PER_SLOT)
+    const productSelection = await getPostProductSelection(
+        gender,
+        region,
+        seedPreferenceTag,
+        MAX_PRODUCT_SELECTION_PER_SLOT
+    )
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
     if (possibleProducts < minProducts) {
@@ -411,7 +419,11 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
 
     const GeneratePostProductsSchema = z.object({
         products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
-        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style. Don't include hashtags!"),
+        caption: z
+            .string()
+            .describe(
+                "A catchy caption for the post that highlights the outfit and its style. Don't include hashtags!"
+            ),
         musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
@@ -437,7 +449,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
-        prompt,
+        prompt
     })
 
     const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
@@ -536,9 +548,19 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, music, showcasePrompts, region, tags, gender } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, music, showcasePrompts, region, tags, gender } = await generatePostData(
+        images,
+        MIN_PRODUCTS,
+        MAX_PRODUCTS
+    )
 
-    console.log(products.map((product) => product.url), caption, music, showcasePrompts, region)
+    console.log(
+        products.map((product) => product.url),
+        caption,
+        music,
+        showcasePrompts,
+        region
+    )
 
     const prodcutImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageId }) => {

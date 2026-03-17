@@ -1,5 +1,5 @@
-import { User } from "@/prisma/client";
-import { prisma } from "../database/prisma";
+import { User } from "@/prisma/client"
+import { prisma } from "../database/prisma"
 
 export async function recommendPost(user: User, take: number) {
     const recommendedPosts = await prisma.post.findMany({
@@ -9,7 +9,7 @@ export async function recommendPost(user: User, take: number) {
                     userId: user.id
                 }
             },
-            gender: user.gender || undefined,
+            gender: user.gender || undefined
         },
         orderBy: {
             createdAt: "desc"
@@ -31,7 +31,7 @@ export async function recommendPost(user: User, take: number) {
                 }
             },
             preferenceTags: true,
-            music: true,
+            music: true
         },
         take
     })

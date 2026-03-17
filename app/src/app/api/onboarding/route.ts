@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Region is required" }, { status: 400 })
     }
 
-
     let referenceImageId: string | null = null
 
     if (photo) {

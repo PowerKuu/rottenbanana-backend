@@ -65,7 +65,6 @@ export function randomDraw<T>(array: T[]): T {
     return array[index]
 }
 
-
 export function getFileUrl(id: string): string {
     return `/api/uploads/${id}`
 }

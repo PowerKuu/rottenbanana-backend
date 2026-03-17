@@ -29,7 +29,7 @@ export async function generateImageGoogle(
                 data: imageBuffer.toString("base64")
             }
         })),
-        { text: prompt },
+        { text: prompt }
     ]
 
     const body = {

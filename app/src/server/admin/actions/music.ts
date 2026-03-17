@@ -37,7 +37,15 @@ export async function getMusicById(musicId: string) {
     return music
 }
 
-export async function createMusic({ name, musicId, regionIds }: { name: string; musicId: string; regionIds?: string[] }) {
+export async function createMusic({
+    name,
+    musicId,
+    regionIds
+}: {
+    name: string
+    musicId: string
+    regionIds?: string[]
+}) {
     if (!regionIds || regionIds.length === 0) {
         throw new Error("At least one region is required")
     }
@@ -59,20 +67,22 @@ export async function createMusic({ name, musicId, regionIds }: { name: string; 
     })
 
     await prisma.musicPreferenceTag.createMany({
-        data: await Promise.all(tags.map(async (tag: string) => {
-            const preferenceTag = await prisma.preferenceTag.findUnique({
-                where: { tag }
+        data: await Promise.all(
+            tags.map(async (tag: string) => {
+                const preferenceTag = await prisma.preferenceTag.findUnique({
+                    where: { tag }
+                })
+
+                if (!preferenceTag) {
+                    throw new Error("Preference tag not found: " + tag)
+                }
+
+                return {
+                    musicId: music.id,
+                    preferenceTagId: preferenceTag.id
+                }
             })
-
-            if (!preferenceTag) {
-                throw new Error("Preference tag not found: " + tag)
-            }
-
-            return {
-                musicId: music.id,
-                preferenceTagId: preferenceTag.id
-            }
-        }))
+        )
     })
 
     return music

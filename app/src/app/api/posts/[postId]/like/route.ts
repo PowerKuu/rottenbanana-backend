@@ -3,10 +3,7 @@ import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ postId: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
     const { postId } = await params
 
     const session = await getSession(request)

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
         if (!file) {
             return NextResponse.json({ error: "No file provided" }, { status: 400 })
-        }        
+        }
 
         const result = await uploadFile(file, {
             removeBackground,

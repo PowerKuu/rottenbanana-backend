@@ -37,11 +37,7 @@ export function MusicCard({
                         <CardTitle className="text-lg truncate">{name}</CardTitle>
                     </div>
                     <div className="flex gap-1 shrink-0">
-                        <Button
-                            size="icon-sm"
-                            variant="ghost"
-                            asChild
-                        >
+                        <Button size="icon-sm" variant="ghost" asChild>
                             <a href={getFileUrl(musicId)} download>
                                 <Download className="h-4 w-4" />
                             </a>
@@ -76,20 +72,12 @@ export function MusicCard({
                     </div>
 
                     <div className="px-4 pb-4 space-y-3">
-                        <audio
-                            controls
-                            className="w-full"
-                            preload="metadata"
-                        >
+                        <audio controls className="w-full" preload="metadata">
                             <source src={getFileUrl(musicId)} type="audio/mpeg" />
                             Your browser does not support the audio element.
                         </audio>
 
-                        {description && (
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                                {description}
-                            </p>
-                        )}
+                        {description && <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>}
 
                         {regions && regions.length > 0 && (
                             <div className="flex flex-wrap gap-1">

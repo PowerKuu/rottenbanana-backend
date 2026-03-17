@@ -33,10 +33,10 @@ export function MusicFormDialog({
         const loadRegions = async () => {
             try {
                 const regions = await getAllRegions()
-                setAvailableRegions(regions.map(r => ({ id: r.id, name: r.name })))
+                setAvailableRegions(regions.map((r) => ({ id: r.id, name: r.name })))
                 // Select all regions by default for create mode
                 if (!music) {
-                    setSelectedRegionIds(regions.map(r => r.id))
+                    setSelectedRegionIds(regions.map((r) => r.id))
                 }
             } catch (err) {
                 console.error("Failed to load regions:", err)
@@ -71,7 +71,7 @@ export function MusicFormDialog({
 
         const allowedTypes = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-m4a", "audio/ogg", "audio/flac"]
         const allowedExtensions = [".mp3", ".wav", ".m4a", ".ogg", ".flac"]
-        const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf('.'))
+        const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf("."))
 
         if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
             setError("Only audio files (mp3, wav, m4a, ogg, flac) are allowed")
@@ -189,9 +189,7 @@ export function MusicFormDialog({
                             placeholder="Select regions"
                             disabled={loading}
                         />
-                        <p className="text-xs text-muted-foreground">
-                            Select which regions this music is available in
-                        </p>
+                        <p className="text-xs text-muted-foreground">Select which regions this music is available in</p>
                     </div>
 
                     <div className="space-y-2">
@@ -208,12 +206,9 @@ export function MusicFormDialog({
                         <p className="text-xs text-muted-foreground">
                             {music
                                 ? "Upload a new file to replace the current one (optional)"
-                                : "Supported formats: mp3, wav, m4a, ogg, flac"
-                            }
+                                : "Supported formats: mp3, wav, m4a, ogg, flac"}
                         </p>
-                        {audioFile && (
-                            <p className="text-xs text-green-600">Selected: {audioFile.name}</p>
-                        )}
+                        {audioFile && <p className="text-xs text-green-600">Selected: {audioFile.name}</p>}
                     </div>
 
                     {error && <div className="text-sm text-destructive">{error}</div>}

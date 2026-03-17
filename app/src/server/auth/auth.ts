@@ -24,7 +24,7 @@ export const auth = betterAuth({
                 to: data.user.email,
                 ...template
             })
-        },
+        }
     },
     emailVerification: {
         sendOnSignUp: true,

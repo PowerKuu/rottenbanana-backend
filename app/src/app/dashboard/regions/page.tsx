@@ -87,11 +87,7 @@ export default function RegionsPage() {
                 </div>
             </div>
 
-            <RegionFormDialog
-                open={createDialogOpen}
-                onOpenChange={setCreateDialogOpen}
-                onSuccess={handleSuccess}
-            />
+            <RegionFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
 
             <RegionFormDialog
                 open={editDialogOpen}

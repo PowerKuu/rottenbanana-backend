@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
         where: { email: email.toLowerCase() },
-        select: { id: true },
+        select: { id: true }
     })
 
     return NextResponse.json({ exists: !!user })
