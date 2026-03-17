@@ -127,6 +127,7 @@ model Region {
   posts  Post[]
   stores Store[]
   users  User[]
+  musics Music[] @relation("MusicRegions")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -336,6 +337,7 @@ model Music {
   description String
   posts          Post[]
   preferenceTags MusicPreferenceTag[]
+  regions        Region[] @relation("MusicRegions")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

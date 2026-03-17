@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { createRegion, updateRegion } from "@/server/admin/actions/regions"
-import { Region } from "@prisma/client"
+import { Region } from "@/prisma/client"
 
 export function RegionFormDialog({
     open,
