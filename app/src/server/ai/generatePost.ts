@@ -360,7 +360,7 @@ ${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${produc
 AVAILABLE MUSIC:
 """
 Select 1 music track that matches the vibe and style of the outfit.
-${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.name} - ${music.description}`).join("\n")}
+${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
 """
 
 SHOWCASE PROMPTS:
@@ -376,7 +376,7 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 `
 
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
-    const MAX_PRODUCT_SELECTION_PER_SLOT = 5
+    const MAX_PRODUCT_SELECTION_PER_SLOT = 3
     const MAX_MUSIC_SELECTION = 3
     const MAX_TAGS = 3
 
@@ -521,6 +521,7 @@ ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).
 CRITICAL REQUIREMENTS:
 - Professional photography quality with good lighting
 - Natural and realistic product presentation matching the source images
+- DO NOT modify clothing functionality to show layered pieces - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers, that is acceptable and preferred over altering the garment's design or functionality
 `
 
 async function generatePostImage(prompt: string, products: Product[], images: Buffer[]) {
@@ -587,7 +588,7 @@ export async function generatePost() {
         data: {
             caption,
             gender,
-            imageIds: uploadedImageIds,
+            mediaIds: uploadedImageIds,
             regionId: region.id,
             musicId: music.id,
             isOfficial: true
