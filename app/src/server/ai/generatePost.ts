@@ -334,7 +334,7 @@ SLOT SELECTION RULES:
 
 SLOT DESCRIPTIONS:
 """
-${Object.entries(productSlotDescriptions)
+${Object.entries(productSlotDescriptions).filter(([slot]) => Object.keys(selection).includes(slot))
     .map(([slot, description]) => `${slot}: ${description}`)
     .join("\n")}
 """
