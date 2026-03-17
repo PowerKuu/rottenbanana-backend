@@ -417,7 +417,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     console.log("Generated prompt for product selection:", prompt)
 
     const response = await generateText({
-        model: "openai/gpt-4o-mini",
+        model: "google/gemini-3-flash",
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
