@@ -1,6 +1,5 @@
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
-import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
@@ -12,16 +11,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    try {
-        await prisma.postView.create({
-            data: {
-                postId,
-                userId: session.user.id
-            }
-        })
+    await prisma.postView.createMany({
+        data: [{ postId, userId: session.user.id }],
+        skipDuplicates: true
+    })
 
-        return new NextResponse("Post viewed", { status: 200 })
-    } catch (error) {
-        return new NextResponse(error instanceof Error ? error.message : "Error viewing post", { status: 404 })
-    }
+    return new NextResponse(null, { status: 200 })
 }
