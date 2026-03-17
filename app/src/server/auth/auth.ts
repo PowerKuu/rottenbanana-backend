@@ -28,6 +28,7 @@ export const auth = betterAuth({
     },
     emailVerification: {
         sendOnSignUp: true,
+        callbackURL: "/auth/email-verified",
         async sendVerificationEmail(data) {
             const template = emailTemplates.verifyEmail(data.url)
             await resend.emails.send({
