@@ -376,8 +376,8 @@ Example showcase prompts:
 `
 
 async function generatePostData(minProducts: number, maxProducts: number) {
-    const MAX_PRODUCT_SELECTION_PER_SLOT = 3
-    const MAX_MUSIC_SELECTION = 3
+    const MAX_PRODUCT_SELECTION_PER_SLOT = 6
+    const MAX_MUSIC_SELECTION = 5
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
     const MAX_SHOWCASE_PROMPTS = 3
