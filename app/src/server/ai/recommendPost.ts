@@ -14,6 +14,15 @@ export async function recommendPost(user: User, take: number) {
         orderBy: {
             createdAt: "desc"
         },
+        take
+    })
+
+    return recommendedPosts
+}
+
+export async function getFullPost(id: string) {
+    return prisma.post.findUnique({
+        where: { id },
         include: {
             _count: {
                 select: {
@@ -33,8 +42,5 @@ export async function recommendPost(user: User, take: number) {
             preferenceTags: true,
             music: true
         },
-        take
     })
-
-    return recommendedPosts
 }

@@ -9,12 +9,18 @@ export async function recommendProducts(user: User, take: number) {
         orderBy: {
             createdAt: "desc"
         },
-        include: {
-            store: true,
-            preferenceTags: true
-        },
         take
     })
 
     return recommendedProducts
+}
+
+export async function getFullProduct(id: string) {
+    return prisma.product.findUnique({
+        where: { id },
+        include: {
+            store: true,
+            preferenceTags: true
+        },
+    })
 }
