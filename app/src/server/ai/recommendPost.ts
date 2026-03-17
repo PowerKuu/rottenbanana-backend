@@ -20,7 +20,9 @@ async function fetchCandidates(userId: string, gender: User["gender"], unseenOnl
             gender: gender ?? undefined
         },
         include: { preferenceTags: true },
-        take: CANDIDATE_POOL,
+        // No take limit for unseen so we never miss posts due to pool cap.
+        // For the seen fallback we cap to avoid loading the entire table.
+        ...(unseenOnly ? {} : { take: CANDIDATE_POOL }),
         orderBy: { createdAt: "desc" }
     })
 }
@@ -73,9 +75,9 @@ export async function recommendPost(user: User, take: number) {
 
     const unseen = await fetchCandidates(user.id, user.gender, true)
 
+    // Always prefer unseen posts. Only fall back to seen when none remain.
     if (unseen.length > 0) return selectPosts(unseen, userTagScores, take)
 
-    // All posts seen — cycle through
     const all = await fetchCandidates(user.id, user.gender, false)
     return selectPosts(all, userTagScores, take)
 }
