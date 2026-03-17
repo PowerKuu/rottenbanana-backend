@@ -504,6 +504,7 @@ CRITICAL REQUIREMENTS:
 - Natural and realistic product presentation matching the source images
 - DO NOT modify clothing functionality to show layered pieces or logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or logos, that is acceptable and preferred over altering the garment's design or functionality
 - DO NOT add additional products or accessories that are not in the original product selection - the focus should be on showcasing the selected products authentically
+- IMPORTANT: When showcasing with model. Do not mistake back neck logos/brand tags as front design elements - keep them in their original back neck position.
 `
 
 async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
