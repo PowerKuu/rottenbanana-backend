@@ -318,11 +318,8 @@ async function getPostProductSelection(
 const generatePostProductsPrompt = (
     selection: Awaited<ReturnType<typeof getPostProductSelection>>,
     musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
-    showcasePrompts: string[],
-    modelShowcasePrompts: string[],
     minProducts: number,
     maxProducts: number,
-    maxPrompts: number
 ) => `
 You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
 
@@ -363,23 +360,22 @@ Select 1 music track that matches the vibe and style of the outfit.
 ${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
 """
 
-SHOWCASE PROMPTS:
+EXAMPLE SHOWCASE PROMPTS:
 """
-Select ${maxPrompts} showcase prompts for the outfit images. Prefer a combination of model and showcase prompts for variety.
-
-Flat lay:
-${showcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join("\n")}
-
-Model wearing outfit:
-${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join("\n")}
+Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting
+Products laid out on wooden floor, minimal background, even lighting
+Model standing against plain wall, natural pose, good lighting, clean background
+Model sitting on concrete steps, casual pose, urban setting, natural light
 """
 `
 
-async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
+async function generatePostData(minProducts: number, maxProducts: number) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 3
     const MAX_MUSIC_SELECTION = 3
     const MAX_TAGS = 3
-
+    const MIN_SHOWCASE_PROMPTS = 2
+    const MAX_SHOWCASE_PROMPTS = 3
+    
     const gender = await getGender()
     const region = await getRegion()
 
@@ -397,26 +393,6 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         throw new Error(`Not enough products available to meet the minimum requirement of ${minProducts}`)
     }
 
-    const IMAGE_PROMPTS: string[] = [
-        "Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting",
-        "Products laid out on wooden floor, minimal background, even lighting",
-        "Products on white marble surface, clean background, professional studio lighting",
-        "Products displayed on neutral fabric surface, simple flat lay, soft lighting",
-        "Products arranged on light wood table, minimal styling, natural window light",
-        "Products on solid gray background, centered composition, even lighting"
-    ]
-
-    const MODEL_IMAGE_PROMPTS: string[] = [
-        "Model standing against plain wall, natural pose, good lighting, clean background",
-        "Model sitting on concrete steps, casual pose, urban setting, natural light",
-        "Model standing in neutral indoor space, relaxed pose, soft even lighting",
-        "Model leaning against brick wall, confident stance, simple background",
-        "Model standing outdoors, natural environment, soft daylight, clean composition",
-        "Model sitting cross-legged, simple background, studio lighting",
-        "Model walking naturally, urban street background, good natural lighting",
-        "Model standing in doorway, casual pose, architectural framing, natural light"
-    ]
-
     const GeneratePostProductsSchema = z.object({
         products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
         caption: z
@@ -427,19 +403,16 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
-            .min(prompts)
-            .max(prompts)
-            .describe("Selected showcase prompts from the available options")
+            .min(MIN_SHOWCASE_PROMPTS)
+            .max(MAX_SHOWCASE_PROMPTS)
+            .describe("Creative prompts for showcasing the outfit in the post's images. Try to be AI-friendly and not create too many convoluted requirements for the generated images")
     })
 
     const prompt = generatePostProductsPrompt(
         productSelection,
         musicSelection,
-        IMAGE_PROMPTS,
-        MODEL_IMAGE_PROMPTS,
         minProducts,
         maxProducts,
-        prompts
     )
 
     console.log("Generated prompt for product selection:", prompt)
@@ -509,8 +482,9 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     }
 }
 
-const generatePostImagePrompt = (prompt: string, products: Product[]) => `
+const generatePostImagePrompt = (prompt: string, gender: Gender, products: Product[]) => `
 Create a professional fashion photography image for social media. Based on the prompt.
+Gender: ${gender}
 
 PROMPT:
 ${prompt}
@@ -521,12 +495,13 @@ ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).
 CRITICAL REQUIREMENTS:
 - Professional photography quality with good lighting
 - Natural and realistic product presentation matching the source images
-- DO NOT modify clothing functionality to show layered pieces - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers, that is acceptable and preferred over altering the garment's design or functionality
+- DO NOT modify clothing functionality to show layered pieces or logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or logos, that is acceptable and preferred over altering the garment's design or functionality
+- DO NOT add additional products or accessories that are not in the original product selection - the focus should be on showcasing the selected products authentically
 `
 
-async function generatePostImage(prompt: string, products: Product[], images: Buffer[]) {
+async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
     const image = await generateImageGoogle(
-        generatePostImagePrompt(prompt, products),
+        generatePostImagePrompt(prompt, gender, products),
         "gemini-3.1-flash-image-preview",
         images,
         "image/png",
@@ -541,16 +516,10 @@ async function generatePostImage(prompt: string, products: Product[], images: Bu
 }
 
 export async function generatePost() {
-    const MIN_IMAGES = 2
-    const MAX_IMAGES = 2
-
     const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = 6
 
-    const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
-
     const { products, caption, music, showcasePrompts, region, tags, gender } = await generatePostData(
-        images,
         MIN_PRODUCTS,
         MAX_PRODUCTS
     )
@@ -573,7 +542,7 @@ export async function generatePost() {
 
     const uploadedImageIds = await Promise.all(
         showcasePrompts.map(async (prompt, index) => {
-            const image = await generatePostImage(prompt, products, prodcutImageBuffers)
+            const image = await generatePostImage(prompt, gender, products, prodcutImageBuffers)
             const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
             const uploadedImage = await uploadFile(imageFile)
             return uploadedImage.id
