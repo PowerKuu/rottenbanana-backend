@@ -363,13 +363,14 @@ ${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${musi
 SHOWCASE PROMPTS REQUIREMENTS:
 """
 Generate exactly ${minShowcasePrompts}-${maxShowcasePrompts} creative prompts for showcasing the outfit.
-DO NOT mention specific products, colors, or product descriptions in the prompts! Focus only on setting, model, composition, pose, and lighting.
+DO NOT mention specific products, colors, or product descriptions in the prompts! Focus only on setting, model, composition, framing, pose, and lighting.
+You may select a mix of model shots and products only compositions.
 
 Example showcase prompts:
-- Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting
-- Products laid out on wooden floor, minimal background, even lighting
-- Model standing against plain wall, natural pose, good lighting, clean background
-- Model sitting on concrete steps, casual pose, urban setting, natural light
+- Model standing in a bright, sun-drenched studio against a neutral backdrop, looking away with a soft, natural expression.,
+- Outfit items arranged neatly on a light-colored wooden surface, captured from a top-down perspective with soft side-lighting.,
+- Medium shot of the model walking through a minimalist urban park, natural motion capture, focusing on the silhouette and fabric movement.
+- A top-down flat lay on a textured stone floor, showcasing the ensemble arranged in a clean, geometric composition under even morning light.
 """
 `
 
@@ -504,6 +505,7 @@ CRITICAL REQUIREMENTS:
 - Natural and realistic product presentation matching the source images
 - DO NOT modify clothing functionality to show layered pieces or hidden branding/logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or branding/logos, that is acceptable and preferred over altering the garment's design or functionality
 - DO NOT add additional products or accessories that are not in the original product images
+- If no footwear is present, you may add white socks or shoes if barefoot is not appropriate for the outfit
 `
 
 async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
