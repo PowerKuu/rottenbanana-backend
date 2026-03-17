@@ -26,7 +26,13 @@ async function getRegion() {
     return regions[randomIndex]
 }
 
-async function getPostMusicSelection(tag: PreferenceTag | null, take: number) {
+async function getGender() {
+        const GENDERS = [Gender.MALE, Gender.FEMALE]
+    const gender = GENDERS[Math.floor(Math.random() * GENDERS.length)]
+    return gender
+}
+
+async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, take: number) {
     const whereWithTag: Prisma.MusicWhereInput = {
         ...(tag && {
             preferenceTags: {
@@ -34,7 +40,12 @@ async function getPostMusicSelection(tag: PreferenceTag | null, take: number) {
                     preferenceTagId: tag.id
                 }
             }
-        })
+        }),
+                    regions: {
+                some: {
+                    id: region.id
+                }
+            }
     }
 
     const countWithTag = await prisma.music.count({ where: whereWithTag })
@@ -55,7 +66,12 @@ async function getPostMusicSelection(tag: PreferenceTag | null, take: number) {
     const whereAdditional: Prisma.MusicWhereInput = {
         id: {
             notIn: musicWithTag.map((music) => music.id)
-        }
+        },
+                    regions: {
+                some: {
+                    id: region.id
+                }
+            }
     }
 
     const countAdditional = await prisma.music.count({ where: whereAdditional })
@@ -224,10 +240,7 @@ async function getSlotRandomProducts(slot: ProductSlot, region: Region, gender: 
     return [...productsWithTag, ...additionalProducts]
 }
 
-async function getPostProductSelection(region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
-    const GENDERS = [Gender.MALE, Gender.FEMALE]
-    const gender = GENDERS[Math.floor(Math.random() * GENDERS.length)]
-
+async function getPostProductSelection(gender: Gender, region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
     const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
@@ -364,10 +377,12 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     const MAX_MUSIC_SELECTION = 3
     const MAX_TAGS = 3
 
+    const gender = await getGender()
     const region = await getRegion()
+
     const seedPreferenceTag = await getSeedPreferenceTag()
-    const musicSelection = await getPostMusicSelection(seedPreferenceTag, MAX_MUSIC_SELECTION)
-    const productSelection = await getPostProductSelection(region, seedPreferenceTag, MAX_PRODUCT_SELECTION_PER_SLOT)
+    const musicSelection = await getPostMusicSelection(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
+    const productSelection = await getPostProductSelection(gender, region, seedPreferenceTag, MAX_PRODUCT_SELECTION_PER_SLOT)
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
     if (possibleProducts < minProducts) {
@@ -477,7 +492,8 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         music,
         showcasePrompts,
         region,
-        tags
+        tags,
+        gender
     }
 }
 
@@ -520,7 +536,7 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, music, showcasePrompts, region, tags } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, music, showcasePrompts, region, tags, gender } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
     console.log(products.map((product) => product.url), caption, music, showcasePrompts, region)
 
@@ -548,6 +564,7 @@ export async function generatePost() {
     const post = await prisma.post.create({
         data: {
             caption,
+            gender,
             imageIds: uploadedImageIds,
             regionId: region.id,
             musicId: music.id,

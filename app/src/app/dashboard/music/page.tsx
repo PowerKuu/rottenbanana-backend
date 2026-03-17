@@ -10,6 +10,7 @@ import { getAllMusic } from "@/server/admin/actions/music"
 import { Music } from "@/prisma/client"
 
 type MusicWithCount = Music & {
+    regions: { id: string; name: string }[]
     _count: {
         posts: number
         preferenceTags: number
@@ -85,6 +86,7 @@ export default function MusicPage() {
                             musicId={item.musicId}
                             description={item.description}
                             tags={item.preferenceTags.map((pt) => pt.preferenceTag.tag)}
+                            regions={item.regions}
                             postCount={item._count.posts}
                             tagCount={item._count.preferenceTags}
                             onEdit={() => handleEdit(item)}

@@ -8,6 +8,7 @@ import { analyzeMusic } from "@/server/ai/analyzeMusic"
 export async function getAllMusic() {
     const music = await prisma.music.findMany({
         include: {
+            regions: true,
             _count: {
                 select: {
                     posts: true,
@@ -36,7 +37,11 @@ export async function getMusicById(musicId: string) {
     return music
 }
 
-export async function createMusic({ name, musicId }: { name: string; musicId: string }) {
+export async function createMusic({ name, musicId, regionIds }: { name: string; musicId: string; regionIds?: string[] }) {
+    if (!regionIds || regionIds.length === 0) {
+        throw new Error("At least one region is required")
+    }
+
     const file = await getFile(musicId)
     const buffer = await readFileBuffer(file)
 
@@ -46,7 +51,10 @@ export async function createMusic({ name, musicId }: { name: string; musicId: st
         data: {
             name: name.trim(),
             description,
-            musicId
+            musicId,
+            regions: {
+                connect: regionIds.map((id) => ({ id }))
+            }
         }
     })
 
@@ -70,11 +78,16 @@ export async function createMusic({ name, musicId }: { name: string; musicId: st
     return music
 }
 
-export async function updateMusic({ id, name }: { id: string; name?: string }) {
+export async function updateMusic({ id, name, regionIds }: { id: string; name?: string; regionIds?: string[] }) {
+    if (regionIds !== undefined && regionIds.length === 0) {
+        throw new Error("At least one region is required")
+    }
+
     const music = await prisma.music.update({
         where: { id },
         data: removeUndefinedValues({
-            name: name?.trim()
+            name: name?.trim(),
+            regions: regionIds !== undefined ? { set: regionIds.map((id) => ({ id })) } : undefined
         })
     })
 

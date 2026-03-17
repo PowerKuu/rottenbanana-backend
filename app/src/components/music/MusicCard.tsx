@@ -12,6 +12,7 @@ export function MusicCard({
     musicId,
     description,
     tags,
+    regions,
     postCount,
     tagCount,
     onEdit,
@@ -22,6 +23,7 @@ export function MusicCard({
     musicId: string
     description?: string
     tags?: string[]
+    regions?: { id: string; name: string }[]
     postCount: number
     tagCount: number
     onEdit?: () => void
@@ -87,6 +89,21 @@ export function MusicCard({
                             <p className="text-sm text-muted-foreground line-clamp-2">
                                 {description}
                             </p>
+                        )}
+
+                        {regions && regions.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                                {regions.slice(0, 3).map((region) => (
+                                    <Badge key={region.id} className="text-xs">
+                                        {region.name}
+                                    </Badge>
+                                ))}
+                                {regions.length > 3 && (
+                                    <Badge variant="outline" className="text-xs">
+                                        +{regions.length - 3} more
+                                    </Badge>
+                                )}
+                            </div>
                         )}
 
                         {tags && tags.length > 0 && (

@@ -5,7 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { MultiSelect } from "@/components/ui/multi-select"
 import { createMusic, updateMusic } from "@/server/admin/actions/music"
+import { getAllRegions } from "@/server/admin/actions/regions"
 import { Music } from "@/prisma/client"
 
 export function MusicFormDialog({
@@ -23,13 +25,37 @@ export function MusicFormDialog({
     const [audioFile, setAudioFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [selectedRegionIds, setSelectedRegionIds] = useState<string[]>([])
+    const [availableRegions, setAvailableRegions] = useState<{ id: string; name: string }[]>([])
+
+    // Fetch regions on mount
+    useEffect(() => {
+        const loadRegions = async () => {
+            try {
+                const regions = await getAllRegions()
+                setAvailableRegions(regions.map(r => ({ id: r.id, name: r.name })))
+                // Select all regions by default for create mode
+                if (!music) {
+                    setSelectedRegionIds(regions.map(r => r.id))
+                }
+            } catch (err) {
+                console.error("Failed to load regions:", err)
+            }
+        }
+        if (open) {
+            loadRegions()
+        }
+    }, [open, music])
 
     useEffect(() => {
         if (music) {
             setName(music.name)
+            // @ts-expect-error - Music type doesn't include regions yet
+            setSelectedRegionIds(music.regions?.map((r: { id: string }) => r.id) || [])
         } else {
             setName("")
             setAudioFile(null)
+            // Region selection is handled in loadRegions
         }
         setError("")
     }, [music, open])
@@ -59,6 +85,11 @@ export function MusicFormDialog({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
+
+        if (selectedRegionIds.length === 0) {
+            setError("At least one region is required")
+            return
+        }
 
         if (!name.trim()) {
             setError("Music name is required")
@@ -106,12 +137,14 @@ export function MusicFormDialog({
             if (music) {
                 await updateMusic({
                     id: music.id,
-                    name
+                    name,
+                    regionIds: selectedRegionIds
                 })
             } else {
                 await createMusic({
                     name,
-                    musicId
+                    musicId,
+                    regionIds: selectedRegionIds
                 })
             }
 
@@ -143,6 +176,22 @@ export function MusicFormDialog({
                             autoFocus
                         />
                         <p className="text-xs text-muted-foreground">A descriptive name for this music track</p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="regions">
+                            Regions <span className="text-destructive">*</span>
+                        </Label>
+                        <MultiSelect
+                            options={availableRegions}
+                            value={selectedRegionIds}
+                            onChange={setSelectedRegionIds}
+                            placeholder="Select regions"
+                            disabled={loading}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Select which regions this music is available in
+                        </p>
                     </div>
 
                     <div className="space-y-2">

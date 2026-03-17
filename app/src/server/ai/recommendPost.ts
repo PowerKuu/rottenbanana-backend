@@ -8,7 +8,8 @@ export async function recommendPost(user: User, take: number) {
                 none: {
                     userId: user.id
                 }
-            }
+            },
+            gender: user.gender || undefined,
         },
         orderBy: {
             createdAt: "desc"
