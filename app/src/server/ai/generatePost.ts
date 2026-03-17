@@ -396,7 +396,7 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
 
     const GeneratePostProductsSchema = z.object({
         products: z.array(z.string()).min(minProducts).max(maxProducts).describe("Array of selected product IDs"),
-        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style"),
+        caption: z.string().describe("A catchy caption for the post that highlights the outfit and its style. Don't include hashtags!"),
         musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
