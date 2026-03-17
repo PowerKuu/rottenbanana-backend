@@ -465,14 +465,10 @@ Create a professional fashion photography image for social media. Based on the p
 PROMPT:
 ${prompt}
 
-PRODUCTS TO INCLUDE:
-The first ${products.length} image(s) show the products to include in this outfit:
+THE ${products.length} PRODUCT IMAGE(S):
 ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
 
 CRITICAL REQUIREMENTS:
-- Use the EXACT colors, patterns, and details shown in the product images above
-- Do NOT make assumptions about colors based on product type - use the actual images
-- All products must be clearly visible and recognizable
 - Professional photography quality with good lighting
 - Natural and realistic product presentation matching the source images
 `
