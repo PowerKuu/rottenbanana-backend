@@ -320,6 +320,8 @@ const generatePostProductsPrompt = (
     musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
     minProducts: number,
     maxProducts: number,
+    minShowcasePrompts: number,
+    maxShowcasePrompts: number,
 ) => `
 You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
 
@@ -360,12 +362,16 @@ Select 1 music track that matches the vibe and style of the outfit.
 ${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
 """
 
-EXAMPLE SHOWCASE PROMPTS:
+SHOWCASE PROMPTS REQUIREMENTS:
 """
-Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting
-Products laid out on wooden floor, minimal background, even lighting
-Model standing against plain wall, natural pose, good lighting, clean background
-Model sitting on concrete steps, casual pose, urban setting, natural light
+Generate exactly ${minShowcasePrompts}-${maxShowcasePrompts} creative prompts for showcasing the outfit.
+DO NOT mention specific products, colors, or product descriptions in the prompts! Focus only on setting, model, composition, pose, and lighting.
+
+Example showcase prompts:
+- Products arranged flat on concrete surface, overhead shot, clean composition, natural lighting
+- Products laid out on wooden floor, minimal background, even lighting
+- Model standing against plain wall, natural pose, good lighting, clean background
+- Model sitting on concrete steps, casual pose, urban setting, natural light
 """
 `
 
@@ -405,7 +411,7 @@ async function generatePostData(minProducts: number, maxProducts: number) {
             .array(z.string())
             .min(MIN_SHOWCASE_PROMPTS)
             .max(MAX_SHOWCASE_PROMPTS)
-            .describe("Creative prompts for showcasing the outfit in the post's images. Try to be AI-friendly and not create too many convoluted requirements for the generated images")
+            .describe("Creative prompts for showcasing the outfit in the post's images.")
     })
 
     const prompt = generatePostProductsPrompt(
@@ -413,6 +419,8 @@ async function generatePostData(minProducts: number, maxProducts: number) {
         musicSelection,
         minProducts,
         maxProducts,
+        MIN_SHOWCASE_PROMPTS,
+        MAX_SHOWCASE_PROMPTS,
     )
 
     console.log("Generated prompt for product selection:", prompt)
