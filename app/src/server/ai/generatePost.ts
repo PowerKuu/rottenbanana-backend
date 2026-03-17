@@ -362,6 +362,7 @@ ${modelShowcasePrompts.map((prompt, index) => `  ${index + 1}. ${prompt}`).join(
 async function generatePostData(prompts: number, minProducts: number, maxProducts: number) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 5
     const MAX_MUSIC_SELECTION = 3
+    const MAX_TAGS = 3
 
     const region = await getRegion()
     const seedPreferenceTag = await getSeedPreferenceTag()
@@ -427,9 +428,29 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
     const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
 
     const products = await prisma.product.findMany({
+        include: {
+            preferenceTags: true
+        },
         where: {
             id: {
                 in: prodcutsIds
+            }
+        }
+    })
+
+    const tagCounts: Record<string, number> = {}
+
+    for (const { preferenceTags } of products) {
+        for (const { preferenceTagId } of preferenceTags) {
+            tagCounts[preferenceTagId] = (tagCounts[preferenceTagId] || 0) + 1
+        }
+    }
+
+    const sortedTagCounts = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])
+    const tags = await prisma.preferenceTag.findMany({
+        where: {
+            id: {
+                in: sortedTagCounts.slice(0, MAX_TAGS).map(([tagId]) => tagId)
             }
         }
     })
@@ -455,7 +476,8 @@ async function generatePostData(prompts: number, minProducts: number, maxProduct
         products,
         music,
         showcasePrompts,
-        region
+        region,
+        tags
     }
 }
 
@@ -498,7 +520,7 @@ export async function generatePost() {
 
     const images = Math.floor(Math.random() * (MAX_IMAGES - MIN_IMAGES + 1)) + MIN_IMAGES
 
-    const { products, caption, music, showcasePrompts, region } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
+    const { products, caption, music, showcasePrompts, region, tags } = await generatePostData(images, MIN_PRODUCTS, MAX_PRODUCTS)
 
     console.log(products.map((product) => product.url), caption, music, showcasePrompts, region)
 
@@ -532,6 +554,17 @@ export async function generatePost() {
             isOfficial: true
         }
     })
+
+    await Promise.all(
+        tags.map((tag) =>
+            prisma.postPreferenceTag.create({
+                data: {
+                    postId: post.id,
+                    preferenceTagId: tag.id
+                }
+            })
+        )
+    )
 
     await Promise.all(
         products.map((product) =>
