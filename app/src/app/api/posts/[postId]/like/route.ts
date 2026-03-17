@@ -16,15 +16,35 @@ export async function POST(
     }
 
     try {
-        await prisma.postLike.create({
-            data: {
-                postId,
-                userId: session.user.id
+        const existingLike = await prisma.postLike.findUnique({
+            where: {
+                userId_postId: {
+                    userId: session.user.id,
+                    postId
+                }
             }
         })
 
-        return new NextResponse("Post liked", { status: 200 })
+        if (existingLike) {
+            await prisma.postLike.delete({
+                where: {
+                    userId_postId: {
+                        userId: session.user.id,
+                        postId
+                    }
+                }
+            })
+            return new NextResponse("Post unliked", { status: 200 })
+        } else {
+            await prisma.postLike.create({
+                data: {
+                    postId,
+                    userId: session.user.id
+                }
+            })
+            return new NextResponse("Post liked", { status: 200 })
+        }
     } catch (error) {
-        return new NextResponse(error instanceof Error ? error.message : "Error liking post", { status: 404 })
+        return new NextResponse(error instanceof Error ? error.message : "Error toggling like", { status: 404 })
     }
 }
