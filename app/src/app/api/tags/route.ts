@@ -10,5 +10,20 @@ export async function GET() {
         },
         orderBy: { tag: "asc" }
     })
-    return NextResponse.json(tags)
+
+
+    const tagsWithScore = await Promise.all(
+        tags.map(async (tag) => {
+            const count = await prisma.userPreferenceTag.aggregate({
+                where: { preferenceTagId: tag.id },
+                _sum: { score: true }
+            }).then(result => result._sum.score || 0)
+
+            return { ...tag, count }
+        })
+    )
+
+    const sortedTags = tagsWithScore.sort((a, b) => b.count - a.count)
+
+    return NextResponse.json(sortedTags)
 }
