@@ -13,6 +13,25 @@ export async function recommendPost(user: User, take: number) {
         orderBy: {
             createdAt: "desc"
         },
+        include: {
+            _count: {
+                select: {
+                    views: true,
+                    likes: true
+                }
+            },
+            products: {
+                include: {
+                    product: {
+                        include: {
+                            store: true
+                        }
+                    }
+                }
+            },
+            preferenceTags: true,
+            music: true,
+        },
         take
     })
 

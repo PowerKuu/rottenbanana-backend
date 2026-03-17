@@ -70,7 +70,8 @@ export async function scrapeProduct(url: string) {
                 )
 
                 const result = await uploadFromExternalUrl(externalUrl, {
-                    removeBackground: !keepBackground
+                    removeBackground: !keepBackground,
+                    compress: false
                 })
 
                 return result.id
