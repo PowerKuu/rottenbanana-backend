@@ -2,6 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { generatePost } from "@/server/ai/generatePost"
+import { Gender } from "@/prisma/enums"
 
 const PAGE_SIZE = 24
 
@@ -91,7 +92,7 @@ export async function deletePost(postId: string) {
     return post
 }
 
-export async function createPost() {
-    const post = await generatePost()
+export async function createPost(overrideGender?: Gender) {
+    const post = await generatePost(overrideGender)
     return post
 }

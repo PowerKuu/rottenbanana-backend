@@ -373,14 +373,14 @@ Example showcase prompts:
 """
 `
 
-async function generatePostData(minProducts: number, maxProducts: number) {
+async function generatePostData(minProducts: number, maxProducts: number, overrideGender?: Gender) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 3
     const MAX_MUSIC_SELECTION = 6
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
     const MAX_SHOWCASE_PROMPTS = 3
     
-    const gender = await getGender()
+    const gender  = overrideGender || await getGender()
     const region = await getRegion()
 
     const seedPreferenceTag = await getSeedPreferenceTag()
@@ -502,9 +502,8 @@ ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).
 CRITICAL REQUIREMENTS:
 - Professional photography quality with good lighting
 - Natural and realistic product presentation matching the source images
-- DO NOT modify clothing functionality to show layered pieces or logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or logos, that is acceptable and preferred over altering the garment's design or functionality
-- DO NOT add additional products or accessories that are not in the original product selection - the focus should be on showcasing the selected products authentically
-- IMPORTANT: When showcasing with model. Do not mistake back neck logos/brand tags as front design elements - keep them in their original back neck position.
+- DO NOT modify clothing functionality to show layered pieces or hidden branding/logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or branding/logos, that is acceptable and preferred over altering the garment's design or functionality
+- DO NOT add additional products or accessories that are not in the original product images
 `
 
 async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
@@ -523,13 +522,14 @@ async function generatePostImage(prompt: string, gender: Gender, products: Produ
     return image
 }
 
-export async function generatePost() {
+export async function generatePost(overrideGender?: Gender) {
     const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = 6
 
     const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } = await generatePostData(
         MIN_PRODUCTS,
-        MAX_PRODUCTS
+        MAX_PRODUCTS,
+        overrideGender
     )
 
     console.log(

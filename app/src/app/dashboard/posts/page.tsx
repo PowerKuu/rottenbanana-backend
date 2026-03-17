@@ -21,6 +21,7 @@ export default function PostsPage() {
     const [selectedPost, setSelectedPost] = useState<{ id: string; caption: string | null } | null>(null)
     const [page, setPage] = useState(1)
     const [createLoading, setCreateLoading] = useState(false)
+    const [gender, setGender] = useState<string>("random")
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -65,7 +66,8 @@ export default function PostsPage() {
         setCreateLoading(true)
         setError(null)
         try {
-            await createPost()
+            const overrideGender = gender === "random" ? undefined : (gender as "MALE" | "FEMALE")
+            await createPost(overrideGender)
             // Reset to page 1 and refresh
             setPage(1)
             const data = await getPosts({ page: 1 })
@@ -83,7 +85,12 @@ export default function PostsPage() {
 
     return (
         <div className="space-y-6">
-            <PostsHeader onCreateClick={handleCreatePost} isLoading={createLoading} />
+            <PostsHeader
+                onCreateClick={handleCreatePost}
+                isLoading={createLoading}
+                gender={gender}
+                onGenderChange={setGender}
+            />
 
             {error && (
                 <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">

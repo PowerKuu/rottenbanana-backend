@@ -85,6 +85,8 @@ ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ""}
 
 I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
 
+CRITICAL: You MUST identify the standalone product image (flat-lay, mannequin, or product-only shot) with 100% certainty. This must show ONLY the product itself with NO person wearing it. Only return null if you are absolutely certain EVERY image shows a person wearing the product.
+
 CATEGORY DESCRIPTIONS:
 """
 ${Object.entries(productCategoryDescriptions)
@@ -141,18 +143,27 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
             ),
         productOnlyImageIndex: z
             .number()
+            .int()
+            .min(0)
+            .max(scrapedProduct.imageUrls.length - 1)
             .nullable()
             .describe(
-                "Index of the flat-lay or product-only image without a model wearing it, or null if all images show a person"
+                "Index of standalone product image (flat-lay/mannequin/product-only). Must be 100% certain: ONLY the product itself, NO person wearing it. Null only if EVERY image has a person wearing the product."
             ),
         personFrontImageIndex: z
             .number()
+            .int()
+            .min(0)
+            .max(scrapedProduct.imageUrls.length - 1)
             .nullable()
             .describe(
                 "Index of the clearest front-facing image of a person wearing the product, or null if none exists"
             ),
         personBackImageIndex: z
             .number()
+            .int()
+            .min(0)
+            .max(scrapedProduct.imageUrls.length - 1)
             .nullable()
             .describe("Index of the clearest back-facing image of a person wearing the product, or null if none exists")
     })
@@ -171,7 +182,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
     ])
 
     const response = await generateText({
-        model: "google/gemini-3-flash",
+        model: "openai/gpt-4.1-mini",
         output: Output.object({
             schema: AnalyzeProductSchema
         }),
