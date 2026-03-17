@@ -1,15 +1,26 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { PendingProductCard } from "@/components/pending-products/PendingProductCard"
+import { SwipeCard } from "@/components/pending-products/SwipeCard"
 import { ProductsPagination } from "@/components/Pagination"
-import { ArrowLeft, Shuffle } from "lucide-react"
-import { getPendingProducts, getAllPendingProducts } from "@/server/admin/actions/pendingProducts"
+import { ArrowLeft, Check, Layers, X } from "lucide-react"
+import { getPendingProducts, getAllPendingProducts, updatePendingProductStatus } from "@/server/admin/actions/pendingProducts"
+
+function fisherYates<T>(arr: T[]): T[] {
+    const a = [...arr]
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
+}
 import { getStoreById } from "@/server/admin/actions/stores"
 import { PendingProduct, PendingProductStatus, Store } from "@/prisma/client"
+import { toast } from "sonner"
 
 const PAGE_SIZE = 24
 
@@ -30,15 +41,10 @@ export default function StorePendingProductsPage() {
         hasPreviousPage: false
     })
 
-    // Shuffle mode state
-    const [shuffleMode, setShuffleMode] = useState(false)
-    const [allShuffled, setAllShuffled] = useState<PendingProduct[]>([])
-    const [shufflePage, setShufflePage] = useState(1)
-
-    useEffect(() => {
-        if (shuffleMode) return
-        loadStoreAndProducts()
-    }, [currentPage, statusFilter, storeId, shuffleMode])
+    // Swipe mode state
+    const [swipeMode, setSwipeMode] = useState(false)
+    const [swipeProducts, setSwipeProducts] = useState<PendingProduct[]>([])
+    const [swipeIndex, setSwipeIndex] = useState(0)
 
     useEffect(() => {
         const loadStore = async () => {
@@ -48,78 +54,69 @@ export default function StorePendingProductsPage() {
         loadStore()
     }, [storeId])
 
-    const loadStoreAndProducts = async () => {
-        setLoading(true)
-        const [storeData, productsData] = await Promise.all([
-            getStoreById(storeId),
-            getPendingProducts({ page: currentPage, status: statusFilter, storeId })
-        ])
-        setStore(storeData)
-        setPendingProducts(productsData.pendingProducts)
-        setPagination(productsData.pagination)
-        setLoading(false)
-    }
+    useEffect(() => {
+        if (swipeMode) return
+        loadGridProducts()
+    }, [currentPage, statusFilter, storeId, swipeMode])
 
-    const loadPendingProducts = async () => {
-        if (shuffleMode) {
-            // Reload and re-shuffle all
-            const all = await getAllPendingProducts({ status: statusFilter, storeId })
-            const shuffled = [...all].sort(() => Math.random() - 0.5)
-            setAllShuffled(shuffled)
-            return
-        }
+    const loadGridProducts = async () => {
+        setLoading(true)
         const data = await getPendingProducts({ page: currentPage, status: statusFilter, storeId })
         setPendingProducts(data.pendingProducts)
         setPagination(data.pagination)
+        setLoading(false)
     }
+
+    const handleEnterSwipeMode = async () => {
+        setLoading(true)
+        setSwipeMode(true)
+        const all = await getAllPendingProducts({ status: statusFilter, storeId })
+        setSwipeProducts(fisherYates(all))
+        setSwipeIndex(0)
+        setLoading(false)
+    }
+
+    const handleExitSwipeMode = () => {
+        setSwipeMode(false)
+        setSwipeProducts([])
+        setSwipeIndex(0)
+        loadGridProducts()
+    }
+
+    const handleDecision = useCallback((status: "APPROVED" | "REJECTED") => {
+        const product = swipeProducts[swipeIndex]
+        if (!product) return
+        setSwipeIndex((i) => i + 1)
+        updatePendingProductStatus({ id: product.id, status }).catch(() => {
+            toast.error(`Failed to ${status === "APPROVED" ? "approve" : "reject"} product`)
+        })
+    }, [swipeProducts, swipeIndex])
+
+    useEffect(() => {
+        if (!swipeMode) return
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") handleDecision("APPROVED")
+            else if (e.key === "ArrowLeft") handleDecision("REJECTED")
+        }
+        window.addEventListener("keydown", onKeyDown)
+        return () => window.removeEventListener("keydown", onKeyDown)
+    }, [swipeMode, handleDecision])
 
     const handleStatusChange = (value: string) => {
         setStatusFilter(value === "ALL" ? null : (value as PendingProductStatus))
         setCurrentPage(1)
-        setShufflePage(1)
-    }
-
-    const handleShuffle = async () => {
-        if (shuffleMode) {
-            // Re-shuffle in place
-            setAllShuffled((prev) => [...prev].sort(() => Math.random() - 0.5))
-            setShufflePage(1)
-            return
+        if (swipeMode) {
+            // Re-fetch and randomize for new filter
+            getAllPendingProducts({ status: value === "ALL" ? null : (value as PendingProductStatus), storeId }).then((all) => {
+                setSwipeProducts(fisherYates(all))
+                setSwipeIndex(0)
+            })
         }
-        setLoading(true)
-        setShuffleMode(true)
-        const all = await getAllPendingProducts({ status: statusFilter, storeId })
-        const shuffled = [...all].sort(() => Math.random() - 0.5)
-        setAllShuffled(shuffled)
-        setShufflePage(1)
-        setLoading(false)
     }
 
-    const handleExitShuffle = () => {
-        setShuffleMode(false)
-        setAllShuffled([])
-        setShufflePage(1)
-        loadStoreAndProducts()
-    }
-
-    // Compute current page of shuffled products
-    const shuffleTotalPages = Math.ceil(allShuffled.length / PAGE_SIZE)
-    const shuffleStart = (shufflePage - 1) * PAGE_SIZE
-    const currentProducts = shuffleMode ? allShuffled.slice(shuffleStart, shuffleStart + PAGE_SIZE) : pendingProducts
-
-    const activePagination = shuffleMode
-        ? {
-              currentPage: shufflePage,
-              totalPages: shuffleTotalPages,
-              hasNextPage: shufflePage < shuffleTotalPages,
-              hasPreviousPage: shufflePage > 1
-          }
-        : pagination
-
-    const handlePageChange = (page: number) => {
-        if (shuffleMode) setShufflePage(page)
-        else setCurrentPage(page)
-    }
+    const currentSwipeProduct = swipeProducts[swipeIndex]
+    const nextSwipeProduct = swipeProducts[swipeIndex + 1] ?? null
+    const swipeDone = swipeMode && !loading && swipeIndex >= swipeProducts.length && swipeProducts.length > 0
 
     if (!store) {
         return (
@@ -144,18 +141,25 @@ export default function StorePendingProductsPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    {shuffleMode && (
-                        <Button variant="ghost" size="sm" onClick={handleExitShuffle}>
-                            Exit shuffle
-                        </Button>
+                    {swipeMode && (
+                        <>
+                            {!loading && swipeProducts.length > 0 && (
+                                <span className="text-sm text-muted-foreground tabular-nums">
+                                    {swipeIndex} / {swipeProducts.length}
+                                </span>
+                            )}
+                            <Button variant="ghost" size="sm" onClick={handleExitSwipeMode}>
+                                Exit swipe
+                            </Button>
+                        </>
                     )}
                     <Button
-                        variant={shuffleMode ? "default" : "outline"}
+                        variant={swipeMode ? "default" : "outline"}
                         size="icon"
-                        onClick={handleShuffle}
-                        title={shuffleMode ? "Re-shuffle all products" : "Shuffle all products"}
+                        onClick={swipeMode ? handleExitSwipeMode : handleEnterSwipeMode}
+                        title={swipeMode ? "Exit swipe mode" : "Swipe mode"}
                     >
-                        <Shuffle className="h-4 w-4" />
+                        <Layers className="h-4 w-4" />
                     </Button>
                     <Select value={statusFilter ?? "ALL"} onValueChange={handleStatusChange}>
                         <SelectTrigger className="w-45">
@@ -178,34 +182,78 @@ export default function StorePendingProductsPage() {
                 <div className="flex items-center justify-center py-12">
                     <p className="text-muted-foreground">Loading...</p>
                 </div>
+            ) : swipeMode ? (
+                swipeDone ? (
+                    <div className="flex flex-col items-center justify-center py-24 gap-4">
+                        <div className="text-6xl">✓</div>
+                        <h2 className="text-xl font-semibold">All done!</h2>
+                        <p className="text-muted-foreground text-sm">
+                            {swipeProducts.length} product{swipeProducts.length !== 1 ? "s" : ""} reviewed
+                        </p>
+                        <Button variant="outline" onClick={handleEnterSwipeMode}>Reload</Button>
+                    </div>
+                ) : swipeProducts.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-24 text-center">
+                        <p className="text-muted-foreground">No products found</p>
+                    </div>
+                ) : currentSwipeProduct ? (
+                    <div className="flex flex-col items-center gap-6 py-4">
+                        <SwipeCard
+                            key={currentSwipeProduct.id}
+                            product={currentSwipeProduct}
+                            nextProduct={nextSwipeProduct}
+                            onApprove={() => handleDecision("APPROVED")}
+                            onReject={() => handleDecision("REJECTED")}
+                        />
+                        <div className="flex items-center gap-6">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-14 w-14 rounded-full border-2 border-red-400 text-red-500 hover:bg-red-50 hover:border-red-500"
+                                onClick={() => handleDecision("REJECTED")}
+                            >
+                                <X className="h-6 w-6" />
+                            </Button>
+                            <p className="text-xs text-muted-foreground select-none">← → or drag</p>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-14 w-14 rounded-full border-2 border-green-400 text-green-600 hover:bg-green-50 hover:border-green-500"
+                                onClick={() => handleDecision("APPROVED")}
+                            >
+                                <Check className="h-6 w-6" />
+                            </Button>
+                        </div>
+                    </div>
+                ) : null
             ) : (
                 <>
                     <div className="flex flex-wrap gap-4">
-                        {currentProducts.map((product) => (
+                        {pendingProducts.map((product) => (
                             <PendingProductCard
                                 key={product.id}
                                 pendingProduct={product}
-                                onSuccess={loadPendingProducts}
+                                onSuccess={loadGridProducts}
                             />
                         ))}
                     </div>
 
-                    {currentProducts.length === 0 && (
+                    {pendingProducts.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <p className="text-muted-foreground">No pending products found for this store</p>
                         </div>
                     )}
-                </>
-            )}
 
-            {activePagination.totalPages > 1 && (
-                <ProductsPagination
-                    currentPage={activePagination.currentPage}
-                    totalPages={activePagination.totalPages}
-                    hasNextPage={activePagination.hasNextPage}
-                    hasPreviousPage={activePagination.hasPreviousPage}
-                    onPageChange={handlePageChange}
-                />
+                    {pagination.totalPages > 1 && (
+                        <ProductsPagination
+                            currentPage={pagination.currentPage}
+                            totalPages={pagination.totalPages}
+                            hasNextPage={pagination.hasNextPage}
+                            hasPreviousPage={pagination.hasPreviousPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
+                </>
             )}
         </div>
     )
