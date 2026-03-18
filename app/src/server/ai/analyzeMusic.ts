@@ -32,7 +32,7 @@ export async function analyzeMusic(music: Buffer) {
     const system = `You are a music analyzer. Analyze the provided audio track to extract relevant metadata including genre, mood, instrumentation, and style.`
 
     const response = await generateText({
-        model: "google/gemini-3-flash",
+        model: "google/gemini-2.5-flash",
         output: Output.object({
             schema: AnalyzeMusicSchema
         }),
