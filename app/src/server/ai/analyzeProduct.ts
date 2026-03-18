@@ -182,7 +182,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
     ])
 
     const response = await generateText({
-        model: "openai/gpt-4.1-mini",
+        model: "google/gemini-2.5-flash",
         output: Output.object({
             schema: AnalyzeProductSchema
         }),
@@ -204,6 +204,8 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
             }
         ]
     })
+
+    
 
     return response.output
 }
