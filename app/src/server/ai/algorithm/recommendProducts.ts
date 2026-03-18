@@ -30,7 +30,10 @@ export async function recommendProducts(user: User, take: number) {
 
     const additionalProducts = await prisma.product.findMany({
         where: {
-            gender: user.gender || undefined
+            gender: user.gender || undefined,
+            id: {
+                notIn: recommendedProducts.map((product) => product.id)
+            }
         },
         orderBy: {
             createdAt: "desc"
