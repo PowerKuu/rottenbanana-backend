@@ -1,4 +1,4 @@
-import { recommendProducts } from "@/server/ai/algorithm/recommendProducts"
+import { recommendProducts } from "@/server/system/algorithm/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"

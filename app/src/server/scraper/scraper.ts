@@ -1,4 +1,4 @@
-import { analyzeProduct } from "../ai/analyzeProduct"
+import { analyzeProduct } from "../system/analyzeProduct"
 import { prisma } from "../database/prisma"
 import { scrapers } from "./scrapers"
 import { uploadFromExternalUrl } from "../uploads/upload"

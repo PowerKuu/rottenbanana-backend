@@ -399,7 +399,7 @@ model PostView {
 }
 
 model UserPreferenceTag {
-  score Int @default(0)
+  score Float @default(0)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -1,3 +1,4 @@
+import { updateUserTagsScore } from "@/server/system/algorithm/tagScore"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
@@ -12,7 +13,34 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         return new NextResponse("Unauthorized", { status: 401 })
     }
 
+    const LIKE_PREFERENCE_SCORE = 0.1
+
     try {
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+            include: {
+                preferenceTags: {
+                    include: {
+                        preferenceTag: true
+                    }
+                }
+            }
+        })
+
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        })
+
+        if (!user) {
+            return new NextResponse("User not found", { status: 404 })
+        }
+
+        if (!post) {
+            return new NextResponse("Post not found", { status: 404 })
+        }
+
+        const preferenceTags = post.preferenceTags.map((pt) => pt.preferenceTag)
+
         const existingLike = await prisma.postLike.findUnique({
             where: {
                 userId_postId: {
@@ -31,6 +59,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
                     }
                 }
             })
+
+            await updateUserTagsScore(preferenceTags, user, -LIKE_PREFERENCE_SCORE)
+
             return new NextResponse("Post unliked", { status: 200 })
         } else {
             await prisma.postLike.create({
@@ -39,6 +70,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
                     userId: session.user.id
                 }
             })
+
+            await updateUserTagsScore(preferenceTags, user, LIKE_PREFERENCE_SCORE)
+
             return new NextResponse("Post liked", { status: 200 })
         }
     } catch (error) {

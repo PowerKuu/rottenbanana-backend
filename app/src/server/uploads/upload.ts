@@ -1,7 +1,7 @@
 import { writeFile } from "fs/promises"
 import { basename, extname, join } from "path"
 import { prisma } from "../database/prisma"
-import { removeBackground } from "../ai/removeBackground"
+import { removeBackground } from "../system/removeBackground"
 import sharp from "sharp"
 
 const ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png", "webp"]

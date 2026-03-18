@@ -3,7 +3,7 @@
 import { prisma } from "@/server/database/prisma"
 import { removeUndefinedValues } from "@/lib/utils"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
-import { analyzeMusic } from "@/server/ai/analyzeMusic"
+import { analyzeMusic } from "@/server/system/analyzeMusic"
 
 export async function getAllMusic() {
     const music = await prisma.music.findMany({

@@ -1,5 +1,5 @@
-import { getFullPost, recommendPost } from "@/server/ai/algorithm/recommendPost"
-import { getFullProduct } from "@/server/ai/algorithm/recommendProducts"
+import { getFullPost, recommendPost } from "@/server/system/algorithm/recommendPost"
+import { getFullProduct } from "@/server/system/algorithm/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"

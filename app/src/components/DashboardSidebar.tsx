@@ -15,11 +15,11 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const items = [
-    { title: "Stores", url: "/dashboard/stores", icon: Store },
-    { title: "Regions", url: "/dashboard/regions", icon: Flag },
-    { title: "Tags", url: "/dashboard/tags", icon: Tag },
-    { title: "Posts", url: "/dashboard/posts", icon: FileText },
-    { title: "Music", url: "/dashboard/music", icon: Music }
+    { title: "Stores", url: "/admin/stores", icon: Store },
+    { title: "Regions", url: "/admin/regions", icon: Flag },
+    { title: "Tags", url: "/admin/tags", icon: Tag },
+    { title: "Posts", url: "/admin/posts", icon: FileText },
+    { title: "Music", url: "/admin/music", icon: Music }
 ]
 
 export function DashboardSidebar() {

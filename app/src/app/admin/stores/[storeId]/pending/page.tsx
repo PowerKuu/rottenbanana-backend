@@ -131,7 +131,7 @@ export default function StorePendingProductsPage() {
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => router.push(`/dashboard/stores`)}>
+                        <Button variant="ghost" size="icon" onClick={() => router.push(`/admin/stores`)}>
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
                         <h1 className="text-2xl font-bold tracking-tight">Pending Products - {store.name}</h1>

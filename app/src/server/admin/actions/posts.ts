@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/server/database/prisma"
-import { generatePost } from "@/server/ai/generatePost"
+import { generatePost } from "@/server/system/generatePost"
 import { Gender } from "@/prisma/enums"
 
 const PAGE_SIZE = 24

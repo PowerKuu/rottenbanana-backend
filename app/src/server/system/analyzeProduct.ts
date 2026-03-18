@@ -84,7 +84,6 @@ ${scrapedProduct.description ? `Description: ${scrapedProduct.description}` : ""
 ${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ""}
 
 I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
-
 CRITICAL: You MUST identify the standalone product image (flat-lay, mannequin, or product-only shot) with 100% certainty. This must show ONLY the product itself with NO person wearing it. Only return null if you are absolutely certain EVERY image shows a person wearing the product.
 
 CATEGORY DESCRIPTIONS:
@@ -205,7 +204,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         ]
     })
 
-    
+
 
     return response.output
 }

@@ -115,7 +115,7 @@ export default function ProductsPage() {
                     <Package className="mb-4 h-12 w-12 text-muted-foreground" />
                     <h3 className="text-lg font-semibold">{error || "Store not found"}</h3>
                     <Button asChild className="mt-4">
-                        <Link href="/dashboard/products">Back to Stores</Link>
+                        <Link href="/admin/products">Back to Stores</Link>
                     </Button>
                 </div>
             </div>

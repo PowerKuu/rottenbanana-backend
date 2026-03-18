@@ -1,4 +1,4 @@
-import { recommendPost } from "@/server/ai/algorithm/recommendPost"
+import { recommendPost } from "@/server/system/algorithm/recommendPost"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"

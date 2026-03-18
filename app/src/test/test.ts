@@ -10,7 +10,7 @@ import { join } from "path";
 import { cwd } from "process";
 import { mkdir } from "fs/promises";
 import { test } from "./fpan";
-import { drawSeedTags } from "@/server/ai/algorithm/drawSeedTags";
+import { drawSeedTags } from "@/server/system/algorithm/drawSeedTags";
 
 env.allowRemoteModels = true
 env.allowLocalModels = true
