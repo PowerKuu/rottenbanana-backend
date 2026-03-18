@@ -13,9 +13,6 @@ export async function drawSeedTags(n: number = 1, user?: User) {
         _sum: {
             score: true
         },
-        _count: {
-            userId: true
-        },
         orderBy: {
             _sum: {
                 score: "desc"
@@ -54,9 +51,6 @@ export async function drawSeedTags(n: number = 1, user?: User) {
         }
     })
 
-    console.log("Calculated tag probabilities for seed preference tag selection:", tagProbabilities)
-
-    // Draw n tags without replacement
     const selectedTags = []
     const availableTags = [...tagProbabilities]
 
@@ -69,7 +63,7 @@ export async function drawSeedTags(n: number = 1, user?: User) {
             cumulativeProbability += availableTags[j].probability
             if (random <= cumulativeProbability) {
                 selectedTags.push(availableTags[j].tag)
-                availableTags.splice(j, 1) // Remove selected tag from available pool
+                availableTags.splice(j, 1)
                 break
             }
         }
