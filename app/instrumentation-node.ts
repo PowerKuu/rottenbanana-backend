@@ -1,5 +1,7 @@
-import { startProductCronJob } from "@/server/cronjobs/products"
+import { startPendingProductsCronJob } from "@/server/cronjobs/pendingProducts"
+import { startScrapeProductsCronJob } from "@/server/cronjobs/scrapeProducts"
 
 export async function main() {
-    startProductCronJob()
+    startPendingProductsCronJob()
+    startScrapeProductsCronJob()
 }

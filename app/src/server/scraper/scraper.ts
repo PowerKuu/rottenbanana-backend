@@ -26,6 +26,16 @@ export async function scrapeProduct(url: string) {
     }
 
     const scrapedProduct = await scraper.scrape(url)
+    
+    return {
+        store,
+        scrapedProduct
+    }
+}
+
+export async function scrapeAndAnalyzeProduct(url: string) {
+    const { store, scrapedProduct } = await scrapeProduct(url)
+
     const analyzedProduct = await analyzeProduct(scrapedProduct)
 
     if (analyzedProduct.productOnlyImageIndex === null) {

@@ -1,4 +1,4 @@
-import { scrapeProduct } from "@/server/scraper/scraper"
+import { scrapeAndAnalyzeProduct, scrapeProduct } from "@/server/scraper/scraper"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
     }
-
+    
     try {
-        const product = await scrapeProduct(normalizedUrl)
+        const product = await scrapeAndAnalyzeProduct(normalizedUrl)
         return NextResponse.json({ success: true, product })
     } catch (error) {
         console.error(error)

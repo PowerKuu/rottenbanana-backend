@@ -1,9 +1,12 @@
 import { PendingProductStatus } from "@/prisma/enums"
 import { prisma } from "../database/prisma"
-import { scrapeProduct } from "../scraper/scraper"
+import { scrapeAndAnalyzeProduct, scrapeProduct } from "../scraper/scraper"
+import chalk from "chalk"
 
-const INTERVAL = 1000
-const CONCURRENCY = 3
+const INTERVAL = 1000 // 1 second
+const MAX_CONCURRENCY = 3
+
+const logPrefix = chalk.blue("[PendingProductsCronJob]")
 
 async function tickPendingProducts() {
     const approvedJobs = await prisma.pendingProduct.findMany({
@@ -22,7 +25,7 @@ async function tickPendingProducts() {
         }
     })
 
-    const availableSlots = CONCURRENCY - processingJobs.length
+    const availableSlots = MAX_CONCURRENCY - processingJobs.length
 
     if (availableSlots <= 0) {
         return
@@ -42,8 +45,10 @@ async function tickPendingProducts() {
     })
 
     for (const job of jobsToProcess) {
-        scrapeProduct(job.url)
+        scrapeAndAnalyzeProduct(job.url)
             .then(async () => {
+                console.log(`${logPrefix} Successfully processed product ${job.url}`)
+
                 await prisma.pendingProduct.update({
                     where: { id: job.id },
                     data: {
@@ -52,7 +57,7 @@ async function tickPendingProducts() {
                 })
             })
             .catch(async (error) => {
-                console.error(`Failed to process product ${job.url}:`, error)
+                console.error(`${logPrefix} Failed to process product ${job.url}:`, error)
 
                 await prisma.pendingProduct.update({
                     where: { id: job.id },
@@ -64,7 +69,7 @@ async function tickPendingProducts() {
     }
 }
 
-export function startProductCronJob() {
+export function startPendingProductsCronJob() {
     const tickJob = () => {
         setTimeout(() => tickPendingProducts().finally(tickJob), INTERVAL)
     }
