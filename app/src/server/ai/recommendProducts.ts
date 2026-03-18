@@ -12,7 +12,23 @@ export async function recommendProducts(user: User, take: number) {
         take
     })
 
-    return recommendedProducts
+    const remainingTake = take - recommendedProducts.length
+
+    if (remainingTake <= 0) {
+        return recommendedProducts
+    }
+
+    const additionalProducts = await prisma.product.findMany({
+        where: {
+            gender: user.gender || undefined
+        },
+        orderBy: {
+            createdAt: "desc"
+        },
+        take: remainingTake
+    })
+
+    return [...recommendedProducts, ...additionalProducts]
 }
 
 export async function getFullProduct(id: string) {
@@ -21,6 +37,6 @@ export async function getFullProduct(id: string) {
         include: {
             store: true,
             preferenceTags: true
-        },
+        }
     })
 }

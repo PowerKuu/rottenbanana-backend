@@ -17,7 +17,23 @@ export async function recommendPost(user: User, take: number) {
         take
     })
 
-    return recommendedPosts
+    const remainingTake = take - recommendedPosts.length
+
+    if (remainingTake <= 0) {
+        return recommendedPosts
+    }
+
+    const additionalPosts = await prisma.post.findMany({
+        where: {
+            gender: user.gender || undefined
+        },
+        orderBy: {
+            createdAt: "desc"
+        },
+        take: remainingTake
+    })
+
+    return [...recommendedPosts, ...additionalPosts]
 }
 
 export async function getFullPost(id: string) {
@@ -41,6 +57,6 @@ export async function getFullPost(id: string) {
             },
             preferenceTags: true,
             music: true
-        },
+        }
     })
 }
