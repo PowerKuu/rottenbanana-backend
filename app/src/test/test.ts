@@ -10,6 +10,7 @@ import { join } from "path";
 import { cwd } from "process";
 import { mkdir } from "fs/promises";
 import { test } from "./fpan";
+import { drawSeedTags } from "@/server/ai/algorithm/drawSeedTags";
 
 env.allowRemoteModels = true
 env.allowLocalModels = true
@@ -84,6 +85,9 @@ function interpolateKeyframes(frame: number, keyframes: Keyframe[]): { zoom: num
     };
 }
 
-test().catch(console.error);
+//test().catch(console.error);
+drawSeedTags(3).then((tags) => {
+    console.log("Drawn seed tags:", tags)
+}).catch(console.error);
 
 //testBGRM().catch(console.error);

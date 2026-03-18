@@ -1,12 +1,22 @@
 import { User } from "@/prisma/client"
-import { prisma } from "../database/prisma"
+import { prisma } from "../../database/prisma"
+import { drawSeedTags } from "./drawSeedTags"
 
 export async function recommendPost(user: User, take: number) {
+    const seedTags = await drawSeedTags(3, user)
+
     const recommendedPosts = await prisma.post.findMany({
         where: {
             views: {
                 none: {
                     userId: user.id
+                }
+            },
+            preferenceTags: {
+                some: {
+                    preferenceTagId: {
+                        in: seedTags.map((tag) => tag.id)
+                    }
                 }
             },
             gender: user.gender || undefined

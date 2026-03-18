@@ -8,6 +8,7 @@ import { uploadFile } from "../uploads/upload"
 import { getFile, readFileBuffer } from "../uploads/read"
 import { randomShuffle } from "@/lib/utils"
 import { productSlotDescriptions } from "./analyzeProduct"
+import { drawSeedTags } from "./algorithm/drawSeedTags"
 
 async function getRegion() {
     const regions = await prisma.region.findMany({
@@ -87,72 +88,6 @@ async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, 
     return [...musicWithTag, ...additionalMusic]
 }
 
-async function getSeedPreferenceTag() {
-    const PREFERENCE_BIAS = 0.05 // 0 = equal distribution, 1 = strong bias toward top items
-
-    const userTags = await prisma.userPreferenceTag.groupBy({
-        by: "preferenceTagId",
-        _sum: {
-            score: true
-        },
-        _count: {
-            userId: true
-        },
-        orderBy: {
-            _sum: {
-                score: "desc"
-            }
-        }
-    })
-
-    const tags = await prisma.preferenceTag.findMany({
-        where: {
-            productPreferenceTags: {
-                some: {}
-            }
-        }
-    })
-
-    if (tags.length <= 0) {
-        return null
-    }
-
-    const tagScores = randomShuffle(tags)
-        .map((tag) => {
-            const score = userTags.find((userTag) => userTag.preferenceTagId === tag.id)?._sum.score || 0
-
-            return {
-                tag,
-                score
-            }
-        })
-        .sort((a, b) => b.score - a.score)
-
-    const tagProbabilities = tagScores.map((tag, index) => {
-        const probability = Math.exp(-PREFERENCE_BIAS * index)
-        return {
-            ...tag,
-            probability
-        }
-    })
-
-    console.log("Calculated tag probabilities for seed preference tag selection:", tagProbabilities)
-
-    const totalProbability = tagProbabilities.reduce((sum, tag) => sum + tag.probability, 0)
-    const random = Math.random() * totalProbability
-
-    let cumulativeProbability = 0
-    for (const tag of tagProbabilities) {
-        cumulativeProbability += tag.probability
-        if (random <= cumulativeProbability) {
-            return tag.tag
-        }
-    }
-
-    const [firstTag] = tagProbabilities
-
-    return firstTag.tag
-}
 
 async function getProductDescription(product: Product) {
     const tags = await prisma.productPreferenceTag.findMany({
@@ -384,7 +319,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     const gender  = overrideGender || await getGender()
     const region = await getRegion()
 
-    const seedPreferenceTag = await getSeedPreferenceTag()
+    const [seedPreferenceTag] = await drawSeedTags()
     const musicSelection = await getPostMusicSelection(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
     const productSelection = await getPostProductSelection(
         gender,

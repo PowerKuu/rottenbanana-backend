@@ -1,10 +1,20 @@
 import { User } from "@/prisma/client"
-import { prisma } from "../database/prisma"
+import { prisma } from "../../database/prisma"
+import { drawSeedTags } from "./drawSeedTags"
 
 export async function recommendProducts(user: User, take: number) {
+    const seedTags = await drawSeedTags(3, user)
+        
     const recommendedProducts = await prisma.product.findMany({
         where: {
-            gender: user.gender || undefined
+            gender: user.gender || undefined,
+            preferenceTags: {
+                some: {
+                    preferenceTagId: {
+                        in: seedTags.map((tag) => tag.id)
+                    }
+                }
+            }
         },
         orderBy: {
             createdAt: "desc"
