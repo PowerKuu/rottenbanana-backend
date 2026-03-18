@@ -24,6 +24,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             const start = parseInt(startStr, 10)
             const end = endStr ? parseInt(endStr, 10) : total - 1
 
+            console.log(`Serving byte range: ${start}-${end} of ${total}`)
+
             return new NextResponse(new Uint8Array(buffer).subarray(start, end + 1), {
                 status: 206,
                 headers: {

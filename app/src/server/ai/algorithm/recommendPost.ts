@@ -35,6 +35,9 @@ export async function recommendPost(user: User, take: number) {
 
     const additionalPosts = await prisma.post.findMany({
         where: {
+            id: { 
+                notIn: recommendedPosts.map((p) => p.id) 
+            },
             gender: user.gender || undefined
         },
         orderBy: {
@@ -42,6 +45,7 @@ export async function recommendPost(user: User, take: number) {
         },
         take: remainingTake
     })
+
 
     return [...recommendedPosts, ...additionalPosts]
 }
