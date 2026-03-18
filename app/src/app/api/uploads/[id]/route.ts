@@ -16,6 +16,25 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
         const buffer = await readFileBuffer(file)
 
+        const total = buffer.byteLength
+        const rangeHeader = request.headers.get("Range")
+
+        if (rangeHeader) {
+            const [startStr, endStr] = rangeHeader.replace(/bytes=/, "").split("-")
+            const start = parseInt(startStr, 10)
+            const end = endStr ? parseInt(endStr, 10) : total - 1
+
+            return new NextResponse(new Uint8Array(buffer).subarray(start, end + 1), {
+                status: 206,
+                headers: {
+                    "Content-Type": file.type,
+                    "Content-Range": `bytes ${start}-${end}/${total}`,
+                    "Accept-Ranges": "bytes",
+                    "Content-Length": String(end - start + 1),
+                },
+            })
+        }
+
         return new NextResponse(new Uint8Array(buffer), {
             headers: {
                 "Content-Type": file.type
