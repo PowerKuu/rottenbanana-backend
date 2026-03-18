@@ -1,85 +1,117 @@
 import { Prisma, User } from "@/prisma/client"
+import { randomShuffle as shuffle } from "@/lib/utils"
 import { prisma } from "../database/prisma"
 
-const CANDIDATE_POOL = 50
+const log = (...args: unknown[]) => console.log("[recommend]", ...args)
 
 type PostWithTags = Prisma.PostGetPayload<{ include: { preferenceTags: true } }>
 
-function shuffle<T>(arr: T[]): T[] {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
+async function fetchRanked(
+    userId: string,
+    gender: User["gender"],
+    hasTagPreferences: boolean,
+    mainCount: number,
+    explorationCount: number,
+    unseenOnly: boolean
+): Promise<PostWithTags[]> {
+    log(`fetchRanked — unseenOnly=${unseenOnly} gender=${gender ?? "any"} hasTagPreferences=${hasTagPreferences} mainCount=${mainCount} explorationCount=${explorationCount}`)
 
-async function fetchCandidates(userId: string, gender: User["gender"], unseenOnly: boolean) {
-    return prisma.post.findMany({
-        where: {
-            ...(unseenOnly && { views: { none: { userId } } }),
-            gender: gender ?? undefined
-        },
-        include: { preferenceTags: true },
-        // No take limit for unseen so we never miss posts due to pool cap.
-        // For the seen fallback we cap to avoid loading the entire table.
-        ...(unseenOnly ? {} : { take: CANDIDATE_POOL }),
-        orderBy: { createdAt: "desc" }
+    const genderClause = gender
+        ? Prisma.sql`AND p.gender = ${gender}`
+        : Prisma.sql``
+    const seenClause = unseenOnly
+        ? Prisma.sql`AND NOT EXISTS (
+              SELECT 1 FROM "PostView" pv
+              WHERE pv."postId" = p.id AND pv."userId" = ${userId}
+          )`
+        : Prisma.sql``
+
+    // Main: top-scored posts ranked in the DB, shuffled within the top-2x pool for variety
+    let mainIds: string[] = []
+    if (hasTagPreferences) {
+        const rows = await prisma.$queryRaw<{ id: string }[]>`
+            SELECT p.id
+            FROM "Post" p
+            JOIN "PostPreferenceTag" ppt ON ppt."postId" = p.id
+            JOIN "UserPreferenceTag" upt
+                ON upt."preferenceTagId" = ppt."preferenceTagId"
+                AND upt."userId" = ${userId}
+                AND upt.score > 0
+            WHERE TRUE ${seenClause} ${genderClause}
+            GROUP BY p.id
+            ORDER BY SUM(upt.score) DESC, RANDOM()
+            LIMIT ${mainCount * 2}
+        `
+        log(`main query returned ${rows.length} scored candidates (pool=${mainCount * 2})`)
+        mainIds = shuffle(rows.map(r => r.id)).slice(0, mainCount)
+        log(`main slots after shuffle+slice: ${mainIds.length} posts`)
+    } else {
+        log("no tag preferences — skipping main query, all slots go to exploration")
+    }
+
+    // Exploration: random posts outside the main selection
+    const excludeClause = mainIds.length > 0
+        ? Prisma.sql`AND p.id NOT IN (${Prisma.join(mainIds)})`
+        : Prisma.sql``
+    // When no tag preferences, pull the full `take` as exploration (pure random)
+    const explorationLimit = hasTagPreferences ? explorationCount : mainCount + explorationCount
+
+    const explorationRows = await prisma.$queryRaw<{ id: string }[]>`
+        SELECT p.id
+        FROM "Post" p
+        WHERE TRUE ${seenClause} ${genderClause} ${excludeClause}
+        ORDER BY RANDOM()
+        LIMIT ${explorationLimit}
+    `
+    log(`exploration query returned ${explorationRows.length}/${explorationLimit} posts`)
+
+    const allIds = [...mainIds, ...explorationRows.map(r => r.id)]
+    log(`total IDs to fetch: ${allIds.length} (${mainIds.length} main + ${explorationRows.length} exploration)`)
+
+    if (allIds.length === 0) {
+        log("no posts found — returning empty")
+        return []
+    }
+
+    const posts = await prisma.post.findMany({
+        where: { id: { in: allIds } },
+        include: { preferenceTags: true }
     })
-}
 
-function scorePost(post: PostWithTags, userTagScores: Map<string, number>): number {
-    return post.preferenceTags.reduce((sum, pt) => sum + (userTagScores.get(pt.preferenceTagId) ?? 0), 0)
-}
+    const result = shuffle(posts)
+    log(`returning ${result.length} posts (shuffled)`)
+    log("post order:", result.map(p => ({
+        id: p.id,
+        tags: p.preferenceTags.map(t => t.preferenceTagId)
+    })))
 
-function selectPosts(pool: PostWithTags[], userTagScores: Map<string, number>, take: number): PostWithTags[] {
-    // No tag preferences yet — just shuffle
-    if (userTagScores.size === 0) return shuffle([...pool]).slice(0, take)
-
-    const explorationCount = Math.max(1, Math.round(take / 10))
-    const mainCount = take - explorationCount
-
-    const scored = pool.map(post => ({ post, score: scorePost(post, userTagScores) }))
-
-    // Sort matched by score, then shuffle within the top candidates for variety
-    const matchedSorted = scored
-        .filter(p => p.score > 0)
-        .sort((a, b) => b.score - a.score)
-    const topMatched = shuffle(matchedSorted.slice(0, mainCount * 2)).slice(0, mainCount)
-
-    const unmatchedShuffled = shuffle(scored.filter(p => p.score === 0))
-
-    // Main slots: top matched posts. If not enough, fill from unmatched.
-    const mainPosts = topMatched.map(p => p.post)
-    if (mainPosts.length < mainCount) {
-        const fill = unmatchedShuffled.splice(0, mainCount - mainPosts.length)
-        mainPosts.push(...fill.map(p => p.post))
-    }
-
-    // Exploration slot: from unmatched. If none left, use lowest-scored matched.
-    const usedIds = new Set(mainPosts.map(p => p.id))
-    const explorationPool = unmatchedShuffled.length > 0
-        ? unmatchedShuffled
-        : shuffle(scored.filter(p => !usedIds.has(p.post.id)).sort((a, b) => a.score - b.score))
-    const explorationPosts = explorationPool.slice(0, explorationCount).map(p => p.post)
-
-    // Shuffle final result so exploration posts land randomly in the feed
-    return shuffle([...mainPosts, ...explorationPosts])
+    return result
 }
 
 export async function recommendPost(user: User, take: number) {
-    const userTags = await prisma.userPreferenceTag.findMany({
-        where: { userId: user.id },
-        select: { preferenceTagId: true, score: true }
+    log(`recommendPost — userId=${user.id} take=${take}`)
+
+    const tagCount = await prisma.userPreferenceTag.count({
+        where: { userId: user.id, score: { gt: 0 } }
     })
-    const userTagScores = new Map(userTags.map(ut => [ut.preferenceTagId, ut.score]))
+    log(`user has ${tagCount} positive-score tag(s)`)
 
-    const unseen = await fetchCandidates(user.id, user.gender, true)
+    const explorationCount = Math.max(1, Math.round(take / 10))
+    const mainCount = take - explorationCount
+    log(`slot split — main=${mainCount} exploration=${explorationCount}`)
 
-    // Always prefer unseen posts. Only fall back to seen when none remain.
-    if (unseen.length > 0) return selectPosts(unseen, userTagScores, take)
+    for (const unseenOnly of [true, false]) {
+        log(`--- attempt: unseenOnly=${unseenOnly} ---`)
+        const posts = await fetchRanked(user.id, user.gender, tagCount > 0, mainCount, explorationCount, unseenOnly)
+        if (posts.length > 0) {
+            log(`done — serving ${posts.length} posts (unseenOnly=${unseenOnly})`)
+            return posts
+        }
+        log(`no posts found with unseenOnly=${unseenOnly}, trying fallback`)
+    }
 
-    const all = await fetchCandidates(user.id, user.gender, false)
-    return selectPosts(all, userTagScores, take)
+    log("no posts available at all — returning []")
+    return []
 }
 
 export async function getFullPost(id: string) {
