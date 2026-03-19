@@ -24,7 +24,6 @@ async function createVideoFromFrames(
 
     const args = ["-framerate", fps.toString(), "-i", framePattern]
 
-    // Add motion blur filter if enabled
     if (motionBlurFrames > 0) {
         const weights = Array(motionBlurFrames).fill(motionBlurIntensity).join(" ")
         const extraFrames = motionBlurFrames - 1
@@ -36,13 +35,13 @@ async function createVideoFromFrames(
         "-c:v",
         "libx264",
         "-preset",
-        "slow", // Better quality encoding
+        "slow",
         "-crf",
-        "18", // High quality (lower = better, 18 is visually lossless)
+        "18",
         "-pix_fmt",
         "yuv420p",
         "-movflags",
-        "+faststart", // Better streaming
+        "+faststart",
         "-y",
         outputPath
     )
@@ -57,28 +56,39 @@ interface Keyframe {
     panY: number
 }
 
-// Cardinal spline interpolation for smooth, predictive curves through keyframes
-// tension controls curve tightness: 0.0 = loose/flowing curves, 1.0 = tight/direct paths
-function cardinalSpline(p0: number, p1: number, p2: number, p3: number, t: number, tension: number = 0): number {
-    const t2 = t * t
-    const t3 = t2 * t
-    const s = (1 - tension) / 2 // Convert tension to tangent scale factor
+// Smooth easing function
+function easeInOutCubic(t: number, strength: number = 1): number {
+    if (strength === 0) return t // No easing, linear
 
-    return (
-        (-s * p0 + (2 - s) * p1 + (s - 2) * p2 + s * p3) * t3 +
-        (2 * s * p0 + (s - 3) * p1 + (3 - 2 * s) * p2 - s * p3) * t2 +
-        (-s * p0 + s * p2) * t +
-        p1
-    )
+    const eased = t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2
+
+    return t + (eased - t) * strength
+}
+
+// Cubic Bezier interpolation
+function cubicBezier(p0: number, p1: number, p2: number, p3: number, t: number, easingStrength: number = 0): number {
+    const easedT = easeInOutCubic(t, easingStrength)
+
+    const u = 1 - easedT
+    const tt = easedT * easedT
+    const uu = u * u
+    const uuu = uu * u
+    const ttt = tt * easedT
+
+    const cp1 = p1 + (p2 - p0) / 6
+    const cp2 = p2 - (p3 - p1) / 6
+
+    return uuu * p1 + 3 * uu * easedT * cp1 + 3 * u * tt * cp2 + ttt * p2
 }
 
 function interpolateKeyframes(
     keyframes: Keyframe[],
-    currentFrame: number
+    currentFrame: number,
 ): { zoom: number; panX: number; panY: number } {
-    const TENSION = 0
-
-    // Find surrounding keyframes
+    const EASING_STRENGTH = 0.5 // Adjust for more or less easing in the motion
+    
     const nextIdx = keyframes.findIndex((kf) => kf.frame > currentFrame)
     const nextIndex = nextIdx === -1 ? keyframes.length - 1 : nextIdx
     const prevIndex = nextIdx <= 0 ? nextIndex : nextIndex - 1
@@ -86,7 +96,6 @@ function interpolateKeyframes(
     const frameRange = keyframes[nextIndex].frame - keyframes[prevIndex].frame
     const t = frameRange === 0 ? 0 : (currentFrame - keyframes[prevIndex].frame) / frameRange
 
-    // Get neighbors for spline calculation (4 points total)
     const beforeIndex = Math.max(0, prevIndex - 1)
     const afterIndex = Math.min(keyframes.length - 1, nextIndex + 1)
 
@@ -95,10 +104,9 @@ function interpolateKeyframes(
     const kf2 = keyframes[nextIndex]
     const kf3 = keyframes[afterIndex]
 
-    // Use Cardinal spline for smooth floating motion that predicts the path
-    const zoom = cardinalSpline(kf0.zoom, kf1.zoom, kf2.zoom, kf3.zoom, t, TENSION)
-    const panX = cardinalSpline(kf0.panX, kf1.panX, kf2.panX, kf3.panX, t, TENSION)
-    const panY = cardinalSpline(kf0.panY, kf1.panY, kf2.panY, kf3.panY, t, TENSION)
+    const zoom = cubicBezier(kf0.zoom, kf1.zoom, kf2.zoom, kf3.zoom, t, EASING_STRENGTH)
+    const panX = cubicBezier(kf0.panX, kf1.panX, kf2.panX, kf3.panX, t, EASING_STRENGTH)
+    const panY = cubicBezier(kf0.panY, kf1.panY, kf2.panY, kf3.panY, t, EASING_STRENGTH)
 
     return { zoom, panX, panY }
 }
@@ -256,10 +264,9 @@ async function visualizePath() {
 
     const keyframes: Keyframe[] = generateRandomKeyframes(totalFrames)
 
-    // Canvas settings
     const Y_PAN_RANGE = 30*2.5
     const X_PAN_RANGE = 20*2.5
-    const SCALE = 10 // pixels per pan unit
+    const SCALE = 10 
     const MARGIN = 50
 
     const canvasWidth = X_PAN_RANGE * 2 * SCALE + MARGIN * 2
