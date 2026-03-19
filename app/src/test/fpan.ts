@@ -28,7 +28,10 @@ async function createVideoFromFrames(
         const weights = Array(motionBlurFrames).fill(motionBlurIntensity).join(" ")
         const extraFrames = motionBlurFrames - 1
         // Apply motion blur, then trim off the prepended frames
-        args.push("-vf", `tmix=frames=${motionBlurFrames}:weights='${weights}',trim=start_frame=${extraFrames}:end_frame=${extraFrames + totalFrames}`)
+        args.push(
+            "-vf",
+            `tmix=frames=${motionBlurFrames}:weights='${weights}',trim=start_frame=${extraFrames}:end_frame=${extraFrames + totalFrames}`
+        )
     }
 
     args.push(
@@ -60,9 +63,7 @@ interface Keyframe {
 function easeInOutCubic(t: number, strength: number = 1): number {
     if (strength === 0) return t // No easing, linear
 
-    const eased = t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2
+    const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 
     return t + (eased - t) * strength
 }
@@ -85,10 +86,10 @@ function cubicBezier(p0: number, p1: number, p2: number, p3: number, t: number, 
 
 function interpolateKeyframes(
     keyframes: Keyframe[],
-    currentFrame: number,
+    currentFrame: number
 ): { zoom: number; panX: number; panY: number } {
-    const EASING_STRENGTH = 0.5 // Adjust for more or less easing in the motion
-    
+    const EASING_STRENGTH = 0.4 // Adjust for more or less easing in the motion
+
     const nextIdx = keyframes.findIndex((kf) => kf.frame > currentFrame)
     const nextIndex = nextIdx === -1 ? keyframes.length - 1 : nextIdx
     const prevIndex = nextIdx <= 0 ? nextIndex : nextIndex - 1
@@ -201,7 +202,7 @@ async function zoompanImage(
     }
 
     await createVideoFromFrames(fps, outputPath, totalFrames, motionBlurFrames, motionBlurIntensity)
-   await rmdir(TEMP_DIR, { recursive: true })
+    await rmdir(TEMP_DIR, { recursive: true })
 }
 
 function generateRandomKeyframes(totalFrames: number, keyframeCount: number = 6): Keyframe[] {
@@ -209,7 +210,8 @@ function generateRandomKeyframes(totalFrames: number, keyframeCount: number = 6)
     const MAX_RADIUS_OFFSET = 6
     const MIN_INITIAL_RADIUS = 30
     const MAX_INITIAL_RADIUS = 50
-    const MAX_OFFSET = 5
+    const MAX_OFFSET_X = 5
+    const MAX_OFFSET_Y = 15
     const MIN_ZOOM = 1.125
     const MAX_INITIAL_ZOOM = 1.2
     const MIN_INITIAL_ZOOM = MIN_ZOOM
@@ -227,15 +229,18 @@ function generateRandomKeyframes(totalFrames: number, keyframeCount: number = 6)
     for (let i = 0; i < keyframeCount - 1; i++) {
         const angle = startAngle + ((i - 1) / (keyframeCount - 1)) * Math.PI * 2
 
-        currentRadius += (MIN_RADIUS_OFFSET + Math.random() * (MAX_RADIUS_OFFSET - MIN_RADIUS_OFFSET)) * (Math.random() < 0.5 ? -1 : 1)
+        currentRadius +=
+            (MIN_RADIUS_OFFSET + Math.random() * (MAX_RADIUS_OFFSET - MIN_RADIUS_OFFSET)) *
+            (Math.random() < 0.5 ? -1 : 1)
 
-        const offsetX = (Math.random() - 0.5) * MAX_OFFSET * 2
-        const offsetY = (Math.random() - 0.5) * MAX_OFFSET * 2
+        const offsetX = (Math.random() - 0.5) * MAX_OFFSET_X * 2
+        const offsetY = (Math.random() - 0.5) * MAX_OFFSET_Y * 2
 
         const panX = Math.cos(angle) * currentRadius + offsetX
         const panY = Math.sin(angle) * currentRadius + offsetY
 
-        currentZoom += (MIN_ZOOM_OFFSET + Math.random() * (MAX_ZOOM_OFFSET - MIN_ZOOM_OFFSET)) * (Math.random() < 0.5 ? -1 : 1)
+        currentZoom +=
+            (MIN_ZOOM_OFFSET + Math.random() * (MAX_ZOOM_OFFSET - MIN_ZOOM_OFFSET)) * (Math.random() < 0.5 ? -1 : 1)
         currentZoom = Math.max(MIN_ZOOM, currentZoom)
 
         const keyframe: Keyframe = {
@@ -264,9 +269,9 @@ async function visualizePath() {
 
     const keyframes: Keyframe[] = generateRandomKeyframes(totalFrames)
 
-    const Y_PAN_RANGE = 30*2.5
-    const X_PAN_RANGE = 20*2.5
-    const SCALE = 10 
+    const Y_PAN_RANGE = 30 * 2.5
+    const X_PAN_RANGE = 20 * 2.5
+    const SCALE = 10
     const MARGIN = 50
 
     const canvasWidth = X_PAN_RANGE * 2 * SCALE + MARGIN * 2

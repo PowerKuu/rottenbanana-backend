@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
     }
-    
+
     try {
         const product = await scrapeAndAnalyzeProduct(normalizedUrl)
         return NextResponse.json({ success: true, product })

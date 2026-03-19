@@ -89,10 +89,13 @@ export async function updateStore({
         throw new Error("At least one region is required")
     }
 
-    const oldStore = imageId !== undefined ? await prisma.store.findUnique({
-        where: { id },
-        select: { imageId: true }
-    }) : null
+    const oldStore =
+        imageId !== undefined
+            ? await prisma.store.findUnique({
+                  where: { id },
+                  select: { imageId: true }
+              })
+            : null
 
     const store = await prisma.store.update({
         where: { id },

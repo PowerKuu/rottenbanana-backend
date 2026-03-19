@@ -38,7 +38,7 @@ async function tickScrapeProducts() {
                     console.error(`${logPrefix} Failed to scrape product`, product)
                     throw error
                 })
-                
+
                 const { name, description, priceGross, originalPriceGross, currency } = scrapedProduct
 
                 return await prisma.product.update({

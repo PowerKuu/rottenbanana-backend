@@ -204,7 +204,5 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         ]
     })
 
-
-
     return response.output
 }

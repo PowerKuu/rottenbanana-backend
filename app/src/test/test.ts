@@ -1,16 +1,16 @@
 import "dotenv/config"
 import { pipeline, env } from "@huggingface/transformers"
 import { scrapers } from "@/server/scraper/scrapers"
-import { spawnSync } from "child_process";
-import ffmpegBin from "ffmpeg-static";
-import sharp from "sharp";
+import { spawnSync } from "child_process"
+import ffmpegBin from "ffmpeg-static"
+import sharp from "sharp"
 
-import { rm, rmSync, writeFileSync } from "fs";
-import { join } from "path";
-import { cwd } from "process";
-import { mkdir } from "fs/promises";
-import { test } from "./fpan";
-import { drawSeedTags } from "@/server/system/algorithm/drawSeedTags";
+import { rm, rmSync, writeFileSync } from "fs"
+import { join } from "path"
+import { cwd } from "process"
+import { mkdir } from "fs/promises"
+import { test } from "./fpan"
+import { drawSeedTags } from "@/server/system/algorithm/drawSeedTags"
 
 env.allowRemoteModels = true
 env.allowLocalModels = true
@@ -38,54 +38,52 @@ async function testScraper() {
 }
 
 interface Keyframe {
-    frame: number;
-    zoom: number;
-    panX: number;
-    panY: number;
+    frame: number
+    zoom: number
+    panX: number
+    panY: number
 }
 
 // Smoothest easing function (ease-in-out quintic for ultra-smooth motion)
 function easeInOutQuintic(t: number): number {
-    return t < 0.5
-        ? 16 * t * t * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2
 }
 
 // Linear interpolation
 function lerp(a: number, b: number, t: number): number {
-    return a + (b - a) * t;
+    return a + (b - a) * t
 }
 
 // Find the two keyframes surrounding a given frame and interpolate
 function interpolateKeyframes(frame: number, keyframes: Keyframe[]): { zoom: number; panX: number; panY: number } {
     // Find the keyframes before and after the current frame
-    let prevKeyframe = keyframes[0];
-    let nextKeyframe = keyframes[keyframes.length - 1];
+    let prevKeyframe = keyframes[0]
+    let nextKeyframe = keyframes[keyframes.length - 1]
 
     for (let i = 0; i < keyframes.length - 1; i++) {
         if (frame >= keyframes[i].frame && frame <= keyframes[i + 1].frame) {
-            prevKeyframe = keyframes[i];
-            nextKeyframe = keyframes[i + 1];
-            break;
+            prevKeyframe = keyframes[i]
+            nextKeyframe = keyframes[i + 1]
+            break
         }
     }
 
     // Calculate interpolation factor (0 to 1)
-    const frameDiff = nextKeyframe.frame - prevKeyframe.frame;
-    const t = frameDiff === 0 ? 0 : (frame - prevKeyframe.frame) / frameDiff;
+    const frameDiff = nextKeyframe.frame - prevKeyframe.frame
+    const t = frameDiff === 0 ? 0 : (frame - prevKeyframe.frame) / frameDiff
 
     // Apply easing
-    const easedT = easeInOutQuintic(t);
+    const easedT = easeInOutQuintic(t)
 
     // Interpolate all values
     return {
         zoom: lerp(prevKeyframe.zoom, nextKeyframe.zoom, easedT),
         panX: lerp(prevKeyframe.panX, nextKeyframe.panX, easedT),
-        panY: lerp(prevKeyframe.panY, nextKeyframe.panY, easedT),
-    };
+        panY: lerp(prevKeyframe.panY, nextKeyframe.panY, easedT)
+    }
 }
 
-test().catch(console.error);
+test().catch(console.error)
 /* drawSeedTags(3).then((tags) => {
     console.log("Drawn seed tags:", tags)
 }).catch(console.error); */

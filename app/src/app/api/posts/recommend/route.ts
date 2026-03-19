@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
         const recommendedPosts = await recommendPost(user, RECOMMEND_AMOUNT)
 
-        return NextResponse.json({ postsIds: recommendedPosts.map(post => post.id) })
+        return NextResponse.json({ postsIds: recommendedPosts.map((post) => post.id) })
     } catch (error) {
         return new NextResponse(error instanceof Error ? error.message : "Error recommending posts", { status: 404 })
     }

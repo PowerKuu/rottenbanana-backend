@@ -122,9 +122,7 @@ export function SwipeCard({ product, nextProduct, onApprove, onReject, disabled 
     const wrapperStyle: React.CSSProperties = {
         opacity: entered ? 1 : 0,
         transform: entered ? "translateY(0px) scale(1)" : "translateY(28px) scale(0.92)",
-        transition: entered
-            ? "opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)"
-            : "none"
+        transition: entered ? "opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)" : "none"
     }
 
     return (
@@ -147,10 +145,7 @@ export function SwipeCard({ product, nextProduct, onApprove, onReject, disabled 
                         unoptimized
                     />
                     {/* Dim overlay on next card */}
-                    <div
-                        className="absolute inset-0 bg-black/20"
-                        style={{ opacity: 1 - dragProgress * 0.8 }}
-                    />
+                    <div className="absolute inset-0 bg-black/20" style={{ opacity: 1 - dragProgress * 0.8 }} />
                 </div>
             )}
 
@@ -162,9 +157,10 @@ export function SwipeCard({ product, nextProduct, onApprove, onReject, disabled 
                     transition: cardTransition,
                     zIndex: 10,
                     cursor: disabled ? "default" : phase === "dragging" ? "grabbing" : "grab",
-                    boxShadow: phase === "dragging"
-                        ? "0 30px 60px -10px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.5)"
-                        : undefined
+                    boxShadow:
+                        phase === "dragging"
+                            ? "0 30px 60px -10px rgba(0,0,0,0.4), 0 18px 36px -18px rgba(0,0,0,0.5)"
+                            : undefined
                 }}
                 onMouseDown={handleMouseDown}
             >
@@ -237,7 +233,8 @@ export function SwipeCard({ product, nextProduct, onApprove, onReject, disabled 
                 <div
                     className="absolute bottom-0 left-0 right-0 z-10 px-5 py-4"
                     style={{
-                        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%)",
+                        background:
+                            "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%)",
                         paddingTop: 48
                     }}
                 >

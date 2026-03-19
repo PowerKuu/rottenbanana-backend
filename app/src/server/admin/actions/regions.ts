@@ -62,10 +62,13 @@ export async function updateRegion({
     countryCode?: string | null
     flagImageId?: string | null
 }) {
-    const oldRegion = flagImageId !== undefined ? await prisma.region.findUnique({
-        where: { id },
-        select: { flagImageId: true }
-    }) : null
+    const oldRegion =
+        flagImageId !== undefined
+            ? await prisma.region.findUnique({
+                  where: { id },
+                  select: { flagImageId: true }
+              })
+            : null
 
     const region = await prisma.region.update({
         where: { id },

@@ -8,7 +8,11 @@ import { PendingProductCard } from "@/components/pending-products/PendingProduct
 import { SwipeCard } from "@/components/pending-products/SwipeCard"
 import { ProductsPagination } from "@/components/Pagination"
 import { ArrowLeft, Check, Layers, X } from "lucide-react"
-import { getPendingProducts, getAllPendingProducts, updatePendingProductStatus } from "@/server/admin/actions/pendingProducts"
+import {
+    getPendingProducts,
+    getAllPendingProducts,
+    updatePendingProductStatus
+} from "@/server/admin/actions/pendingProducts"
 
 function fisherYates<T>(arr: T[]): T[] {
     const a = [...arr]
@@ -83,14 +87,17 @@ export default function StorePendingProductsPage() {
         loadGridProducts()
     }
 
-    const handleDecision = useCallback((status: "APPROVED" | "REJECTED") => {
-        const product = swipeProducts[swipeIndex]
-        if (!product) return
-        setSwipeIndex((i) => i + 1)
-        updatePendingProductStatus({ id: product.id, status }).catch(() => {
-            toast.error(`Failed to ${status === "APPROVED" ? "approve" : "reject"} product`)
-        })
-    }, [swipeProducts, swipeIndex])
+    const handleDecision = useCallback(
+        (status: "APPROVED" | "REJECTED") => {
+            const product = swipeProducts[swipeIndex]
+            if (!product) return
+            setSwipeIndex((i) => i + 1)
+            updatePendingProductStatus({ id: product.id, status }).catch(() => {
+                toast.error(`Failed to ${status === "APPROVED" ? "approve" : "reject"} product`)
+            })
+        },
+        [swipeProducts, swipeIndex]
+    )
 
     useEffect(() => {
         if (!swipeMode) return
@@ -107,10 +114,12 @@ export default function StorePendingProductsPage() {
         setCurrentPage(1)
         if (swipeMode) {
             // Re-fetch and randomize for new filter
-            getAllPendingProducts({ status: value === "ALL" ? null : (value as PendingProductStatus), storeId }).then((all) => {
-                setSwipeProducts(fisherYates(all))
-                setSwipeIndex(0)
-            })
+            getAllPendingProducts({ status: value === "ALL" ? null : (value as PendingProductStatus), storeId }).then(
+                (all) => {
+                    setSwipeProducts(fisherYates(all))
+                    setSwipeIndex(0)
+                }
+            )
         }
     }
 
@@ -190,7 +199,9 @@ export default function StorePendingProductsPage() {
                         <p className="text-muted-foreground text-sm">
                             {swipeProducts.length} product{swipeProducts.length !== 1 ? "s" : ""} reviewed
                         </p>
-                        <Button variant="outline" onClick={handleEnterSwipeMode}>Reload</Button>
+                        <Button variant="outline" onClick={handleEnterSwipeMode}>
+                            Reload
+                        </Button>
                     </div>
                 ) : swipeProducts.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-24 text-center">

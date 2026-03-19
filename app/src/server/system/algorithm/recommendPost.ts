@@ -35,8 +35,8 @@ export async function recommendPost(user: User, take: number) {
 
     const additionalPosts = await prisma.post.findMany({
         where: {
-            id: { 
-                notIn: recommendedPosts.map((post) => post.id) 
+            id: {
+                notIn: recommendedPosts.map((post) => post.id)
             },
             gender: user.gender || undefined
         },
@@ -45,7 +45,6 @@ export async function recommendPost(user: User, take: number) {
         },
         take: remainingTake
     })
-
 
     return [...recommendedPosts, ...additionalPosts]
 }
@@ -65,7 +64,7 @@ export async function getFullPost(id: string, user?: User) {
                     userId: user?.id
                 },
                 select: {
-                    userId: true,
+                    userId: true
                 },
                 take: 1
             },

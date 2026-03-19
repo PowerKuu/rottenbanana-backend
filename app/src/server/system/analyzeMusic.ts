@@ -19,14 +19,8 @@ export async function analyzeMusic(music: Buffer) {
     const availableTags = tags.map(({ tag }) => tag)
 
     const AnalyzeMusicSchema = z.object({
-        tags: z
-            .array(z.enum(availableTags))
-            .describe("Tags for fashion items and styles this music matches"),
-        description: z
-            .string()
-            .describe(
-                "Brief description of the fashion vibe this music complements (2-3 sentences)"
-            )
+        tags: z.array(z.enum(availableTags)).describe("Tags for fashion items and styles this music matches"),
+        description: z.string().describe("Brief description of the fashion vibe this music complements (2-3 sentences)")
     })
 
     const system = `You are a fashion-music stylist. Analyze music tracks and identify what fashion styles, clothing items, and aesthetics they complement.`

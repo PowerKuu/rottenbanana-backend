@@ -88,7 +88,6 @@ async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, 
     return [...musicWithTag, ...additionalMusic]
 }
 
-
 async function getProductDescription(product: Product) {
     const tags = await prisma.productPreferenceTag.findMany({
         where: { productId: product.id },
@@ -254,7 +253,7 @@ const generatePostProductsPrompt = (
     minProducts: number,
     maxProducts: number,
     minShowcasePrompts: number,
-    maxShowcasePrompts: number,
+    maxShowcasePrompts: number
 ) => `
 You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
 
@@ -269,7 +268,8 @@ SLOT SELECTION RULES:
 
 SLOT DESCRIPTIONS:
 """
-${Object.entries(productSlotDescriptions).filter(([slot]) => Object.keys(selection).includes(slot))
+${Object.entries(productSlotDescriptions)
+    .filter(([slot]) => Object.keys(selection).includes(slot))
     .map(([slot, description]) => `${slot}: ${description}`)
     .join("\n")}
 """
@@ -315,8 +315,8 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
     const MAX_SHOWCASE_PROMPTS = 3
-    
-    const gender  = overrideGender || await getGender()
+
+    const gender = overrideGender || (await getGender())
     const region = await getRegion()
 
     const [seedPreferenceTag] = await drawSeedTags()
@@ -354,7 +354,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         minProducts,
         maxProducts,
         MIN_SHOWCASE_PROMPTS,
-        MAX_SHOWCASE_PROMPTS,
+        MAX_SHOWCASE_PROMPTS
     )
 
     console.log("Generated prompt for product selection:", prompt)
@@ -463,11 +463,8 @@ export async function generatePost(overrideGender?: Gender) {
     const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = 6
 
-    const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } = await generatePostData(
-        MIN_PRODUCTS,
-        MAX_PRODUCTS,
-        overrideGender
-    )
+    const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } =
+        await generatePostData(MIN_PRODUCTS, MAX_PRODUCTS, overrideGender)
 
     console.log(
         products.map((product) => product.url),

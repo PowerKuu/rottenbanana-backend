@@ -26,7 +26,7 @@ export async function scrapeProduct(url: string) {
     }
 
     const scrapedProduct = await scraper.scrape(url)
-    
+
     return {
         store,
         scrapedProduct

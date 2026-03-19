@@ -30,8 +30,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                     "Content-Type": file.type,
                     "Content-Range": `bytes ${start}-${end}/${total}`,
                     "Accept-Ranges": "bytes",
-                    "Content-Length": String(end - start + 1),
-                },
+                    "Content-Length": String(end - start + 1)
+                }
             })
         }
 
