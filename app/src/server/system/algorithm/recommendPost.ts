@@ -69,7 +69,11 @@ export async function getFullPost(id: string) {
                     }
                 }
             },
-            preferenceTags: true,
+            preferenceTags: {
+                include: {
+                    preferenceTag: true
+                }
+            },
             music: true
         }
     })
