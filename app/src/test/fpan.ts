@@ -12,6 +12,7 @@ const TEMP_DIR = join(__dirname, "frames")
 async function createVideoFromFrames(
     fps: number,
     outputPath: string,
+    totalFrames: number,
     motionBlurFrames: number = 0,
     motionBlurIntensity: number = 1
 ) {
@@ -26,7 +27,9 @@ async function createVideoFromFrames(
     // Add motion blur filter if enabled
     if (motionBlurFrames > 0) {
         const weights = Array(motionBlurFrames).fill(motionBlurIntensity).join(" ")
-        args.push("-vf", `tmix=frames=${motionBlurFrames}:weights='${weights}'`)
+        const extraFrames = motionBlurFrames - 1
+        // Apply motion blur, then trim off the prepended frames
+        args.push("-vf", `tmix=frames=${motionBlurFrames}:weights='${weights}',trim=start_frame=${extraFrames}:end_frame=${extraFrames + totalFrames}`)
     }
 
     args.push(
@@ -136,8 +139,14 @@ async function zoompanImage(
     const upscaledWidth = width * SUPERSAMPLE_FACTOR
     const upscaledHeight = height * SUPERSAMPLE_FACTOR
 
-    for (let i = 0; i < totalFrames; i++) {
-        const { zoom, panX, panY } = interpolateKeyframes(keyframes, i)
+    // Generate frames with prepended frames from end for looping motion blur
+    const extraFrames = motionBlurFrames > 0 ? motionBlurFrames - 1 : 0
+    const framesToGenerate = totalFrames + extraFrames
+
+    for (let i = 0; i < framesToGenerate; i++) {
+        // For the first few frames, use frames from the end of the loop
+        const frameIndex = (i - extraFrames + totalFrames) % totalFrames
+        const { zoom, panX, panY } = interpolateKeyframes(keyframes, frameIndex)
         const framePath = join(TEMP_DIR, `frame_${String(i).padStart(4, "0")}.png`)
 
         const extractWidth = upscaledWidth / zoom
@@ -180,23 +189,23 @@ async function zoompanImage(
             })
             .toFile(framePath)
 
-        console.log(`Generated frame ${i + 1}/${totalFrames}`)
+        console.log(`Generated frame ${i + 1}/${framesToGenerate}`)
     }
 
-    await createVideoFromFrames(fps, outputPath, motionBlurFrames, motionBlurIntensity)
-    await rmdir(TEMP_DIR, { recursive: true })
+    await createVideoFromFrames(fps, outputPath, totalFrames, motionBlurFrames, motionBlurIntensity)
+   await rmdir(TEMP_DIR, { recursive: true })
 }
 
-function generateRandomKeyframes(totalFrames: number, keyframeCount: number = 15): Keyframe[] {
-    const MIN_RADIUS_OFFSET = 1
-    const MAX_RADIUS_OFFSET = 3
+function generateRandomKeyframes(totalFrames: number, keyframeCount: number = 6): Keyframe[] {
+    const MIN_RADIUS_OFFSET = 3
+    const MAX_RADIUS_OFFSET = 6
     const MIN_INITIAL_RADIUS = 30
-    const MAX_INITIAL_RADIUS = 40
-    const MAX_OFFSET = 0.2
-    const MIN_ZOOM = 1.15
-    const MAX_INITIAL_ZOOM = 1.25
+    const MAX_INITIAL_RADIUS = 50
+    const MAX_OFFSET = 5
+    const MIN_ZOOM = 1.125
+    const MAX_INITIAL_ZOOM = 1.2
     const MIN_INITIAL_ZOOM = MIN_ZOOM
-    const MAX_ZOOM_OFFSET = 0.01
+    const MAX_ZOOM_OFFSET = 0.15
     const MIN_ZOOM_OFFSET = 0.005
 
     const keyframes: Keyframe[] = []
@@ -248,8 +257,8 @@ async function visualizePath() {
     const keyframes: Keyframe[] = generateRandomKeyframes(totalFrames)
 
     // Canvas settings
-    const Y_PAN_RANGE = 30
-    const X_PAN_RANGE = 20
+    const Y_PAN_RANGE = 30*2.5
+    const X_PAN_RANGE = 20*2.5
     const SCALE = 10 // pixels per pan unit
     const MARGIN = 50
 

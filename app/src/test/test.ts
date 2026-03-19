@@ -85,9 +85,9 @@ function interpolateKeyframes(frame: number, keyframes: Keyframe[]): { zoom: num
     };
 }
 
-//test().catch(console.error);
-drawSeedTags(3).then((tags) => {
+test().catch(console.error);
+/* drawSeedTags(3).then((tags) => {
     console.log("Drawn seed tags:", tags)
-}).catch(console.error);
+}).catch(console.error); */
 
 //testBGRM().catch(console.error);
