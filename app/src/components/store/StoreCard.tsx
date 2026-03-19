@@ -11,6 +11,8 @@ import { getFileUrl } from "@/lib/utils"
 export function StoreCard({
     id,
     name,
+    displayName,
+    displayColorHex,
     imageId,
     productCount,
     regions,
@@ -19,6 +21,8 @@ export function StoreCard({
 }: {
     id: string
     name: string
+    displayName?: string | null
+    displayColorHex?: string | null
     imageId: string
     productCount: number
     regions?: { id: string; name: string }[]
@@ -41,6 +45,17 @@ export function StoreCard({
                                 {productCount} {productCount === 1 ? "product" : "products"}
                             </Badge>
                         </div>
+                        {displayName && (
+                            <div className="flex items-center gap-1.5">
+                                {displayColorHex && (
+                                    <div
+                                        className="h-3 w-3 rounded-full shrink-0"
+                                        style={{ backgroundColor: displayColorHex }}
+                                    />
+                                )}
+                                <span className="text-sm text-muted-foreground truncate">{displayName}</span>
+                            </div>
+                        )}
                         {regions && regions.length > 0 && (
                             <div className="flex flex-wrap gap-1">
                                 {regions.slice(0, 3).map((region) => (

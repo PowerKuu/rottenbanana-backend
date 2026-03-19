@@ -28,6 +28,8 @@ export function StoreFormDialog({
     onSuccess?: () => void
 }) {
     const [name, setName] = useState("")
+    const [displayName, setDisplayName] = useState("")
+    const [displayColorHex, setDisplayColorHex] = useState("#000000")
     const [scraperIdentifier, setScraperIdentifier] = useState("")
     const [websiteUrl, setWebsiteUrl] = useState("")
     const [websiteHostnames, setWebsiteHostnames] = useState("")
@@ -56,6 +58,8 @@ export function StoreFormDialog({
     useEffect(() => {
         if (store) {
             setName(store.name)
+            setDisplayName(store.displayName || "")
+            setDisplayColorHex(store.displayColorHex || "#000000")
             setScraperIdentifier(store.scraperIdentifier)
             setWebsiteUrl(store.websiteUrl)
             setWebsiteHostnames(store.websiteHostnames.join("\n"))
@@ -64,6 +68,8 @@ export function StoreFormDialog({
             setSelectedRegionIds(store.regions?.map((r: { id: string }) => r.id) || [])
         } else {
             setName("")
+            setDisplayName("")
+            setDisplayColorHex("#000000")
             setScraperIdentifier("")
             setWebsiteUrl("")
             setWebsiteHostnames("")
@@ -168,6 +174,8 @@ export function StoreFormDialog({
             await updateStore({
                 id: store.id,
                 name,
+                displayName: displayName || null,
+                displayColorHex: displayColorHex || null,
                 scraperIdentifier: scraperIdentifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
@@ -177,6 +185,8 @@ export function StoreFormDialog({
         } else {
             await createStore({
                 name,
+                displayName: displayName || null,
+                displayColorHex: displayColorHex || null,
                 scraperIdentifier: scraperIdentifier,
                 websiteUrl,
                 websiteHostnames: hostnames,
@@ -215,6 +225,28 @@ export function StoreFormDialog({
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Nike Store"
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="displayName">Display Name</Label>
+                        <Input
+                            id="displayName"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            placeholder="Nike"
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="displayColorHex">Display Color</Label>
+                        <Input
+                            id="displayColorHex"
+                            type="color"
+                            value={displayColorHex}
+                            onChange={(e) => setDisplayColorHex(e.target.value)}
                             disabled={loading}
                         />
                     </div>

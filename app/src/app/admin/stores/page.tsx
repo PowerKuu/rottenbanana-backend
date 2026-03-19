@@ -87,6 +87,8 @@ export default function StoresPage() {
                             key={store.id}
                             id={store.id}
                             name={store.name}
+                            displayName={store.displayName}
+                            displayColorHex={store.displayColorHex}
                             imageId={store.imageId}
                             productCount={store._count.products}
                             regions={store.regions}
