@@ -43,7 +43,12 @@ export async function uploadFile(file: File, options: UploadFileOptions = DEFAUL
 
     if (options.compress && ALLOWED_IMAGE_TYPES.includes(extension)) {
         processedBuffer = await sharp(processedBuffer)
-            .resize({ width: 1080, height: 1080, withoutEnlargement: true, fit: "inside" })
+            .resize({
+                width: options.compressBounds?.width || 1080,
+                height: options.compressBounds?.height || 1080,
+                withoutEnlargement: true,
+                fit: "inside"
+            })
             .toBuffer()
     }
 

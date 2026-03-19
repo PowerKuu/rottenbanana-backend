@@ -1,6 +1,6 @@
 import { Gender, ProductSlot } from "@/prisma/enums"
 import { prisma } from "../database/prisma"
-import { PreferenceTag, Prisma, Product, Region } from "@/prisma/client"
+import { Music, PreferenceTag, Prisma, Product, Region } from "@/prisma/client"
 import z from "zod"
 import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
@@ -9,6 +9,8 @@ import { getFile, readFileBuffer } from "../uploads/read"
 import { randomShuffle } from "@/lib/utils"
 import { productSlotDescriptions } from "./analyzeProduct"
 import { drawSeedTags } from "./algorithm/drawSeedTags"
+import { recommendProducts } from "./algorithm/recommendProducts"
+import { recommendMusic } from "./algorithm/recommendMusic"
 
 async function getRegion() {
     const regions = await prisma.region.findMany({
@@ -33,60 +35,6 @@ async function getGender() {
     return gender
 }
 
-async function getPostMusicSelection(region: Region, tag: PreferenceTag | null, take: number) {
-    const whereWithTag: Prisma.MusicWhereInput = {
-        ...(tag && {
-            preferenceTags: {
-                some: {
-                    preferenceTagId: tag.id
-                }
-            }
-        }),
-        regions: {
-            some: {
-                id: region.id
-            }
-        }
-    }
-
-    const countWithTag = await prisma.music.count({ where: whereWithTag })
-    const randomOffset = countWithTag > take ? Math.floor(Math.random() * (countWithTag - take)) : 0
-
-    const musicWithTag = await prisma.music.findMany({
-        where: whereWithTag,
-        skip: randomOffset,
-        take
-    })
-
-    const remainingTake = take - musicWithTag.length
-
-    if (remainingTake <= 0) {
-        return musicWithTag
-    }
-
-    const whereAdditional: Prisma.MusicWhereInput = {
-        id: {
-            notIn: musicWithTag.map((music) => music.id)
-        },
-        regions: {
-            some: {
-                id: region.id
-            }
-        }
-    }
-
-    const countAdditional = await prisma.music.count({ where: whereAdditional })
-    const randomOffsetAdditional =
-        countAdditional > remainingTake ? Math.floor(Math.random() * (countAdditional - remainingTake)) : 0
-
-    const additionalMusic = await prisma.music.findMany({
-        where: whereAdditional,
-        skip: randomOffsetAdditional,
-        take: remainingTake
-    })
-
-    return [...musicWithTag, ...additionalMusic]
-}
 
 async function getProductDescription(product: Product) {
     const tags = await prisma.productPreferenceTag.findMany({
@@ -102,80 +50,6 @@ async function getProductDescription(product: Product) {
     const metaDescription = (product.metadata as any)?.["description"]
 
     return [product.name, product.gender, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
-}
-
-async function getSlotRandomProducts(
-    slot: ProductSlot,
-    region: Region,
-    gender: Gender,
-    tag: PreferenceTag | null,
-    take: number
-) {
-    const MAX_PER_STORE = Math.ceil(take / 2)
-
-    const whereWithTag: Prisma.ProductWhereInput = {
-        slot,
-        gender: {
-            in: [gender, Gender.UNISEX]
-        },
-        store: {
-            regions: {
-                some: {
-                    id: region.id
-                }
-            }
-        },
-        ...(tag && {
-            preferenceTags: {
-                some: {
-                    preferenceTagId: tag.id
-                }
-            }
-        })
-    }
-
-    const countWithTag = await prisma.product.count({ where: whereWithTag })
-    const randomOffset = countWithTag > take ? Math.floor(Math.random() * (countWithTag - take)) : 0
-
-    const productsWithTag = await prisma.product.findMany({
-        where: whereWithTag,
-        skip: randomOffset,
-        take
-    })
-
-    const remainingTake = take - productsWithTag.length
-
-    if (remainingTake <= 0) {
-        return productsWithTag
-    }
-
-    const whereAdditional: Prisma.ProductWhereInput = {
-        slot,
-        id: {
-            notIn: productsWithTag.map((product) => product.id)
-        },
-        store: {
-            regions: {
-                some: {
-                    id: region.id
-                }
-            }
-        },
-        gender: {
-            in: [gender, Gender.UNISEX]
-        }
-    }
-    const countAdditional = await prisma.product.count({ where: whereAdditional })
-    const randomOffsetAdditional =
-        countAdditional > remainingTake ? Math.floor(Math.random() * (countAdditional - remainingTake)) : 0
-
-    const additionalProducts = await prisma.product.findMany({
-        where: whereAdditional,
-        skip: randomOffsetAdditional,
-        take: remainingTake
-    })
-
-    return [...productsWithTag, ...additionalProducts]
 }
 
 async function getPostProductSelection(
@@ -227,7 +101,13 @@ async function getPostProductSelection(
     } = {}
 
     for (const { slot, required } of slots) {
-        const products = await getSlotRandomProducts(slot, region, gender, seedPreferenceTag, take)
+        const products = await recommendProducts(take, {
+            slot,
+            region,
+            gender,
+            usePrefrenceTags: !!seedPreferenceTag,
+            seedTags: seedPreferenceTag ? [seedPreferenceTag] : undefined,
+        })
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
 
@@ -249,7 +129,7 @@ async function getPostProductSelection(
 
 const generatePostProductsPrompt = (
     selection: Awaited<ReturnType<typeof getPostProductSelection>>,
-    musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
+    musicSelection: Music[],
     minProducts: number,
     maxProducts: number,
     minShowcasePrompts: number,
@@ -320,7 +200,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     const region = await getRegion()
 
     const [seedPreferenceTag] = await drawSeedTags()
-    const musicSelection = await getPostMusicSelection(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
+    const musicSelection = await recommendMusic(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
     const productSelection = await getPostProductSelection(
         gender,
         region,

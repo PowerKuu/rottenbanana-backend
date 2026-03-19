@@ -1,6 +1,7 @@
 import { User } from "@/prisma/client"
 import { prisma } from "../../database/prisma"
 import { drawSeedTags } from "./drawSeedTags"
+import { randomShuffle } from "@/lib/utils"
 
 export async function recommendPost(user: User, take: number) {
     const seedTags = await drawSeedTags(3, user)
@@ -19,10 +20,8 @@ export async function recommendPost(user: User, take: number) {
                     }
                 }
             },
-            gender: user.gender || undefined
-        },
-        orderBy: {
-            createdAt: "desc"
+            gender: user.gender || undefined,
+            regionId: user.regionId || undefined
         },
         take
     })
@@ -38,15 +37,13 @@ export async function recommendPost(user: User, take: number) {
             id: {
                 notIn: recommendedPosts.map((post) => post.id)
             },
-            gender: user.gender || undefined
-        },
-        orderBy: {
-            createdAt: "desc"
+            gender: user.gender || undefined,
+            regionId: user.regionId || undefined
         },
         take: remainingTake
     })
 
-    return [...recommendedPosts, ...additionalPosts]
+    return randomShuffle([...recommendedPosts, ...additionalPosts])
 }
 
 export async function getFullPost(id: string, user?: User) {

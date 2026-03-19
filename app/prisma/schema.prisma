@@ -151,6 +151,9 @@ model Store {
   scraperIdentifier String
 
   name       String
+  displayName String?
+  displayColorHex String?
+
   websiteUrl String
   websiteHostnames String[]
 

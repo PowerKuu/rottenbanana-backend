@@ -3,4 +3,8 @@ interface UploadFileOptions {
     privateUserId?: string
     compress?: boolean
     normalize?: boolean
+    compressBounds?: {
+        width: number
+        height: number
+    }
 }

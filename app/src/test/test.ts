@@ -11,6 +11,9 @@ import { cwd } from "process"
 import { mkdir } from "fs/promises"
 import { test } from "./fpan"
 import { drawSeedTags } from "@/server/system/algorithm/drawSeedTags"
+import { hex } from "zod"
+import { recommendProducts } from "@/server/system/algorithm/recommendProducts"
+import { hexToCIELAB } from "@/lib/utils"
 
 env.allowRemoteModels = true
 env.allowLocalModels = true
@@ -83,7 +86,16 @@ function interpolateKeyframes(frame: number, keyframes: Keyframe[]): { zoom: num
     }
 }
 
-test().catch(console.error)
+async function testProducts() {
+    const products = await recommendProducts(3, {
+        colorCIELAB: hexToCIELAB("#EDE8D0"),
+    })
+
+    console.log("Recommended products:", products.map(p => ({ id: p.id, name: p.name, url: p.url })))
+}
+
+//test().catch(console.error)
+testProducts().catch(console.error)
 /* drawSeedTags(3).then((tags) => {
     console.log("Drawn seed tags:", tags)
 }).catch(console.error); */
