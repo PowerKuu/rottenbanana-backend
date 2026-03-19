@@ -366,7 +366,7 @@ export function RegionFormDialog({
                 formData.append("file", flagImage)
                 formData.append("compressBoundsHeight", "200")
                 formData.append("compressBoundsWidth", "300")
-                
+
                 const uploadResponse = await fetch("/api/uploads/upload", { method: "POST", body: formData })
                 const uploadData = await uploadResponse.json()
                 if (uploadData.error) throw new Error(uploadData.error)

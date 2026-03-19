@@ -35,7 +35,6 @@ async function getGender() {
     return gender
 }
 
-
 async function getProductDescription(product: Product) {
     const tags = await prisma.productPreferenceTag.findMany({
         where: { productId: product.id },
@@ -106,7 +105,7 @@ async function getPostProductSelection(
             region,
             gender,
             usePrefrenceTags: !!seedPreferenceTag,
-            seedTags: seedPreferenceTag ? [seedPreferenceTag] : undefined,
+            seedTags: seedPreferenceTag ? [seedPreferenceTag] : undefined
         })
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)

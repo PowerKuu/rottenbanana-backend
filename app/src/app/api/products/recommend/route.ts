@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url)
         const search = searchParams.get("search") || undefined
-        const category = searchParams.get("category") as ProductCategory || undefined
+        const category = (searchParams.get("category") as ProductCategory) || undefined
         const colorHex = searchParams.get("color")
         const colorCIELAB = colorHex ? hexToCIELAB(colorHex) : undefined
 

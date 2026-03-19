@@ -88,10 +88,13 @@ function interpolateKeyframes(frame: number, keyframes: Keyframe[]): { zoom: num
 
 async function testProducts() {
     const products = await recommendProducts(3, {
-        colorCIELAB: hexToCIELAB("#EDE8D0"),
+        colorCIELAB: hexToCIELAB("#EDE8D0")
     })
 
-    console.log("Recommended products:", products.map(p => ({ id: p.id, name: p.name, url: p.url })))
+    console.log(
+        "Recommended products:",
+        products.map((p) => ({ id: p.id, name: p.name, url: p.url }))
+    )
 }
 
 //test().catch(console.error)

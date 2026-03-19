@@ -19,7 +19,10 @@ export async function recommendProducts(
         recursiveProducts?: Product[]
     } = {}
 ): Promise<Product[]> {
-    const seedTags = options.recursiveProducts || !options.usePrefrenceTags ? [] :  options.seedTags || await drawSeedTags(options.seedTags || 3, options.user)
+    const seedTags =
+        options.recursiveProducts || !options.usePrefrenceTags
+            ? []
+            : options.seedTags || (await drawSeedTags(options.seedTags || 3, options.user))
 
     const whereConditions: Prisma.Sql[] = []
 

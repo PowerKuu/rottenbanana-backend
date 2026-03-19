@@ -1,7 +1,7 @@
 import { randomShuffle } from "@/lib/utils"
 import { Music, PreferenceTag, Prisma, Region } from "@/prisma/client"
 import { prisma } from "@/server/database/prisma"
-    
+
 export async function recommendMusic(region: Region, tag: PreferenceTag | null, take: number): Promise<Music[]> {
     const whereWithTag: Prisma.MusicWhereInput = {
         ...(tag && {
