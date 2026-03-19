@@ -3,6 +3,7 @@
 import { prisma } from "@/server/database/prisma"
 import { generatePost } from "@/server/system/generatePost"
 import { Gender } from "@/prisma/enums"
+import { deleteFiles } from "@/server/uploads/delete"
 
 const PAGE_SIZE = 24
 
@@ -85,11 +86,22 @@ export async function getPostById(postId: string) {
 }
 
 export async function deletePost(postId: string) {
-    const post = await prisma.post.delete({
+    const post = await prisma.post.findUnique({
+        where: { id: postId },
+        select: { mediaIds: true }
+    })
+
+    if (!post) {
+        throw new Error("Post not found")
+    }
+
+    const deletedPost = await prisma.post.delete({
         where: { id: postId }
     })
 
-    return post
+    await deleteFiles(post.mediaIds)
+
+    return deletedPost
 }
 
 export async function createPost(overrideGender?: Gender) {

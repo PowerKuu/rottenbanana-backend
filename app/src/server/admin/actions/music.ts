@@ -4,6 +4,7 @@ import { prisma } from "@/server/database/prisma"
 import { removeUndefinedValues } from "@/lib/utils"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { analyzeMusic } from "@/server/system/analyzeMusic"
+import { deleteFiles } from "@/server/uploads/delete"
 
 export async function getAllMusic() {
     const music = await prisma.music.findMany({
@@ -105,9 +106,20 @@ export async function updateMusic({ id, name, regionIds }: { id: string; name?: 
 }
 
 export async function deleteMusic(musicId: string) {
+    const music = await prisma.music.findUnique({
+        where: { id: musicId },
+        select: { musicId: true }
+    })
+
+    if (!music) {
+        throw new Error("Music not found")
+    }
+
     const deletedMusic = await prisma.music.delete({
         where: { id: musicId }
     })
+
+    await deleteFiles([music.musicId])
 
     return deletedMusic
 }

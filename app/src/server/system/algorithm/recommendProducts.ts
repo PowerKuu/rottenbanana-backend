@@ -49,7 +49,11 @@ export async function getFullProduct(id: string) {
         where: { id },
         include: {
             store: true,
-            preferenceTags: true
+            preferenceTags: {
+                include: {
+                    preferenceTag: true
+                }
+            }
         }
     })
 }

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { removeUndefinedValues } from "@/lib/utils"
+import { deleteFiles } from "@/server/uploads/delete"
 
 export async function getAllRegions() {
     const regions = await prisma.region.findMany({
@@ -74,9 +75,22 @@ export async function updateRegion({
 }
 
 export async function deleteRegion(regionId: string) {
+    const region = await prisma.region.findUnique({
+        where: { id: regionId },
+        select: { flagImageId: true }
+    })
+
+    if (!region) {
+        throw new Error("Region not found")
+    }
+
     const deletedRegion = await prisma.region.delete({
         where: { id: regionId }
     })
+
+    if (region.flagImageId) {
+        await deleteFiles([region.flagImageId])
+    }
 
     return deletedRegion
 }

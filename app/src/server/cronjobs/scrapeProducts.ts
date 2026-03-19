@@ -34,7 +34,11 @@ async function tickScrapeProducts() {
         productsToScrape
             .filter((product): product is NonNullable<typeof product> => product !== null)
             .map(async (product) => {
-                const { scrapedProduct } = await scrapeProduct(product.url)
+                const { scrapedProduct } = await scrapeProduct(product.url).catch((error) => {
+                    console.error(`${logPrefix} Failed to scrape product`, product)
+                    throw error
+                })
+                
                 const { name, description, priceGross, originalPriceGross, currency } = scrapedProduct
 
                 return await prisma.product.update({

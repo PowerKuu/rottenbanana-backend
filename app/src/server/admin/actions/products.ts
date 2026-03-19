@@ -2,6 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { ProductSlot } from "@/prisma/client"
+import { deleteFiles } from "@/server/uploads/delete"
 
 const PAGE_SIZE = 24
 
@@ -88,9 +89,20 @@ export async function getProductSlots(storeId: string) {
 }
 
 export async function deleteProduct(productId: string) {
-    const product = await prisma.product.delete({
+    const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { productOnlyImageId: true, imageIds: true }
+    })
+
+    if (!product) {
+        throw new Error("Product not found")
+    }
+
+    const deletedProduct = await prisma.product.delete({
         where: { id: productId }
     })
 
-    return product
+    await deleteFiles([product.productOnlyImageId, ...product.imageIds])
+
+    return deletedProduct
 }

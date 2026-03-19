@@ -2,6 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { slugify, removeUndefinedValues } from "@/lib/utils"
+import { deleteFiles } from "@/server/uploads/delete"
 
 export async function getAllStores() {
     const stores = await prisma.store.findMany({
@@ -126,6 +127,8 @@ export async function deleteStore(storeId: string) {
     const deletedStore = await prisma.store.delete({
         where: { id: storeId }
     })
+
+    await deleteFiles([store.imageId])
 
     return deletedStore
 }
