@@ -4,7 +4,7 @@ interface UploadFileOptions {
     compress?: boolean
     normalize?: boolean
     compressBounds?: {
-        width: number
-        height: number
+        width?: number
+        height?: number
     }
 }

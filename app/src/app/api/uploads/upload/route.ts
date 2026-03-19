@@ -10,6 +10,8 @@ export async function POST(request: NextRequest) {
         const file = formData.get("file") as File
         const removeBackground = formData.get("removeBackground") === "true"
         const isPrivate = formData.get("private") === "true"
+        const compressBoundsHeight = formData.get("compressBoundsHeight") || undefined
+        const compressBoundsWidth = formData.get("compressBoundsWidth") || undefined
 
         if (!file) {
             return NextResponse.json({ error: "No file provided" }, { status: 400 })
@@ -17,7 +19,14 @@ export async function POST(request: NextRequest) {
 
         const result = await uploadFile(file, {
             removeBackground,
-            privateUserId: isPrivate ? session?.user?.id : undefined
+            privateUserId: isPrivate ? session?.user?.id : undefined,
+            compressBounds:
+                compressBoundsHeight || compressBoundsWidth
+                    ? {
+                          height: compressBoundsHeight ? Number(compressBoundsHeight) : undefined,
+                          width: compressBoundsWidth ? Number(compressBoundsWidth) : undefined
+                      }
+                    : undefined
         })
 
         return NextResponse.json(result)
