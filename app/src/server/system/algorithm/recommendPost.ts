@@ -50,7 +50,7 @@ export async function recommendPost(user: User, take: number) {
     return [...recommendedPosts, ...additionalPosts]
 }
 
-export async function getFullPost(id: string) {
+export async function getFullPost(id: string, user?: User) {
     return prisma.post.findUnique({
         where: { id },
         include: {
@@ -59,6 +59,15 @@ export async function getFullPost(id: string) {
                     views: true,
                     likes: true
                 }
+            },
+            likes: {
+                where: {
+                    userId: user?.id
+                },
+                select: {
+                    userId: true,
+                },
+                take: 1
             },
             products: {
                 include: {

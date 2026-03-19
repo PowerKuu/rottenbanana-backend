@@ -89,6 +89,11 @@ export async function updateStore({
         throw new Error("At least one region is required")
     }
 
+    const oldStore = imageId !== undefined ? await prisma.store.findUnique({
+        where: { id },
+        select: { imageId: true }
+    }) : null
+
     const store = await prisma.store.update({
         where: { id },
         data: removeUndefinedValues({
@@ -100,6 +105,10 @@ export async function updateStore({
             regions: regionIds !== undefined ? { set: regionIds.map((id) => ({ id })) } : undefined
         })
     })
+
+    if (oldStore && imageId && oldStore.imageId !== imageId) {
+        await deleteFiles([oldStore.imageId])
+    }
 
     return store
 }

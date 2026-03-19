@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return new NextResponse("User not found", { status: 404 })
         }
 
-        const post = await getFullPost(postId)
+        const post = await getFullPost(postId, user)
 
         return NextResponse.json({ post })
     } catch (error) {

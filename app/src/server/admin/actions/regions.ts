@@ -62,6 +62,11 @@ export async function updateRegion({
     countryCode?: string | null
     flagImageId?: string | null
 }) {
+    const oldRegion = flagImageId !== undefined ? await prisma.region.findUnique({
+        where: { id },
+        select: { flagImageId: true }
+    }) : null
+
     const region = await prisma.region.update({
         where: { id },
         data: removeUndefinedValues({
@@ -70,6 +75,10 @@ export async function updateRegion({
             flagImageId: flagImageId === null ? null : flagImageId
         })
     })
+
+    if (oldRegion && oldRegion.flagImageId && oldRegion.flagImageId !== flagImageId) {
+        await deleteFiles([oldRegion.flagImageId])
+    }
 
     return region
 }
