@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
         const search = searchParams.get("search") || undefined
         const category = (searchParams.get("category") as ProductCategory) || undefined
         const colorHex = searchParams.get("color")
+        const maxColorDistance = searchParams.get("maxColorDistance")
+            ? Number(searchParams.get("maxColorDistance"))
+            : undefined
         const colorCIELAB = colorHex ? hexToCIELAB(colorHex) : undefined
 
         if (colorHex && !colorCIELAB) {
@@ -41,6 +44,7 @@ export async function GET(request: NextRequest) {
             user,
             search,
             category,
+            maxColorDistance,
             colorCIELAB,
             usePrefrenceTags: true
         })
