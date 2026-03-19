@@ -1,3 +1,4 @@
+import { prisma } from "@/server/database/prisma"
 import { scrapeAndAnalyzeProduct, scrapeProduct } from "@/server/scraper/scraper"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -16,6 +17,14 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+        const existingProduct = await prisma.product.findUnique({
+            where: { url: normalizedUrl }
+        })
+
+        if (existingProduct) {
+            return NextResponse.json({ success: true, product: existingProduct })
+        }
+
         const product = await scrapeAndAnalyzeProduct(normalizedUrl)
         return NextResponse.json({ success: true, product })
     } catch (error) {

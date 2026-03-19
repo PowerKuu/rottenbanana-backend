@@ -17,5 +17,5 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         update: {}
     })
 
-    return new NextResponse(null, { status: 204 })
+    return new NextResponse("OK", { status: 200 })
 }

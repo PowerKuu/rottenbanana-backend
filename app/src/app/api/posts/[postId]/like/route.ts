@@ -62,7 +62,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
             await updateUserTagsScore(preferenceTags, user, -LIKE_PREFERENCE_SCORE)
 
-            return new NextResponse("Post unliked", { status: 200 })
+            return new NextResponse("OK", { status: 200 })
         } else {
             await prisma.postLike.create({
                 data: {
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
             await updateUserTagsScore(preferenceTags, user, LIKE_PREFERENCE_SCORE)
 
-            return new NextResponse("Post liked", { status: 200 })
+            return new NextResponse("OK", { status: 200 })
         }
     } catch (error) {
         return new NextResponse(error instanceof Error ? error.message : "Error toggling like", { status: 404 })

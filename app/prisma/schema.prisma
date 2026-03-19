@@ -263,6 +263,8 @@ model Product {
   priceGross     Float
   originalPriceGross Float?
 
+  referrals     Int     @default(0)
+
   currency        String
   productOnlyImageId String
   imageIds       String[]
