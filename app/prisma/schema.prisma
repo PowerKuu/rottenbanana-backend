@@ -37,6 +37,7 @@ model User {
   postLikes      PostLike[]
   postViews      PostView[]
   preferenceTags UserPreferenceTag[]
+  productReferrals ProductReferral[]
 
   gender                        Gender?
   referenceImageId             String?
@@ -263,8 +264,6 @@ model Product {
   priceGross     Float
   originalPriceGross Float?
 
-  referrals     Int     @default(0)
-
   currency        String
   productOnlyImageId String
   imageIds       String[]
@@ -284,6 +283,7 @@ model Product {
   tryOnOutfitItems TryOnOutfitProduct[]
   postProducts     PostProduct[]
   preferenceTags   ProductPreferenceTag[]
+  referrals        ProductReferral[]
 
   gender Gender
 
@@ -293,6 +293,7 @@ model Product {
 
   @@index([storeId])
 }
+
 
 model TryOnOutfit {
   id                String   @id @default(cuid())
@@ -458,4 +459,19 @@ model MusicPreferenceTag {
 
   @@id([musicId, preferenceTagId])
   @@index([preferenceTagId])
+}
+
+model ProductReferral {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
+  @@index([userId])
+  @@index([productId])
+  @@index([productId, createdAt])
 }

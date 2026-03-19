@@ -22,13 +22,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             return new NextResponse("User not found", { status: 404 })
         }
 
-        await prisma.product.update({
-            where: { id: productId },
-            data: {
-                referrals: {
-                    increment: 1
+        await prisma.productReferral.upsert({
+            where: {
+                userId_productId: {
+                    userId: session.user.id,
+                    productId: productId
                 }
-            }
+            },
+            create: {
+                productId: productId,
+                userId: session.user.id
+            },
+            update: {}
         })
 
         return new NextResponse("OK", { status: 200 })
