@@ -34,8 +34,10 @@ export async function recommendProducts(
         whereConditions.push(Prisma.sql`category = ${options.category}`)
     }
     if (options.region || options.user?.regionId) {
-        const region = options.region || options.user?.regionId
-        whereConditions.push(Prisma.sql`region = ${region}`)
+        const region = options.region?.id || options.user?.regionId
+        whereConditions.push(Prisma.sql`"Product"."storeId" IN (
+            SELECT "B" FROM "_RegionToStore" WHERE "A" = ${region}
+        )`)
     }
     if (options.slot) {
         whereConditions.push(Prisma.sql`slot = ${options.slot}`)
@@ -100,7 +102,7 @@ export async function recommendProducts(
 
     const remainingTake = take - recommendedProducts.length
 
-    if (remainingTake <= 0 || options.recursiveProducts) {
+    if (remainingTake <= 0 || options.recursiveProducts !== undefined) {
         return recommendedProducts
     }
 
