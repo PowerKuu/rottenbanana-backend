@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/server/database/prisma"
-import { ProductSlot } from "@/prisma/client"
+import { ProductSlot, Gender } from "@/prisma/client"
 import { deleteFiles } from "@/server/uploads/delete"
 
 const PAGE_SIZE = 24
@@ -26,12 +26,14 @@ export async function getProductsByStore({
     storeId,
     page = 1,
     search = "",
-    slot = null
+    slot = null,
+    gender = null
 }: {
     storeId: string
     page?: number
     search?: string
     slot?: ProductSlot | null
+    gender?: Gender | null
 }) {
     const skip = (page - 1) * PAGE_SIZE
 
@@ -43,7 +45,8 @@ export async function getProductsByStore({
                 mode: "insensitive" as const
             }
         }),
-        ...(slot && { slot })
+        ...(slot && { slot }),
+        ...(gender && { gender })
     }
 
     const [products, totalCount] = await Promise.all([

@@ -6,22 +6,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Search } from "lucide-react"
-import { ProductSlot } from "@/prisma/client"
+import { ProductSlot, Gender } from "@/prisma/client"
 
 export function ProductsHeader({
     storeName,
     availableSlots,
     search,
     slot,
+    gender,
     onSearchChange,
-    onSlotChange
+    onSlotChange,
+    onGenderChange
 }: {
     storeName: string
     availableSlots: ProductSlot[]
     search: string
     slot: ProductSlot | null
+    gender: Gender | null
     onSearchChange: (value: string) => void
     onSlotChange: (value: ProductSlot | null) => void
+    onGenderChange: (value: Gender | null) => void
 }) {
     const router = useRouter()
     const [localSearch, setLocalSearch] = useState(search)
@@ -45,6 +49,10 @@ export function ProductsHeader({
 
     const handleSlotChange = (value: ProductSlot | "all") => {
         onSlotChange(value === "all" ? null : value)
+    }
+
+    const handleGenderChange = (value: Gender | "all") => {
+        onGenderChange(value === "all" ? null : value)
     }
 
     useEffect(() => {
@@ -88,6 +96,17 @@ export function ProductsHeader({
                                 {slot}
                             </SelectItem>
                         ))}
+                    </SelectContent>
+                </Select>
+                <Select value={gender || "all"} onValueChange={handleGenderChange}>
+                    <SelectTrigger className="w-full sm:w-50">
+                        <SelectValue placeholder="Filter by gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="MALE">Male</SelectItem>
+                        <SelectItem value="FEMALE">Female</SelectItem>
+                        <SelectItem value="UNISEX">Unisex</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

@@ -48,7 +48,7 @@ async function getProductDescription(product: Product) {
 
     const metaDescription = (product.metadata as any)?.["description"]
 
-    return [product.name, product.gender, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
+    return [product.name, product.gender, product.primaryColorHex, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
 async function getPostProductSelection(

@@ -13,7 +13,7 @@ import { Package } from "lucide-react"
 import { getStoreById } from "@/server/admin/actions/stores"
 import { getProductsByStore, getProductSlots } from "@/server/admin/actions/products"
 import Link from "next/link"
-import { ProductSlot } from "@/prisma/client"
+import { ProductSlot, Gender } from "@/prisma/client"
 
 export default function ProductsPage() {
     const params = useParams()
@@ -33,6 +33,7 @@ export default function ProductsPage() {
     const [page, setPage] = useState(1)
     const [search, setSearch] = useState("")
     const [slot, setSlot] = useState<ProductSlot | null>(null)
+    const [gender, setGender] = useState<Gender | null>(null)
 
     useEffect(() => {
         const getProducts = async () => {
@@ -50,7 +51,8 @@ export default function ProductsPage() {
                 storeId,
                 page,
                 search,
-                slot
+                slot,
+                gender
             })
 
             setProducts(products.products)
@@ -70,7 +72,7 @@ export default function ProductsPage() {
         } finally {
             setLoading(false)
         }
-    }, [storeId, page, search, slot])
+    }, [storeId, page, search, slot, gender])
 
     const handleProductClick = (productId: string) => {
         setSelectedProductId(productId)
@@ -87,6 +89,11 @@ export default function ProductsPage() {
         setPage(1)
     }
 
+    const handleGenderChange = (value: Gender | null) => {
+        setGender(value)
+        setPage(1)
+    }
+
     const handleDelete = (product: { id: string; name: string }) => {
         setSelectedProduct(product)
         setDeleteDialogOpen(true)
@@ -99,7 +106,8 @@ export default function ProductsPage() {
             storeId,
             page,
             search,
-            slot
+            slot,
+            gender
         }).then((data) => {
             setProducts(data.products)
             setPagination(data.pagination)
@@ -122,8 +130,8 @@ export default function ProductsPage() {
         )
     }
 
-    const hasNoProducts = products.length === 0 && !search && !slot
-    const hasNoSearchResults = products.length === 0 && (search || slot)
+    const hasNoProducts = products.length === 0 && !search && !slot && !gender
+    const hasNoSearchResults = products.length === 0 && (search || slot || gender)
 
     return (
         <div className="space-y-6">
@@ -132,8 +140,10 @@ export default function ProductsPage() {
                 availableSlots={availableSlots}
                 search={search}
                 slot={slot}
+                gender={gender}
                 onSearchChange={handleSearchChange}
                 onSlotChange={handleSlotChange}
+                onGenderChange={handleGenderChange}
             />
 
             {hasNoProducts ? (
@@ -148,8 +158,10 @@ export default function ProductsPage() {
                     <h3 className="text-lg font-semibold">No products found</h3>
                     <p className="text-sm text-muted-foreground">
                         {search && `No results for "${search}"`}
-                        {search && slot && " with "}
+                        {search && (slot || gender) && " with "}
                         {slot && `the selected slot`}
+                        {slot && gender && " and "}
+                        {gender && `gender: ${gender}`}
                     </p>
                 </div>
             ) : (

@@ -20,15 +20,21 @@ export default function PostsPage() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [selectedPost, setSelectedPost] = useState<{ id: string; caption: string | null } | null>(null)
     const [page, setPage] = useState(1)
+    const [search, setSearch] = useState("")
     const [createLoading, setCreateLoading] = useState(false)
     const [gender, setGender] = useState<string>("random")
+    const [genderFilter, setGenderFilter] = useState<string>("all")
 
     useEffect(() => {
         const fetchPosts = async () => {
             setLoading(true)
             setError(null)
             try {
-                const data = await getPosts({ page })
+                const data = await getPosts({
+                    page,
+                    search,
+                    gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+                })
                 setPosts(data.posts)
                 setPagination(data.pagination)
             } catch (err) {
@@ -40,11 +46,21 @@ export default function PostsPage() {
         }
 
         fetchPosts()
-    }, [page])
+    }, [page, search, genderFilter])
 
     const handlePostClick = (postId: string) => {
         setSelectedPostId(postId)
         setDialogOpen(true)
+    }
+
+    const handleSearchChange = (value: string) => {
+        setSearch(value)
+        setPage(1)
+    }
+
+    const handleGenderFilterChange = (value: string) => {
+        setGenderFilter(value)
+        setPage(1)
     }
 
     const handleDelete = (post: { id: string; caption: string | null }) => {
@@ -55,7 +71,11 @@ export default function PostsPage() {
     const handleSuccess = () => {
         // Reload posts after successful deletion
         setLoading(true)
-        getPosts({ page }).then((data) => {
+        getPosts({
+            page,
+            search,
+            gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+        }).then((data) => {
             setPosts(data.posts)
             setPagination(data.pagination)
             setLoading(false)
@@ -70,7 +90,10 @@ export default function PostsPage() {
             await createPost(overrideGender)
             // Reset to page 1 and refresh
             setPage(1)
-            const data = await getPosts({ page: 1 })
+            const data = await getPosts({
+                page: 1,
+                gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+            })
             setPosts(data.posts)
             setPagination(data.pagination)
         } catch (err) {
@@ -81,7 +104,8 @@ export default function PostsPage() {
         }
     }
 
-    const hasNoPosts = posts.length === 0 && !loading
+    const hasNoPosts = posts.length === 0 && !loading && !search
+    const hasNoSearchResults = posts.length === 0 && !loading && search
 
     return (
         <div className="space-y-6">
@@ -90,6 +114,10 @@ export default function PostsPage() {
                 isLoading={createLoading}
                 gender={gender}
                 onGenderChange={setGender}
+                search={search}
+                onSearchChange={handleSearchChange}
+                genderFilter={genderFilter}
+                onGenderFilterChange={handleGenderFilterChange}
             />
 
             {error && (
@@ -113,6 +141,12 @@ export default function PostsPage() {
                     <Images className="mb-4 h-12 w-12 text-muted-foreground" />
                     <h3 className="text-lg font-semibold">No posts yet</h3>
                     <p className="text-sm text-muted-foreground">Posts will appear here once created</p>
+                </div>
+            ) : hasNoSearchResults ? (
+                <div className="flex min-h-100 flex-col items-center justify-center rounded-lg border border-dashed">
+                    <Images className="mb-4 h-12 w-12 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold">No posts found</h3>
+                    <p className="text-sm text-muted-foreground">No results for &quot;{search}&quot;</p>
                 </div>
             ) : (
                 <>

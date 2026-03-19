@@ -7,11 +7,46 @@ import { deleteFiles } from "@/server/uploads/delete"
 
 const PAGE_SIZE = 24
 
-export async function getPosts({ page = 1 }: { page?: number }) {
+export async function getPosts({
+    page = 1,
+    search = "",
+    gender
+}: {
+    page?: number
+    search?: string
+    gender?: "MALE" | "FEMALE"
+}) {
     const skip = (page - 1) * PAGE_SIZE
+
+    const searchCondition = search
+        ? {
+              OR: [
+                  {
+                      caption: {
+                          contains: search,
+                          mode: "insensitive" as const
+                      }
+                  },
+                  {
+                      id: {
+                          contains: search,
+                          mode: "insensitive" as const
+                      }
+                  }
+              ]
+          }
+        : {}
+
+    const genderCondition = gender ? { gender } : {}
+
+    const where = {
+        ...searchCondition,
+        ...genderCondition
+    }
 
     const [posts, totalCount] = await Promise.all([
         prisma.post.findMany({
+            where,
             skip,
             take: PAGE_SIZE,
             orderBy: { createdAt: "desc" },
@@ -30,7 +65,7 @@ export async function getPosts({ page = 1 }: { page?: number }) {
                 }
             }
         }),
-        prisma.post.count()
+        prisma.post.count({ where })
     ])
 
     const totalPages = Math.ceil(totalCount / PAGE_SIZE)

@@ -2,7 +2,7 @@ import { Gender } from "@/prisma/enums"
 import axios from "axios"
 import { JSDOM } from "jsdom"
 import { Scraper, ScraperIdentifier, Transformer } from "./types"
-import { FAKE_HEADERS } from "./utils"
+import { generateFakeHeaders } from "./utils"
 
 function createGenericScraper({
     querySelectors,
@@ -36,7 +36,7 @@ function createGenericScraper({
 }): Scraper {
     return async (productUrl: string) => {
         const response = await axios.get(productUrl, {
-            headers: FAKE_HEADERS
+            headers: generateFakeHeaders()
         })
 
         const dom = new JSDOM(response.data)
