@@ -2,7 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { removeUndefinedValues } from "@/lib/utils"
-import { Role, Gender } from "@prisma/client"
+import { Role, Gender } from "@/prisma/client"
 import { auth } from "@/server/auth/auth"
 import { headers } from "next/headers"
 
