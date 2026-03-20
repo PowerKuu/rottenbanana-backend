@@ -3,10 +3,15 @@
 import { prisma } from "@/server/database/prisma"
 import { ProductSlot, Gender } from "@/prisma/client"
 import { deleteFiles } from "@/server/uploads/delete"
+import { adminGuard } from "@/server/auth/guard"
 
 const PAGE_SIZE = 24
 
 export async function getProductById(productId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const product = await prisma.product.findUnique({
         where: { id: productId },
         include: {
@@ -35,6 +40,10 @@ export async function getProductsByStore({
     slot?: ProductSlot | null
     gender?: Gender | null
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const skip = (page - 1) * PAGE_SIZE
 
     const where = {
@@ -82,6 +91,10 @@ export async function getProductsByStore({
 }
 
 export async function getProductSlots(storeId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const products = await prisma.product.findMany({
         where: { storeId },
         select: { slot: true },
@@ -92,6 +105,10 @@ export async function getProductSlots(storeId: string) {
 }
 
 export async function deleteProduct(productId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const product = await prisma.product.findUnique({
         where: { id: productId },
         select: { productOnlyImageId: true, imageIds: true }

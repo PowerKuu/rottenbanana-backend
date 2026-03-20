@@ -3,8 +3,13 @@
 import { prisma } from "@/server/database/prisma"
 import { removeUndefinedValues } from "@/lib/utils"
 import { deleteFiles } from "@/server/uploads/delete"
+import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllRegions() {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const regions = await prisma.region.findMany({
         include: {
             _count: {
@@ -24,6 +29,10 @@ export async function getAllRegions() {
 }
 
 export async function getRegionById(regionId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const region = await prisma.region.findUnique({
         where: { id: regionId }
     })
@@ -40,6 +49,10 @@ export async function createRegion({
     countryCode?: string
     flagImageId?: string
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const region = await prisma.region.create({
         data: {
             name: name.trim(),
@@ -62,6 +75,10 @@ export async function updateRegion({
     countryCode?: string | null
     flagImageId?: string | null
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const oldRegion =
         flagImageId !== undefined
             ? await prisma.region.findUnique({
@@ -87,6 +104,10 @@ export async function updateRegion({
 }
 
 export async function deleteRegion(regionId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const region = await prisma.region.findUnique({
         where: { id: regionId },
         select: { flagImageId: true }

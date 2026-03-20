@@ -4,6 +4,7 @@ import { prisma } from "@/server/database/prisma"
 import { generatePost } from "@/server/system/generatePost"
 import { Gender } from "@/prisma/enums"
 import { deleteFiles } from "@/server/uploads/delete"
+import { adminGuard } from "@/server/auth/guard"
 
 const PAGE_SIZE = 24
 
@@ -16,6 +17,10 @@ export async function getPosts({
     search?: string
     gender?: "MALE" | "FEMALE"
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const skip = (page - 1) * PAGE_SIZE
 
     const searchCondition = search
@@ -82,6 +87,10 @@ export async function getPosts({
 }
 
 export async function getPostById(postId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const post = await prisma.post.findUnique({
         where: { id: postId },
         include: {
@@ -121,6 +130,10 @@ export async function getPostById(postId: string) {
 }
 
 export async function deletePost(postId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const post = await prisma.post.findUnique({
         where: { id: postId },
         select: { mediaIds: true }
@@ -140,6 +153,10 @@ export async function deletePost(postId: string) {
 }
 
 export async function createPost(overrideGender?: Gender) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const post = await generatePost(overrideGender)
     return post
 }

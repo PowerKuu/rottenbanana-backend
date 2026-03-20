@@ -5,10 +5,15 @@ import { removeUndefinedValues } from "@/lib/utils"
 import { Role, Gender } from "@/prisma/client"
 import { auth } from "@/server/auth/auth"
 import { headers } from "next/headers"
+import { adminGuard } from "@/server/auth/guard"
 
 const PAGE_SIZE = 24
 
 export async function getCurrentUserId() {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const session = await auth.api.getSession({
         headers: await headers()
     })
@@ -25,6 +30,10 @@ export async function getUsers({
     search?: string
     roleFilter?: string
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const skip = (page - 1) * PAGE_SIZE
 
     // Search condition: email, name, and id (case-insensitive)
@@ -118,6 +127,10 @@ export async function updateUser({
     regionId?: string | null
     emailVerified?: boolean
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const user = await prisma.user.update({
         where: { id },
         data: removeUndefinedValues({
@@ -132,6 +145,10 @@ export async function updateUser({
 }
 
 export async function deleteUser(id: string, currentUserId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     // Self-deletion check
     if (id === currentUserId) {
         throw new Error("You cannot delete your own account")
@@ -145,6 +162,10 @@ export async function deleteUser(id: string, currentUserId: string) {
 }
 
 export async function getAllRegionsForSelect() {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const regions = await prisma.region.findMany({
         select: {
             id: true,

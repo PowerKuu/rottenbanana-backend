@@ -3,8 +3,13 @@
 import { prisma } from "@/server/database/prisma"
 import { slugify, removeUndefinedValues } from "@/lib/utils"
 import { deleteFiles } from "@/server/uploads/delete"
+import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllStores() {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const stores = await prisma.store.findMany({
         include: {
             regions: true,
@@ -23,6 +28,10 @@ export async function getAllStores() {
 }
 
 export async function getStoreById(storeId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const store = await prisma.store.findUnique({
         where: { id: storeId },
         include: {
@@ -52,6 +61,10 @@ export async function createStore({
     imageId: string
     regionIds?: string[]
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     if (!regionIds || regionIds.length === 0) {
         throw new Error("At least one region is required")
     }
@@ -95,6 +108,10 @@ export async function updateStore({
     imageId?: string
     regionIds?: string[]
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     if (regionIds !== undefined && regionIds.length === 0) {
         throw new Error("At least one region is required")
     }
@@ -129,6 +146,10 @@ export async function updateStore({
 }
 
 export async function deleteStore(storeId: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const store = await prisma.store.findUnique({
         where: { id: storeId },
         include: {

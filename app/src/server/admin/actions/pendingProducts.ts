@@ -2,6 +2,7 @@
 
 import { prisma } from "@/server/database/prisma"
 import { PendingProductStatus } from "@/prisma/client"
+import { adminGuard } from "@/server/auth/guard"
 
 const PAGE_SIZE = 24
 
@@ -14,6 +15,10 @@ export async function getPendingProducts({
     status: PendingProductStatus | null
     storeId?: string | null
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const skip = (page - 1) * PAGE_SIZE
 
     const where = {
@@ -53,6 +58,10 @@ export async function getAllPendingProducts({
     status?: PendingProductStatus | null
     storeId?: string | null
 }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const where = {
         ...(status && { status }),
         ...(storeId && { storeId })
@@ -62,6 +71,10 @@ export async function getAllPendingProducts({
 }
 
 export async function createPendingProduct({ url, imageUrl }: { url: string; imageUrl: string }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const normalizedUrl = new URL(url).toString()
     const hostname = new URL(url).hostname
 
@@ -102,6 +115,10 @@ interface PendingProductInput {
 }
 
 export async function createBulkPendingProducts({ products }: { products: PendingProductInput[] }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     const results = {
         created: [] as string[],
         duplicates: [] as string[],
@@ -193,6 +210,10 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
 }
 
 export async function updatePendingProductStatus({ id, status }: { id: string; status: PendingProductStatus }) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     return await prisma.pendingProduct.update({
         where: { id },
         data: { status }
@@ -200,6 +221,10 @@ export async function updatePendingProductStatus({ id, status }: { id: string; s
 }
 
 export async function deletePendingProduct(id: string) {
+    if (!await adminGuard()) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
     return await prisma.pendingProduct.delete({
         where: { id }
     })
