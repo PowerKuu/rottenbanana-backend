@@ -4,6 +4,7 @@ import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
+import { updateUserTagsScore } from "@/server/system/algorithm/tagScore"
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ productId: string }> }) {
     const { productId } = await params
@@ -12,6 +13,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     if (!session?.user) {
         return new NextResponse("Unauthorized", { status: 401 })
     }
+
+    const REFER_PREFERENCE_SCORE = 0.15
 
     try {
         const user = await prisma.user.findUnique({
@@ -22,19 +25,44 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             return new NextResponse("User not found", { status: 404 })
         }
 
-        await prisma.productReferral.upsert({
+        const product = await prisma.product.findUnique({
+            where: { id: productId },
+            include: {
+                preferenceTags: {
+                    include: {
+                        preferenceTag: true
+                    }
+                }
+            }
+        })
+
+        if (!product) {
+            return new NextResponse("Product not found", { status: 404 })
+        }
+
+        const existingReferral = await prisma.productReferral.findUnique({
             where: {
                 userId_productId: {
                     userId: session.user.id,
                     productId: productId
                 }
-            },
-            create: {
+            }
+        })
+
+        if (existingReferral) {
+            return new NextResponse("OK", { status: 200 })
+        }
+
+        await prisma.productReferral.create({
+            data: {
                 productId: productId,
                 userId: session.user.id
-            },
-            update: {}
+            }
         })
+        
+        const tags = product.preferenceTags.map((pt) => pt.preferenceTag)
+
+        await updateUserTagsScore(tags, user, REFER_PREFERENCE_SCORE)
 
         return new NextResponse("OK", { status: 200 })
     } catch (error) {
