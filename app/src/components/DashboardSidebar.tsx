@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
     SidebarHeader
 } from "@/components/ui/sidebar"
-import { FileText, Tag, Store, Music, Flag } from "lucide-react"
+import { FileText, Tag, Store, Music, Flag, Users } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -19,7 +19,8 @@ const items = [
     { title: "Regions", url: "/admin/regions", icon: Flag },
     { title: "Tags", url: "/admin/tags", icon: Tag },
     { title: "Posts", url: "/admin/posts", icon: FileText },
-    { title: "Music", url: "/admin/music", icon: Music }
+    { title: "Music", url: "/admin/music", icon: Music },
+    { title: "Users", url: "/admin/users", icon: Users }
 ]
 
 export function DashboardSidebar() {
