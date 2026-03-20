@@ -100,18 +100,43 @@ export function DeleteUserDialog({
                                 This user has {totalRelations} related record{totalRelations === 1 ? "" : "s"}:
                             </p>
                             <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                                {user._count.sessions > 0 && <li>{user._count.sessions} session{user._count.sessions === 1 ? "" : "s"}</li>}
-                                {user._count.accounts > 0 && <li>{user._count.accounts} account{user._count.accounts === 1 ? "" : "s"}</li>}
-                                {user._count.tryOnOutfits > 0 && (
-                                    <li>{user._count.tryOnOutfits} try-on outfit{user._count.tryOnOutfits === 1 ? "" : "s"}</li>
+                                {user._count.sessions > 0 && (
+                                    <li>
+                                        {user._count.sessions} session{user._count.sessions === 1 ? "" : "s"}
+                                    </li>
                                 )}
-                                {user._count.postLikes > 0 && <li>{user._count.postLikes} post like{user._count.postLikes === 1 ? "" : "s"}</li>}
-                                {user._count.postViews > 0 && <li>{user._count.postViews} post view{user._count.postViews === 1 ? "" : "s"}</li>}
+                                {user._count.accounts > 0 && (
+                                    <li>
+                                        {user._count.accounts} account{user._count.accounts === 1 ? "" : "s"}
+                                    </li>
+                                )}
+                                {user._count.tryOnOutfits > 0 && (
+                                    <li>
+                                        {user._count.tryOnOutfits} try-on outfit
+                                        {user._count.tryOnOutfits === 1 ? "" : "s"}
+                                    </li>
+                                )}
+                                {user._count.postLikes > 0 && (
+                                    <li>
+                                        {user._count.postLikes} post like{user._count.postLikes === 1 ? "" : "s"}
+                                    </li>
+                                )}
+                                {user._count.postViews > 0 && (
+                                    <li>
+                                        {user._count.postViews} post view{user._count.postViews === 1 ? "" : "s"}
+                                    </li>
+                                )}
                                 {user._count.preferenceTags > 0 && (
-                                    <li>{user._count.preferenceTags} preference tag{user._count.preferenceTags === 1 ? "" : "s"}</li>
+                                    <li>
+                                        {user._count.preferenceTags} preference tag
+                                        {user._count.preferenceTags === 1 ? "" : "s"}
+                                    </li>
                                 )}
                                 {user._count.productReferrals > 0 && (
-                                    <li>{user._count.productReferrals} product referral{user._count.productReferrals === 1 ? "" : "s"}</li>
+                                    <li>
+                                        {user._count.productReferrals} product referral
+                                        {user._count.productReferrals === 1 ? "" : "s"}
+                                    </li>
                                 )}
                             </ul>
                             <p className="text-muted-foreground pt-2">All related data will be permanently deleted.</p>

@@ -17,7 +17,7 @@ export async function getPosts({
     search?: string
     gender?: "MALE" | "FEMALE"
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -87,7 +87,7 @@ export async function getPosts({
 }
 
 export async function getPostById(postId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -130,7 +130,7 @@ export async function getPostById(postId: string) {
 }
 
 export async function deletePost(postId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -153,7 +153,7 @@ export async function deletePost(postId: string) {
 }
 
 export async function createPost(overrideGender?: Gender) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

@@ -8,7 +8,7 @@ import { adminGuard } from "@/server/auth/guard"
 const PAGE_SIZE = 24
 
 export async function getProductById(productId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -40,7 +40,7 @@ export async function getProductsByStore({
     slot?: ProductSlot | null
     gender?: Gender | null
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -91,7 +91,7 @@ export async function getProductsByStore({
 }
 
 export async function getProductSlots(storeId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -105,7 +105,7 @@ export async function getProductSlots(storeId: string) {
 }
 
 export async function deleteProduct(productId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

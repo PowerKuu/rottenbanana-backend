@@ -6,7 +6,7 @@ import { deleteFiles } from "@/server/uploads/delete"
 import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllRegions() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -29,7 +29,7 @@ export async function getAllRegions() {
 }
 
 export async function getRegionById(regionId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -49,7 +49,7 @@ export async function createRegion({
     countryCode?: string
     flagImageId?: string
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -75,7 +75,7 @@ export async function updateRegion({
     countryCode?: string | null
     flagImageId?: string | null
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -104,7 +104,7 @@ export async function updateRegion({
 }
 
 export async function deleteRegion(regionId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
