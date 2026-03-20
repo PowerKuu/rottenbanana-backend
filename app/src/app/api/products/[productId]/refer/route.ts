@@ -59,7 +59,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
                 userId: session.user.id
             }
         })
-        
+
         const tags = product.preferenceTags.map((pt) => pt.preferenceTag)
 
         await updateUserTagsScore(tags, user, REFER_PREFERENCE_SCORE)

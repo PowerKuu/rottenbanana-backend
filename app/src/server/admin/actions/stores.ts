@@ -6,7 +6,7 @@ import { deleteFiles } from "@/server/uploads/delete"
 import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllStores() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -28,7 +28,7 @@ export async function getAllStores() {
 }
 
 export async function getStoreById(storeId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -61,7 +61,7 @@ export async function createStore({
     imageId: string
     regionIds?: string[]
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -108,7 +108,7 @@ export async function updateStore({
     imageId?: string
     regionIds?: string[]
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -146,7 +146,7 @@ export async function updateStore({
 }
 
 export async function deleteStore(storeId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

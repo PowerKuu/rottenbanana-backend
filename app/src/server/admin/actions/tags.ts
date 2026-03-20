@@ -5,7 +5,7 @@ import { removeUndefinedValues } from "@/lib/utils"
 import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllPreferenceTags() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -28,7 +28,7 @@ export async function getAllPreferenceTags() {
 }
 
 export async function getPreferenceTagById(tagId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -40,7 +40,7 @@ export async function getPreferenceTagById(tagId: string) {
 }
 
 export async function createPreferenceTag({ tag, description }: { tag: string; description: string }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -63,7 +63,7 @@ export async function updatePreferenceTag({
     tag?: string
     description?: string
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -79,7 +79,7 @@ export async function updatePreferenceTag({
 }
 
 export async function deletePreferenceTag(tagId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

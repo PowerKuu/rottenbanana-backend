@@ -8,7 +8,7 @@ import { deleteFiles } from "@/server/uploads/delete"
 import { adminGuard } from "@/server/auth/guard"
 
 export async function getAllMusic() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -36,7 +36,7 @@ export async function getAllMusic() {
 }
 
 export async function getMusicById(musicId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -56,7 +56,7 @@ export async function createMusic({
     musicId: string
     regionIds?: string[]
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -103,7 +103,7 @@ export async function createMusic({
 }
 
 export async function updateMusic({ id, name, regionIds }: { id: string; name?: string; regionIds?: string[] }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -123,7 +123,7 @@ export async function updateMusic({ id, name, regionIds }: { id: string; name?: 
 }
 
 export async function deleteMusic(musicId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

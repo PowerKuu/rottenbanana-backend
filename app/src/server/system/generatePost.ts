@@ -48,7 +48,9 @@ async function getProductDescription(product: Product) {
 
     const metaDescription = (product.metadata as any)?.["description"]
 
-    return [product.name, product.gender, product.primaryColorHex, metaDescription, tagDescriptionsFormatted].filter(Boolean).join(" - ")
+    return [product.name, product.gender, product.primaryColorHex, metaDescription, tagDescriptionsFormatted]
+        .filter(Boolean)
+        .join(" - ")
 }
 
 async function getPostProductSelection(
@@ -367,7 +369,7 @@ export async function generatePost(overrideGender?: Gender) {
             const image = await generatePostImage(prompt, gender, products, prodcutImageBuffers)
             const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
             const uploadedImage = await uploadFile(imageFile, {
-                compress: false,
+                compress: false
             })
             return uploadedImage.id
         })

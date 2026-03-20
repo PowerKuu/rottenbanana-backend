@@ -15,7 +15,7 @@ export async function getPendingProducts({
     status: PendingProductStatus | null
     storeId?: string | null
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -58,7 +58,7 @@ export async function getAllPendingProducts({
     status?: PendingProductStatus | null
     storeId?: string | null
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -71,7 +71,7 @@ export async function getAllPendingProducts({
 }
 
 export async function createPendingProduct({ url, imageUrl }: { url: string; imageUrl: string }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -115,7 +115,7 @@ interface PendingProductInput {
 }
 
 export async function createBulkPendingProducts({ products }: { products: PendingProductInput[] }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -210,7 +210,7 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
 }
 
 export async function updatePendingProductStatus({ id, status }: { id: string; status: PendingProductStatus }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -221,7 +221,7 @@ export async function updatePendingProductStatus({ id, status }: { id: string; s
 }
 
 export async function deletePendingProduct(id: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

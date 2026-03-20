@@ -43,20 +43,17 @@ export async function generateImageGoogle(
         }
     }
 
-    const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-        body,
-        {
+    const response = await axios
+        .post(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, body, {
             headers: {
                 "x-goog-api-key": GOOGLE_API_KEY,
                 "Content-Type": "application/json"
             }
-        }
-    ).catch((error) => {
-        console.error("Error generating image with Google API:", error.response?.data || error.message)
-        throw new Error("Failed to generate image")
-    })
-
+        })
+        .catch((error) => {
+            console.error("Error generating image with Google API:", error.response?.data || error.message)
+            throw new Error("Failed to generate image")
+        })
 
     const responseParts = response.data?.candidates?.[0]?.content?.parts || []
 

@@ -33,7 +33,7 @@ export default function PostsPage() {
                 const data = await getPosts({
                     page,
                     search,
-                    gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+                    gender: genderFilter === "all" ? undefined : (genderFilter as "MALE" | "FEMALE")
                 })
                 setPosts(data.posts)
                 setPagination(data.pagination)
@@ -74,7 +74,7 @@ export default function PostsPage() {
         getPosts({
             page,
             search,
-            gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+            gender: genderFilter === "all" ? undefined : (genderFilter as "MALE" | "FEMALE")
         }).then((data) => {
             setPosts(data.posts)
             setPagination(data.pagination)
@@ -92,7 +92,7 @@ export default function PostsPage() {
             setPage(1)
             const data = await getPosts({
                 page: 1,
-                gender: genderFilter === "all" ? undefined : genderFilter as "MALE" | "FEMALE"
+                gender: genderFilter === "all" ? undefined : (genderFilter as "MALE" | "FEMALE")
             })
             setPosts(data.posts)
             setPagination(data.pagination)

@@ -10,7 +10,7 @@ import { adminGuard } from "@/server/auth/guard"
 const PAGE_SIZE = 24
 
 export async function getCurrentUserId() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -30,7 +30,7 @@ export async function getUsers({
     search?: string
     roleFilter?: string
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -127,7 +127,7 @@ export async function updateUser({
     regionId?: string | null
     emailVerified?: boolean
 }) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -145,7 +145,7 @@ export async function updateUser({
 }
 
 export async function deleteUser(id: string, currentUserId: string) {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 
@@ -162,7 +162,7 @@ export async function deleteUser(id: string, currentUserId: string) {
 }
 
 export async function getAllRegionsForSelect() {
-    if (!await adminGuard()) {
+    if (!(await adminGuard())) {
         throw new Error("Unauthorized: Admin access required")
     }
 

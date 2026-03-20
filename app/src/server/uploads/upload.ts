@@ -51,7 +51,7 @@ export async function uploadFile(file: File, options: UploadFileOptions = DEFAUL
             })
             .toBuffer()
     }
-    
+
     if (options.normalize && ALLOWED_IMAGE_TYPES.includes(extension)) {
         processedBuffer = await sharp(processedBuffer).webp().toBuffer()
 
