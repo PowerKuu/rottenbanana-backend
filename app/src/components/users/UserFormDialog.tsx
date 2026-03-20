@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { updateUser, getAllRegionsForSelect } from "@/server/admin/actions/users"
 
 type UserFormData = {
@@ -106,7 +107,7 @@ export function UserFormDialog({
                     <div className="space-y-2">
                         <Label htmlFor="role">Role</Label>
                         <Select value={role} onValueChange={(value) => setRole(value as "USER" | "ADMIN")}>
-                            <SelectTrigger id="role">
+                            <SelectTrigger id="role" className="w-full">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -119,7 +120,7 @@ export function UserFormDialog({
                     <div className="space-y-2">
                         <Label htmlFor="gender">Gender</Label>
                         <Select value={gender} onValueChange={setGender}>
-                            <SelectTrigger id="gender">
+                            <SelectTrigger id="gender" className="w-full">
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                             <SelectContent>
@@ -134,7 +135,7 @@ export function UserFormDialog({
                     <div className="space-y-2">
                         <Label htmlFor="region">Region</Label>
                         <Select value={regionId} onValueChange={setRegionId}>
-                            <SelectTrigger id="region">
+                            <SelectTrigger id="region" className="w-full">
                                 <SelectValue placeholder="Select region" />
                             </SelectTrigger>
                             <SelectContent>
@@ -148,17 +149,15 @@ export function UserFormDialog({
                         </Select>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="emailVerified">Email Verified</Label>
-                        <Select value={emailVerified.toString()} onValueChange={(value) => setEmailVerified(value === "true")}>
-                            <SelectTrigger id="emailVerified">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="false">Not Verified</SelectItem>
-                                <SelectItem value="true">Verified</SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="emailVerified"
+                            checked={emailVerified}
+                            onCheckedChange={(checked) => setEmailVerified(checked === true)}
+                        />
+                        <Label htmlFor="emailVerified" className="cursor-pointer">
+                            Email Verified
+                        </Label>
                     </div>
 
                     {error && <div className="text-sm text-destructive">{error}</div>}

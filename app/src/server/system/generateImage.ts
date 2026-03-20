@@ -14,7 +14,7 @@ export async function generateImageGoogle(
     imagesMimeType: "image/png" | "image/jpeg" = "image/png",
     output: Partial<{
         aspectRatio: "1:1" | "3:2" | "2:3" | "3:4" | "4:3" | "4:5" | "5:4" | "9:16" | "16:9" | "21:9"
-        imageSize: "1K" | "2K" | "4K"
+        imageSize: "512" | "1K" | "2K" | "4K"
         format: "png" | "jpeg"
     }> = {}
 ): Promise<Buffer> {
@@ -52,7 +52,12 @@ export async function generateImageGoogle(
                 "Content-Type": "application/json"
             }
         }
-    )
+    ).catch((error) => {
+        console.error("Error generating image with Google API:", error.response?.data || error.message)
+        throw new Error("Failed to generate image")
+    })
+
+
     const responseParts = response.data?.candidates?.[0]?.content?.parts || []
 
     const imagePart = responseParts.find((part: any) => !!part.inlineData)

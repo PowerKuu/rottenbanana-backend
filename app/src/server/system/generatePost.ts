@@ -330,7 +330,7 @@ async function generatePostImage(prompt: string, gender: Gender, products: Produ
         "image/png",
         {
             aspectRatio: "9:16",
-            imageSize: "2K",
+            imageSize: "512",
             format: "jpeg"
         }
     )
@@ -366,7 +366,9 @@ export async function generatePost(overrideGender?: Gender) {
         showcasePrompts.map(async (prompt, index) => {
             const image = await generatePostImage(prompt, gender, products, prodcutImageBuffers)
             const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
-            const uploadedImage = await uploadFile(imageFile)
+            const uploadedImage = await uploadFile(imageFile, {
+                compress: false,
+            })
             return uploadedImage.id
         })
     )
