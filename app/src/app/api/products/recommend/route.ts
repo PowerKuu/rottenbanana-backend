@@ -7,7 +7,7 @@ import { ProductCategory } from "@/prisma/client"
 import { hexToCIELAB } from "@/lib/utils"
 
 export async function GET(request: NextRequest) {
-    const RECOMMEND_AMOUNT = 100
+    const RECOMMEND_AMOUNT = 50
     const session = await getSession(request)
 
     if (!session?.user) {
