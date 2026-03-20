@@ -2,7 +2,7 @@ import chalk from "chalk"
 import { prisma } from "../database/prisma"
 import { scrapeProduct } from "../scraper/scraper"
 
-const INTERVAL = 1000 * 60 * 1 // 1 minutes
+const INTERVAL = 1000 * 60 * 5 // 5 minutes
 const MAX_STORE_CONCURRENCY = 125
 
 const logPrefix = chalk.magenta("[ScrapeProductsCronJob]")
