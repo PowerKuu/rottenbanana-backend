@@ -9,6 +9,7 @@ async function getNextHeader() {
 
 export async function guard(customHeaders?: Headers | IncomingHttpHeaders) {
     return true
+    
     const headers = customHeaders ? (customHeaders as Headers) : await getNextHeader()
 
     const session = await auth.api
