@@ -33,11 +33,17 @@ async function testBGRM() {
 
 async function testScraper() {
     const URL =
-        "https://www.zalando.no/copenhagen-muse-cmmaryann-shirt-skjortebluse-bright-white-w-goji-berry-c3a21e029-a11.html"
+        "https://www.zalando.no/dickies-work-pant-bukse-dark-navy-di622e02q-k11.html"
     console.log("Testing scraper for URL:", URL)
-    const scraped = await scrapers.find((s) => s.scraperIdentifier === "zalando")?.scrape(URL)
+    const scraper = scrapers.find((s) => s.scraperIdentifier === "zalando")
+        if (!scraper) {
+            console.error("No scraper found for the given URL")
+            return
+        }
 
-    console.log(scraped)
+    const scraped = await scraper?.scrape(URL)
+
+    console.log("Scraped product data:", scraped)
 }
 
 interface Keyframe {
@@ -98,7 +104,8 @@ async function testProducts() {
 }
 
 //test().catch(console.error)
-testProducts().catch(console.error)
+///testProducts().catch(console.error)
+testScraper().catch(console.error)
 /* drawSeedTags(3).then((tags) => {
     console.log("Drawn seed tags:", tags)
 }).catch(console.error); */
