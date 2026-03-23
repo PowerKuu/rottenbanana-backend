@@ -7,7 +7,7 @@ const BROWSER_PROFILES = [
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
         secChUa: undefined, // Safari doesn't send sec-ch-ua
         platform: undefined
-    },
+    }
 ]
 
 const ACCEPT_LANGUAGES = [
@@ -40,7 +40,6 @@ export function generateFakeHeaders() {
         "Cache-Control": "max-age=0",
         "sec-ch-ua-mobile": "?0"
     }
-    
 
     if (profile.secChUa) {
         headers["sec-ch-ua"] = profile.secChUa

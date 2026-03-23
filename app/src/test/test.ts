@@ -32,14 +32,13 @@ async function testBGRM() {
 }
 
 async function testScraper() {
-    const URL =
-        "https://www.zalando.no/dickies-work-pant-bukse-dark-navy-di622e02q-k11.html"
+    const URL = "https://www.zalando.no/dickies-work-pant-bukse-dark-navy-di622e02q-k11.html"
     console.log("Testing scraper for URL:", URL)
     const scraper = scrapers.find((s) => s.scraperIdentifier === "zalando")
-        if (!scraper) {
-            console.error("No scraper found for the given URL")
-            return
-        }
+    if (!scraper) {
+        console.error("No scraper found for the given URL")
+        return
+    }
 
     const scraped = await scraper?.scrape(URL)
 
