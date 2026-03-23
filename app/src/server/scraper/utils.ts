@@ -52,7 +52,7 @@ export function generateFakeHeaders() {
         headers.DNT = dnt
     }
 
-    console.log("Generated fake headers:", headers)
+    //console.log("Generated fake headers:", headers)
 
     return headers
 }

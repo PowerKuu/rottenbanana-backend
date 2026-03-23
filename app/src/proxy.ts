@@ -9,8 +9,6 @@ export default async function proxy(request: NextRequest) {
     if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) {
         const isAdminAuthorized = await adminGuard()
 
-        console.log("Admin authorization check:", { isAdminAuthorized })
-
         if (pathname.startsWith("/auth") && isAdminAuthorized) {
             return NextResponse.redirect(new URL("/admin", request.url))
         }
