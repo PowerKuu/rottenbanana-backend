@@ -8,7 +8,12 @@ export async function scrapeProduct(url: string) {
     const normalizedUrl = new URL(url).toString()
 
     const stores = await prisma.store.findMany()
-    const store = stores.find((store) => store.websitePrefixes.some((prefix) => normalizedUrl.startsWith(prefix)))
+
+    const store = stores.find((store) => {
+        return store.websiteIdentifiers.some((identifier) => {
+            return normalizedUrl.includes(identifier)
+        })
+    })
 
     if (!store) {
         throw new Error("No store found for the given URL")

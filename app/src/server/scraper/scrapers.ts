@@ -1,6 +1,6 @@
 import { Gender } from "@/prisma/enums"
-import puppeteer from "puppeteer"
 import { JSDOM } from "jsdom"
+import { chromium } from "playwright"
 import { Scraper, ScraperIdentifier, Transformer } from "./types"
 
 function createGenericScraper({
@@ -35,21 +35,37 @@ function createGenericScraper({
 }): Scraper {
     return async (productUrl: string) => {
         const TIMEOUT = 30000
-
-        const browser = await puppeteer.launch({
+        const browser = await chromium.launch({
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            args: ["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-setuid-sandbox"]
         })
 
+        const context = await browser.newContext({
+            userAgent:
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            locale: "nb-NO",
+            viewport: { width: 1280, height: 900 },
+            extraHTTPHeaders: {
+                "Accept-Language": "nb-NO,nb;q=0.9,no;q=0.8,en;q=0.7"
+            }
+        })
+
+        await context.addInitScript(() => {
+            Object.defineProperty(navigator, "webdriver", { get: () => undefined })
+        })
+
+        const page = await context.newPage()
+        await page.goto(productUrl, { waitUntil: "domcontentloaded"})
+
+        await Promise.all([
+            page.waitForSelector(querySelectors.name, { timeout: TIMEOUT }),
+            page.waitForSelector(querySelectors.priceGross, { timeout: TIMEOUT }),
+            page.waitForSelector(querySelectors.images, { timeout: TIMEOUT })
+        ])
+
+        const html = await page.content()
+
         try {
-            const page = await browser.newPage()
-
-            await page.goto(productUrl, {
-                waitUntil: "networkidle2",
-                timeout: TIMEOUT
-            })
-
-            const html = await page.content()
             const dom = new JSDOM(html)
 
             const getElement = (selector: string) => {
@@ -160,7 +176,11 @@ function createGenericScraper({
             )
 
             if (!name || !priceGross || imageUrls.length === 0) {
-                console.error({ name, priceGross, imageUrls })
+                console.error({ name, priceGross, imageUrls }, "Missing required product data", {
+                    nameElement: nameElement?.outerHTML,
+                    priceElement: priceElement?.outerHTML,
+                    imageElements: imageElements.length
+                })
                 throw new Error("Failed to scrape product data for url: " + productUrl)
             }
 
@@ -215,20 +235,18 @@ export const scrapers: {
         scrape: createGenericScraper({
             querySelectors: {
                 name: "h1.MuiTypography-h3",
-                priceGross: ".MuiTypography-price2[aria-hidden='true']:first-of-type",
-                originalPriceGross: ".MuiTypography-price2[aria-hidden='true']:nth-of-type(2)",
-                images: ".swiper-slide img",
+                priceGross: ".MuiTypography-price2",
+                originalPriceGross: ".MuiTypography-price2:nth-of-type(3)",
+                images: ".swiper-slide img, .css-97yw9n-StyledSingleImageWrapper img",
                 gender: "body",
                 currency: "body",
-                description: ".MuiTabPanel-root[role='tabpanel'] .css-t8tx7j-StyledRichText p",
-                brand: ".site-header__logo img"
+                brand: "body"
             },
             transformers: {
                 gender: () => Gender.MALE,
                 currency: () => "kr",
                 brand: () => "Dressmann",
                 images: (_, url) => {
-                    // Get high-res version by modifying the imgix URL parameters
                     const highResUrl = new URL(url)
                     highResUrl.searchParams.set("w", "1800")
                     highResUrl.searchParams.set("q", "80")

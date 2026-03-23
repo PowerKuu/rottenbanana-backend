@@ -32,7 +32,7 @@ export function StoreFormDialog({
     const [displayColorHex, setDisplayColorHex] = useState("#000000")
     const [scraperIdentifier, setScraperIdentifier] = useState("")
     const [websiteUrl, setWebsiteUrl] = useState("")
-    const [websitePrefixes, setWebsitePrefixes] = useState("")
+    const [websiteIdentifiers, setWebsiteIdentifiers] = useState("")
     const [image, setImage] = useState<File | null>(null)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
@@ -62,7 +62,7 @@ export function StoreFormDialog({
             setDisplayColorHex(store.displayColorHex || "#000000")
             setScraperIdentifier(store.scraperIdentifier)
             setWebsiteUrl(store.websiteUrl)
-            setWebsitePrefixes(store.websitePrefixes.join("\n"))
+            setWebsiteIdentifiers(store.websiteIdentifiers.join("\n"))
             setImagePreview(getFileUrl(store.imageId))
             // @ts-expect-error - Store type doesn't include regions yet
             setSelectedRegionIds(store.regions?.map((r: { id: string }) => r.id) || [])
@@ -72,7 +72,7 @@ export function StoreFormDialog({
             setDisplayColorHex("#000000")
             setScraperIdentifier("")
             setWebsiteUrl("")
-            setWebsitePrefixes("")
+            setWebsiteIdentifiers("")
             setImage(null)
             setImagePreview(null)
             setSelectedRegionIds([])
@@ -134,7 +134,7 @@ export function StoreFormDialog({
             return
         }
 
-        if (websitePrefixes.length <= 0) {
+        if (websiteIdentifiers.length <= 0) {
             setError("At least one website origin is required")
             return
         }
@@ -168,7 +168,7 @@ export function StoreFormDialog({
             imageId = uploadData.id
         }
 
-        const prefixes = parseTextfieldList(websitePrefixes)
+        const identifiers = parseTextfieldList(websiteIdentifiers)
 
         if (store) {
             await updateStore({
@@ -178,7 +178,7 @@ export function StoreFormDialog({
                 displayColorHex: displayColorHex || null,
                 scraperIdentifier: scraperIdentifier,
                 websiteUrl,
-                websitePrefixes: prefixes,
+                websiteIdentifiers: identifiers,
                 imageId,
                 regionIds: selectedRegionIds
             })
@@ -189,7 +189,7 @@ export function StoreFormDialog({
                 displayColorHex: displayColorHex || null,
                 scraperIdentifier: scraperIdentifier,
                 websiteUrl,
-                websitePrefixes: prefixes,
+                websiteIdentifiers: identifiers,
                 imageId,
                 regionIds: selectedRegionIds
             })
@@ -279,11 +279,11 @@ export function StoreFormDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="websitePrefixes">Website Prefixes</Label>
+                        <Label htmlFor="websiteIdentifiers">Website Identifiers</Label>
                         <Textarea
-                            id="websitePrefixes"
-                            value={websitePrefixes}
-                            onChange={(e) => setWebsitePrefixes(e.target.value)}
+                            id="websiteIdentifiers"
+                            value={websiteIdentifiers}
+                            onChange={(e) => setWebsiteIdentifiers(e.target.value)}
                             placeholder="example.com, www.example.com"
                             disabled={loading}
                             className="min-h-24"
