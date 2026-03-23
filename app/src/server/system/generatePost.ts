@@ -179,14 +179,31 @@ ${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${musi
 SHOWCASE PROMPTS REQUIREMENTS:
 """
 Generate exactly ${minShowcasePrompts}-${maxShowcasePrompts} creative prompts for showcasing the outfit.
-DO NOT mention specific products, colors, or product descriptions in the prompts! Focus only on setting, model, composition, framing, pose, and lighting.
-You may select a mix of model shots and products only compositions.
+
+COMPOSITION RULES - WHAT TO INCLUDE:
+✓ Camera angles (top-down, low-angle, medium shot, close-up, etc.)
+✓ Setting/location (studio, urban park, stairwell, rooftop, etc.)
+✓ Lighting (harsh sunlight, soft morning light, golden hour, studio lighting)
+✓ Model positioning and pose (standing, walking, sitting, looking away)
+✓ Framing and composition (centered, geometric, minimalist)
+✓ Background elements (neutral backdrop, concrete walls, wooden surface)
+
+FORBIDDEN - ZERO TOLERANCE:
+✗ Mentioning textures or materials (fabric, cotton, leather, etc.)
+✗ Describing clothing features (collars, zips, cuts, fits, silhouettes)
+✗ Referencing colors or patterns of clothing
+✗ Talking about fabric movement or draping
+✗ Describing specific garment details
+✗ Any reference to how the clothes look or feel
+
+ONLY describe composition, camera work, setting, and lighting - NEVER the clothing itself!
 
 Example showcase prompts:
-- Model standing in a bright, sun-drenched studio against a neutral backdrop, looking away with a soft, natural expression.,
-- Outfit items arranged neatly on a light-colored wooden surface, captured from a top-down perspective with soft side-lighting.,
-- Medium shot of the model walking through a minimalist urban park, natural motion capture, focusing on the silhouette and fabric movement.
-- A top-down flat lay on a textured stone floor, showcasing the ensemble arranged in a clean, geometric composition under even morning light.
+- Model standing in a bright, sun-drenched studio against a neutral backdrop, looking away with a soft, natural expression.
+- Outfit items arranged neatly on a light-colored wooden surface, captured from a top-down perspective with soft side-lighting.
+- Medium shot of the model walking through a minimalist urban park, natural motion capture.
+- A top-down flat lay on a stone floor, showcasing the ensemble arranged in a clean, geometric composition under even morning light.
+- Low-angle shot of a model in an industrial setting, with harsh sunlight creating sharp shadows.
 """
 `
 
@@ -307,21 +324,33 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
 }
 
 const generatePostImagePrompt = (prompt: string, gender: Gender, products: Product[]) => `
-Create a professional fashion photography image for social media. Based on the prompt.
-Gender: ${gender}
+Professional fashion photography. Gender: ${gender}
 
-PROMPT:
-${prompt}
+PROMPT: ${prompt}
 
-THE ${products.length} PRODUCT IMAGE(S):
+${products.length} REFERENCE PRODUCTS:
 ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
 
-CRITICAL REQUIREMENTS:
-- Professional photography quality with good lighting
-- Natural and realistic product presentation matching the source images
-- DO NOT modify clothing functionality to show layered pieces or hidden branding/logos - if a garment is a quarter-zip, keep it as a quarter-zip (not a full zip), if clothing naturally covers other layers or branding/logos, that is acceptable and preferred over altering the garment's design or functionality
-- DO NOT add additional products or accessories that are not in the original product images
-- If no footwear is present, you may add white socks or shoes if barefoot is not appropriate for the outfit
+ABSOLUTE RULES - REPRODUCE REFERENCES EXACTLY:
+✓ Match reference images with precision
+✓ Professional lighting and composition
+✓ Reference images are sole truth source
+
+FORBIDDEN - ZERO TOLERANCE:
+✗ DO NOT: Bleed logos through layers of other pieces of clothing!!!
+✗ DO NOT: Force visibility of obscured products!!!
+✗ DO NOT: Altering colors (use EXACT reference colors)
+✗ DO NOT: Changing design/structure (keep quarter-zips as quarter-zips, not full zips)
+✗ DO NOT: Transferring/moving logos between products or from original positions
+✗ DO NOT: Hallucinating logos/branding not in specific product's reference
+✗ DO NOT: Showing hidden angles (no back view if reference shows only front)
+✗ DO NOT: Applying lower layer logos onto upper layers (shirt logos stay hidden under jackets)
+
+PERMITTED:
+• DO: Hiding hidden/covered products
+• DO: Hiding obscured logos under layers
+
+Make no mistakes and follow the instructions precisely!!!
 `
 
 async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
@@ -332,7 +361,7 @@ async function generatePostImage(prompt: string, gender: Gender, products: Produ
         "image/png",
         {
             aspectRatio: "9:16",
-            imageSize: "512",
+            imageSize: "1K",
             format: "jpeg"
         }
     )

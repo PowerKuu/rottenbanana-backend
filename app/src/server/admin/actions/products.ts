@@ -122,7 +122,8 @@ export async function deleteProduct(productId: string) {
         where: { id: productId }
     })
 
-    await deleteFiles([product.productOnlyImageId, ...product.imageIds])
+    const uniqueFileIds = Array.from(new Set([product.productOnlyImageId, ...product.imageIds]))
+    await deleteFiles(uniqueFileIds)
 
     return deletedProduct
 }

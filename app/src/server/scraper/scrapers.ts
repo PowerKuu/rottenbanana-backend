@@ -174,12 +174,12 @@ export const scrapers: {
         scrape: createGenericScraper({
             querySelectors: {
                 name: `[data-testid="product_title-product-name"]`,
-                priceGross: `[data-testid="pdp-price-container"] p`,
+                priceGross: `[data-testid="pdp-price-container"] span:nth-last-of-type(2)`,
                 originalPriceGross: `[data-testid="pdp-price-container"] p:nth-of-type(2) span:nth-of-type(2)`,
                 images: `img[data-testid^="product"]`,
                 gender: `[data-testid="genderLink"] [aria-current="true"]`,
                 brand: `[data-testid="product_title-brand-name"]`,
-                currency: `[data-testid="pdp-price-container"] span`
+                currency: `[data-testid="pdp-price-container"] span:nth-last-of-type(2)`
             },
             transformers: {
                 gender: (_, text) => (text === "Dame" ? Gender.FEMALE : text === "Herre" ? Gender.MALE : Gender.UNISEX),
