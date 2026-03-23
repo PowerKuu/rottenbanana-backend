@@ -76,7 +76,6 @@ export async function createPendingProduct({ url, imageUrl }: { url: string; ima
     }
 
     const normalizedUrl = new URL(url).toString()
-    const hostname = new URL(url).hostname
 
     const existing = await prisma.pendingProduct.findUnique({
         where: { url: normalizedUrl }
@@ -86,17 +85,16 @@ export async function createPendingProduct({ url, imageUrl }: { url: string; ima
         throw new Error("This product URL is already in the pending list")
     }
 
-    const store = await prisma.store.findFirst({
-        where: {
-            websiteIdentifiers: {
-                has: hostname
-            }
-        },
-        select: { id: true }
+    const stores = await prisma.store.findMany({
+        select: { id: true, websiteIdentifiers: true }
     })
 
+    const store = stores.find((s) =>
+        s.websiteIdentifiers.some((identifier) => normalizedUrl.includes(identifier))
+    )
+
     if (!store) {
-        throw new Error(`No store found for hostname: ${hostname}`)
+        throw new Error(`No store found matching URL: ${normalizedUrl}`)
     }
 
     return await prisma.pendingProduct.create({
@@ -129,13 +127,6 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
         select: { id: true, websiteIdentifiers: true }
     })
 
-    const hostnameToStoreId = new Map<string, string>()
-    for (const store of stores) {
-        for (const hostname of store.websiteIdentifiers) {
-            hostnameToStoreId.set(hostname, store.id)
-        }
-    }
-
     const processedProducts: Array<{ url: string; imageUrl: string; storeId: string }> = []
     const urlsToCheck: string[] = []
 
@@ -150,13 +141,15 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
             }
 
             const normalizedUrl = new URL(product.url).toString()
-            const hostname = new URL(product.url).hostname
 
-            const storeId = hostnameToStoreId.get(hostname)
-            if (!storeId) {
+            const store = stores.find((s) =>
+                s.websiteIdentifiers.some((identifier) => normalizedUrl.includes(identifier))
+            )
+
+            if (!store) {
                 results.errors.push({
                     url: product.url,
-                    error: `No store found for hostname: ${hostname}`
+                    error: `No store found matching URL: ${normalizedUrl}`
                 })
                 continue
             }
@@ -164,7 +157,7 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
             processedProducts.push({
                 url: normalizedUrl,
                 imageUrl: product.imageUrl,
-                storeId
+                storeId: store.id
             })
             urlsToCheck.push(normalizedUrl)
         } catch (error) {
