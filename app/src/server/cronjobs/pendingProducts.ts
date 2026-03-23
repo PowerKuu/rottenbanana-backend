@@ -3,8 +3,8 @@ import { prisma } from "../database/prisma"
 import { scrapeAndAnalyzeProduct, scrapeProduct } from "../scraper/scraper"
 import chalk from "chalk"
 
-const INTERVAL = 1000 // 1 second
-const MAX_CONCURRENCY = 3
+const INTERVAL = 5000 // 5 seconds
+const MAX_CONCURRENCY = 1
 
 const logPrefix = chalk.blue("[PendingProductsCronJob]")
 
