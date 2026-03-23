@@ -40,13 +40,17 @@ export async function GET(request: NextRequest) {
             return new NextResponse("Invalid category", { status: 400 })
         }
 
+        const usePrefrenceTags = searchParams.get("usePrefrenceTags") !== "false"
+        const excludeId = searchParams.get("excludeId") || undefined
+
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
             user,
             search,
             category,
             maxColorDistance,
             colorCIELAB,
-            usePrefrenceTags: true
+            usePrefrenceTags,
+            excludeId
         })
 
         return NextResponse.json({ productsIds: recommendedProducts.map((product) => product.id) })

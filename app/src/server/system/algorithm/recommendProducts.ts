@@ -16,6 +16,7 @@ export async function recommendProducts(
         slot?: ProductSlot
         category?: ProductCategory
         search?: string
+        excludeId?: string
         recursiveProducts?: Product[]
     } = {}
 ): Promise<Product[]> {
@@ -55,6 +56,10 @@ export async function recommendProducts(
         )`)
     }
 
+    if (options.excludeId) {
+        whereConditions.push(Prisma.sql`"Product".id != ${options.excludeId}`)
+    }
+
     if (options.recursiveProducts && options.recursiveProducts.length > 0) {
         const excludeIds = options.recursiveProducts.map((p) => p.id)
         whereConditions.push(Prisma.sql`"Product".id NOT IN (${Prisma.join(excludeIds, ",")})`)
@@ -68,25 +73,23 @@ export async function recommendProducts(
 
     if (options.colorCIELAB) {
         const [L, A, B] = options.colorCIELAB
-        const havingClause =
+        const distanceFilter =
             options.maxColorDistance !== undefined
-                ? Prisma.sql`HAVING sqrt(
-                power("primaryColorCIELAB"[1] - ${L}, 2) +
-                power("primaryColorCIELAB"[2] - ${A}, 2) * ${CHROMA_HUE_WEIGHT} +
-                power("primaryColorCIELAB"[3] - ${B}, 2) * ${CHROMA_HUE_WEIGHT}
-            ) <= ${options.maxColorDistance}`
+                ? Prisma.sql`WHERE distance <= ${options.maxColorDistance}`
                 : Prisma.empty
 
         recommendedProducts = await prisma.$queryRaw`
-            SELECT *,
-                sqrt(
-                power("primaryColorCIELAB"[1] - ${L}, 2) +
-                power("primaryColorCIELAB"[2] - ${A}, 2) * ${CHROMA_HUE_WEIGHT} +
-                power("primaryColorCIELAB"[3] - ${B}, 2) * ${CHROMA_HUE_WEIGHT}
-                ) AS distance
-            FROM "Product"
-            ${whereClause}
-            ${havingClause}
+            SELECT * FROM (
+                SELECT *,
+                    sqrt(
+                    power("primaryColorCIELAB"[1] - ${L}, 2) +
+                    power("primaryColorCIELAB"[2] - ${A}, 2) * ${CHROMA_HUE_WEIGHT} +
+                    power("primaryColorCIELAB"[3] - ${B}, 2) * ${CHROMA_HUE_WEIGHT}
+                    ) AS distance
+                FROM "Product"
+                ${whereClause}
+            ) AS subq
+            ${distanceFilter}
             ORDER BY distance
             LIMIT ${take}
         `
