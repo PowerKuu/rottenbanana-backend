@@ -5,15 +5,10 @@ import { uploadFromExternalUrl } from "../uploads/upload"
 import { hexToCIELAB } from "@/lib/utils"
 
 export async function scrapeProduct(url: string) {
-    const hostname = new URL(url).hostname
+    const normalizedUrl = new URL(url).toString()
 
-    const store = await prisma.store.findFirst({
-        where: {
-            websiteHostnames: {
-                has: hostname
-            }
-        }
-    })
+    const stores = await prisma.store.findMany()
+    const store = stores.find((store) => store.websitePrefixes.some((prefix) => normalizedUrl.startsWith(prefix)))
 
     if (!store) {
         throw new Error("No store found for the given URL")

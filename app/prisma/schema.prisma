@@ -156,7 +156,7 @@ model Store {
   displayColorHex String?
 
   websiteUrl String
-  websitePrefixes String[]
+  websiteIdentifiers String[]
 
   imageId   String
 

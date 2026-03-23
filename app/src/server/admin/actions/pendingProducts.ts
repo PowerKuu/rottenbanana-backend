@@ -88,7 +88,7 @@ export async function createPendingProduct({ url, imageUrl }: { url: string; ima
 
     const store = await prisma.store.findFirst({
         where: {
-            websiteHostnames: {
+            websitePrefixes: {
                 has: hostname
             }
         },
@@ -126,12 +126,12 @@ export async function createBulkPendingProducts({ products }: { products: Pendin
     }
 
     const stores = await prisma.store.findMany({
-        select: { id: true, websiteHostnames: true }
+        select: { id: true, websitePrefixes: true }
     })
 
     const hostnameToStoreId = new Map<string, string>()
     for (const store of stores) {
-        for (const hostname of store.websiteHostnames) {
+        for (const hostname of store.websitePrefixes) {
             hostnameToStoreId.set(hostname, store.id)
         }
     }

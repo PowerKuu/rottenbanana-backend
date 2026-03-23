@@ -48,7 +48,7 @@ export async function createStore({
     displayColorHex,
     scraperIdentifier,
     websiteUrl,
-    websiteHostnames,
+    websitePrefixes,
     imageId,
     regionIds
 }: {
@@ -57,7 +57,7 @@ export async function createStore({
     displayColorHex?: string | null
     scraperIdentifier?: string
     websiteUrl: string
-    websiteHostnames?: string[]
+    websitePrefixes?: string[]
     imageId: string
     regionIds?: string[]
 }) {
@@ -76,7 +76,7 @@ export async function createStore({
             displayColorHex,
             scraperIdentifier: scraperIdentifier || slugify(name),
             websiteUrl,
-            websiteHostnames: websiteHostnames || [],
+            websitePrefixes: websitePrefixes || [],
             imageId,
             regions: {
                 connect: regionIds.map((id) => ({ id }))
@@ -94,7 +94,7 @@ export async function updateStore({
     displayColorHex,
     scraperIdentifier,
     websiteUrl,
-    websiteHostnames,
+    websitePrefixes,
     imageId,
     regionIds
 }: {
@@ -104,7 +104,7 @@ export async function updateStore({
     displayColorHex?: string | null
     scraperIdentifier?: string
     websiteUrl?: string
-    websiteHostnames?: string[]
+    websitePrefixes?: string[]
     imageId?: string
     regionIds?: string[]
 }) {
@@ -132,7 +132,7 @@ export async function updateStore({
             displayColorHex,
             scraperIdentifier,
             websiteUrl,
-            websiteHostnames,
+            websitePrefixes,
             imageId,
             regions: regionIds !== undefined ? { set: regionIds.map((id) => ({ id })) } : undefined
         })
