@@ -1,31 +1,106 @@
 import { prisma } from "@/server/database/prisma"
 
 const tags = [
-    { tag: "Minimalist", description: "Clean lines, neutral palettes and understated elegance" },
-    { tag: "Maximalist", description: "Bold patterns, clashing prints and more-is-more layering" },
-    { tag: "Dark Academia", description: "Scholarly moody aesthetics with vintage academia vibes" },
-    { tag: "Old Money", description: "Timeless elegance and understated luxury" },
-    { tag: "Grunge", description: "90s rebel spirit with distressed fabrics and layered looks" },
-    { tag: "Bohemian", description: "Free-spirited eclectic with earthy tones and flowing silhouettes" },
-    { tag: "Cottagecore", description: "Countryside living with florals, gingham and pastoral charm" },
-    { tag: "Techwear", description: "Futuristic functionality with technical fabrics and modular design" },
-    { tag: "Y2K", description: "Early 2000s nostalgia with low-rise, metallics and baby tees" },
-    { tag: "Preppy", description: "Classic collegiate polish with blazers, loafers and crisp lines" },
-    { tag: "Gorpcore", description: "Outdoor performance gear styled for urban life" },
-    { tag: "Quiet Luxury", description: "Expensive minimalism with impeccable tailoring and subtle details" },
-    { tag: "Opulent Maximalism", description: "Luxe glamour with furs, velvet, gold and dramatic volume" },
-    { tag: "Indie Sleaze", description: "Messy cool-kid energy with skinny jeans and vintage band tees" },
-    { tag: "Punk", description: "Rebellious DIY attitude with leather, studs and anti-establishment edge" },
-    { tag: "Romantic", description: "Soft dreamy aesthetics with lace, ruffles and delicate fabrics" },
-    { tag: "Western", description: "Frontier spirit with cowboy boots, denim and ranch-inspired pieces" },
-    { tag: "Skater", description: "Laid-back skate culture with baggy pants and graphic tees" },
-    { tag: "Artsy Vintage", description: "Creative expression through thrifted vintage and artistic flair" },
-    { tag: "Normcore", description: "Intentionally ordinary basics without trying too hard" },
-    { tag: "Scandinavian", description: "Nordic simplicity with functional design and muted elegance" },
-    { tag: "Cyberpunk", description: "Dystopian futurism with neon, leather and tech-noir edge" },
-    { tag: "Rockstar", description: "Performative glamour with leather pants, mesh and stage presence" },
-    { tag: "Americana", description: "Classic American heritage with denim, varsity and vintage workwear" },
-    { tag: "Monochrome", description: "Single-color or tonal dressing for bold cohesive impact" }
+    {
+        tag: "Streetwear",
+        description: "Must have bold graphics, oversized proportions, or recognizable urban brand aesthetics like Supreme/Off-White. Requires either: loud logos, skatewear elements, hip-hop inspired silhouettes, or deliberate baggy street styling. Plain basics don't qualify."
+    },
+    {
+        tag: "Old Money",
+        description: "Only timeless, expensive-looking pieces in neutral tones with zero visible branding. Must look like inherited wealth - cashmere sweaters, perfectly tailored coats, classic loafers, or polo shirts. Nothing trendy, flashy, or affordable-looking qualifies."
+    },
+    {
+        tag: "Scandinavian",
+        description: "Exclusively clean-lined, functional Nordic design in muted earth tones (beige, grey, cream, black). Must have that specific minimalist Scandinavian aesthetic - architectural cuts, quality basics, cozy knits. Bright colors or ornate details disqualify."
+    },
+    {
+        tag: "Formal",
+        description: "Only clothing appropriate for business meetings, weddings, or formal events. Must be: suits, blazers, dress shirts, dress pants, pencil skirts, ties, or formal dresses. Casual fabrics like jersey or denim automatically disqualify."
+    },
+    {
+        tag: "Romantic",
+        description: "Must have overtly feminine, delicate details: lace, ruffles, bows, or soft flowing fabrics. Requires pastel colors or floral prints with dreamy, ethereal aesthetic. Simple or structured pieces don't qualify - needs visible romantic elements."
+    },
+    {
+        tag: "Detailed",
+        description: "Only clothing with significant embellishment visible on the garment: embroidery, beading, intricate patterns, or ornate decorations. Must have elaborate craftsmanship you can see. Plain clothing with simple construction doesn't qualify regardless of quality."
+    },
+    {
+        tag: "Casual",
+        description: "Basic everyday wear with zero styling or fashion intent. Must be completely unremarkable: plain t-shirts, basic jeans, simple hoodies without any distinctive features. If it has any aesthetic, trend, or style element, it's NOT casual."
+    },
+    {
+        tag: "Preppy",
+        description: "Must embody Ivy League collegiate style: polo shirts, cable knit sweaters, khakis, blazers with buttons, loafers, or preppy patterns (stripes, argyle). Requires that specific clean-cut American East Coast aesthetic. Casual basics don't qualify."
+    },
+    {
+        tag: "Bohemian",
+        description: "Only free-spirited, artistic pieces with boho elements: maxi length, fringe, peasant styling, earth tones with floral, or layered natural fabrics. Must have that specific carefree hippie aesthetic. Structured or minimal pieces don't qualify."
+    },
+    {
+        tag: "Sporty",
+        description: "Must be actual athletic-inspired fashion: track pants with stripes, sports jerseys, windbreakers, athletic shorts, or performance-looking pieces. Requires visible sporty elements. Regular activewear or plain basics don't qualify - needs that sports fashion look."
+    },
+    {
+        tag: "Vintage",
+        description: "Must authentically look like clothing from past decades (60s-90s) with period-specific cuts, worn-in appearance, or retro patterns. Needs that specific thrifted, nostalgic, old-school aesthetic. Modern reproductions without authentic vintage feel don't qualify."
+    },
+    {
+        tag: "Y2K",
+        description: "Must have specific early 2000s elements: low-rise cuts, baby tee sizing, velour material, mini lengths, butterfly motifs, metallic fabrics, or tiny accessories. Needs obvious 2000s nostalgia aesthetic. General modern clothing doesn't qualify."
+    },
+    {
+        tag: "Gothic",
+        description: "Must be predominantly black with dark romantic or dramatic gothic elements: leather, lace, corsets, chains, Victorian details, or moody aesthetic. Requires that specific dark subculture look. Simply wearing black doesn't qualify - needs gothic styling."
+    },
+    {
+        tag: "Punk",
+        description: "Must have visible rebellious punk elements: leather jackets with hardware, intentional rips/distressing, band patches, safety pins, studs, plaid pants, or DIY modifications. Needs anti-establishment aesthetic. Edgy basics without punk details don't qualify."
+    },
+    {
+        tag: "Korean",
+        description: "Must have that specific K-fashion Seoul aesthetic: oversized layered proportions, unique Asian-influenced silhouettes, matching sets, platform shoes, or cute Korean styling details. Needs recognizable Korean street fashion look. Western basics don't qualify."
+    },
+    {
+        tag: "French",
+        description: "Must embody Parisian chic: horizontal stripes, berets, perfectly tailored blazers, European-cut jeans, loafers, or trench coats. Requires that specific effortless French sophistication. American or basic pieces without European styling don't qualify."
+    },
+    {
+        tag: "Coastal",
+        description: "Must evoke beach/seaside aesthetic: linen material, crisp white and blue palette, nautical stripes, breezy vacation cuts, or maritime details. Needs that specific coastal grandmother or beachy aesthetic. Regular summer clothes without coastal vibe don't qualify."
+    },
+    {
+        tag: "Dark Academia",
+        description: "Must have scholarly library aesthetic: tweed material, turtlenecks, plaid skirts, oxford shoes, or vintage intellectual styling in browns and dark greens. Needs that specific old-university literature vibe. Preppy without academic moodiness doesn't qualify."
+    },
+    {
+        tag: "Clean Girl",
+        description: "Must be polished minimalist in neutral tones with intentional simplicity: matching sets, neutral colors only, sophisticated basics, or refined gold jewelry aesthetic. Everything must look fresh and put-together. Casual basics or anything with patterns/colors don't qualify."
+    },
+    {
+        tag: "Athleisure",
+        description: "Must be performance athletic wear styled fashionably outside the gym: leggings worn as pants, sports bras as outerwear, sneakers styled with non-athletic pieces. Requires mixing athletic and casual. Pure gym clothes or regular casual wear don't qualify."
+    },
+    {
+        tag: "Edgy",
+        description: "Must have bold unconventional design: visible cut-outs, asymmetrical construction, avant-garde silhouettes, harness details, chains as fashion, or risk-taking design choices. Needs daring statement-making elements. Safe or classic pieces don't qualify."
+    },
+    {
+        tag: "Western",
+        description: "Must have explicit cowboy/ranch elements: cowboy boots, western fringe, large belt buckles, snap-button shirts, bandana prints, or rodeo aesthetic. Requires obvious Western Americana styling. Regular denim or boots without western details don't qualify."
+    },
+    {
+        tag: "Workwear",
+        description: "Must have utilitarian labor-inspired design: cargo pants with multiple pockets, utility jackets, denim overalls, work boots, or heavy-duty functional construction. Needs that specific durable workman aesthetic. Regular casual wear doesn't qualify."
+    },
+    {
+        tag: "Luxury",
+        description: "Must have obvious high-end markers: prominent designer logos, recognizable luxury branding, premium materials like silk/cashmere, or expensive designer aesthetic. Needs flashy wealth display. Quality pieces without visible luxury signaling don't qualify."
+    },
+    {
+        tag: "Cottagecore",
+        description: "Must have rural countryside aesthetic: floral prairie patterns, linen material, puff sleeves, gingham checks, apron styling, or nostalgic farm-inspired details. Needs that specific romantic pastoral vibe. Regular floral or casual pieces don't qualify."
+    }
 ]
 
 async function main() {

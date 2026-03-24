@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { MusicCard } from "@/components/music/MusicCard"
 import { MusicFormDialog } from "@/components/music/MusicFormDialog"
+import { BulkMusicImportDialog } from "@/components/music/BulkMusicImportDialog"
 import { DeleteMusicDialog } from "@/components/music/DeleteMusicDialog"
-import { Plus } from "lucide-react"
+import { Plus, Upload } from "lucide-react"
 import { getAllMusic } from "@/server/admin/actions/music"
 import { Music } from "@/prisma/client"
 
@@ -28,6 +29,7 @@ export default function MusicPage() {
     const [music, setMusic] = useState<MusicWithCount[]>([])
     const [loading, setLoading] = useState(true)
     const [createDialogOpen, setCreateDialogOpen] = useState(false)
+    const [bulkImportDialogOpen, setBulkImportDialogOpen] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [selectedMusic, setSelectedMusic] = useState<MusicWithCount | null>(null)
@@ -69,10 +71,16 @@ export default function MusicPage() {
                         <h1 className="text-2xl font-bold tracking-tight">Music</h1>
                         <p className="text-sm text-muted-foreground">Manage music tracks for posts and preferences</p>
                     </div>
-                    <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Music
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setBulkImportDialogOpen(true)}>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Bulk Import
+                        </Button>
+                        <Button onClick={() => setCreateDialogOpen(true)}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Create Music
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -95,6 +103,12 @@ export default function MusicPage() {
             </div>
 
             <MusicFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
+
+            <BulkMusicImportDialog
+                open={bulkImportDialogOpen}
+                onOpenChange={setBulkImportDialogOpen}
+                onSuccess={handleSuccess}
+            />
 
             <MusicFormDialog
                 open={editDialogOpen}
