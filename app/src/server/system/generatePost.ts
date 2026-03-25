@@ -6,12 +6,21 @@ import { generateText, Output } from "ai"
 import { generateImageGoogle } from "./generateImage"
 import { uploadFile } from "../uploads/upload"
 import { getFile, readFileBuffer } from "../uploads/read"
-import { randomShuffle } from "@/lib/utils"
+import { randomInt, randomShuffle } from "@/lib/utils"
 import { productSlotDescriptions } from "./analyzeProduct"
-import { drawSeedTags } from "./algorithm/drawSeedTags"
 import { recommendProducts } from "./algorithm/recommendProducts"
 import { recommendMusic } from "./algorithm/recommendMusic"
-import { randomInt, randomUUID } from "crypto"
+
+async function getProductPreferenceTags(product: Product) {
+    const tags = await prisma.productPreferenceTag.findMany({
+        where: { productId: product.id },
+        include: {
+            preferenceTag: true
+        }
+    })
+
+    return tags.map((tag) => tag.preferenceTag)
+}
 
 async function getRegion() {
     const regions = await prisma.region.findMany({
@@ -37,19 +46,12 @@ async function getGender() {
 }
 
 async function getProductDescription(product: Product) {
-    const tags = await prisma.productPreferenceTag.findMany({
-        where: { productId: product.id },
-        include: {
-            preferenceTag: true
-        }
-    })
-
-    const tagDescriptions = tags.map((tag) => tag.preferenceTag.tag).join(", ")
-    const tagDescriptionsFormatted = tagDescriptions ? `(${tagDescriptions})` : null
+    const tags = await getProductPreferenceTags(product)
+    const tagFormatted = tags.length > 0 ? `(${tags.map((tag) => tag.tag).join(", ")})` : null
 
     const metaDescription = (product.metadata as any)?.["description"]
 
-    return [product.name, product.gender, product.primaryColorHex, metaDescription, tagDescriptionsFormatted]
+    return [product.name, product.gender, product.primaryColorHex, metaDescription, tagFormatted]
         .filter(Boolean)
         .join(" - ")
 }
@@ -70,7 +72,7 @@ async function getMusicDescription(music: Music) {
 async function getPostProductSelection(
     gender: Gender,
     region: Region,
-    seedPreferenceTag: PreferenceTag | null = null,
+    seedProduct: Product,
     take: number
 ) {
     const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
@@ -79,16 +81,16 @@ async function getPostProductSelection(
         [ProductSlot.FOOTWEAR_LAYER_1],
         [ProductSlot.FOOTWEAR_LAYER_2],
         [ProductSlot.UPPERBODY_LAYER_2],
-        [ProductSlot.UPPERBODY_LAYER_3],
+        [ProductSlot.UPPERBODY_LAYER_3, 0.5],
         [ProductSlot.WATCH],
-        [ProductSlot.HAT],
+        [ProductSlot.HAT, 0.3],
         [ProductSlot.BELT],
         [ProductSlot.SCARF],
-        [ProductSlot.BRACELETS],
-        [ProductSlot.TIE],
+        [ProductSlot.BRACELETS, 0.3],
+        [ProductSlot.TIE, 0.3],
         [ProductSlot.GLOVES, 0.3],
         [ProductSlot.BAG, 0.3],
-        [ProductSlot.GLASSES, 0.4],
+        [ProductSlot.GLASSES, 0.7],
         [ProductSlot.RING, 0.2],
         [ProductSlot.EARRINGS, gender === Gender.FEMALE ? 0.2 : 0]
     ]
@@ -107,7 +109,8 @@ async function getPostProductSelection(
 
     const productSelection: {
         [slot in ProductSlot]?: {
-            required: boolean
+            required?: boolean
+            seed?: boolean
             products: {
                 id: string
                 description: string
@@ -115,13 +118,29 @@ async function getPostProductSelection(
         }
     } = {}
 
+    const seedTags = await getProductPreferenceTags(seedProduct)
+
     for (const { slot, required } of slots) {
+        if (seedProduct.slot === slot) {
+            productSelection[slot] = {
+                required: true,
+                seed: true,
+                products: [
+                    {
+                        id: seedProduct.id,
+                        description: await getProductDescription(seedProduct)
+                    }
+                ]
+            }
+
+            continue
+        }
+
         const products = await recommendProducts(take, {
             slot,
             region,
             gender,
-            usePrefrenceTags: !!seedPreferenceTag,
-            seedTags: seedPreferenceTag ? [seedPreferenceTag] : undefined
+            seedTags
         })
 
         if (products.length <= 0 && required) throw new Error(`Required slot ${slot} has no products`)
@@ -142,8 +161,13 @@ async function getPostProductSelection(
     return productSelection
 }
 
-async function getPostMusicSelection(region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
-    const music = await recommendMusic(region, seedPreferenceTag, take)
+async function getPostMusicSelection(region: Region, seedProduct: Product, take: number) {    
+    const seedTags = await getProductPreferenceTags(seedProduct)
+    
+    const music = await recommendMusic(take, {
+        region,
+        seedTags
+    })
 
     const musicWithDescriptions = await Promise.all(
         music.map(async (music) => ({
@@ -155,7 +179,8 @@ async function getPostMusicSelection(region: Region, seedPreferenceTag: Preferen
     return randomShuffle(musicWithDescriptions)
 }
 
-const generatePostProductsPrompt = (
+const generatePostProductsPrompt = async (
+    seedProduct: Product,
     selection: Awaited<ReturnType<typeof getPostProductSelection>>,
     musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
     minProducts: number,
@@ -163,21 +188,24 @@ const generatePostProductsPrompt = (
     minShowcasePrompts: number,
     maxShowcasePrompts: number
 ) => `
-Random seed: "${randomUUID()}"
+You are a stylist selecting products for an outfit post.
 
-You are a creative fashion stylist selecting products for an outfit post.
-Decide a random theme before choosing
+SEED PRODUCT (STARTING POINT):
+This outfit is built around: ${await getProductDescription(seedProduct)}
+Use the seed as inspiration to create a cohesive and stylish outfit.
+
+SELECTION GUIDELINES:
+Think to yourself: "Would someone actually wear this combination together? Does it create a cohesive style or vibe? For example, pairing a formal blazer with casual sneakers does not create a good look."
+If unsure leave out products! Must distinguish "editorial weird" vs "just bad"!
 
 SLOT SELECTION RULES:
 - The total number of products must be between ${minProducts} and ${maxProducts}
+- SEED slot: You MUST include the seed product in the outfit, it's the foundation of the look!
 - REQUIRED slots: You MUST pick exactly 1 product from each required slot!
 - OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot!
 - ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
 - Sometimes it's better to leave slots empty to create a cleaner look - use your creativity and fashion sense to decide!
 - Create natural variety: some outfits should be minimal and clean, others can have more layers or accessories depending on the style
-- Create a look with a clear point of view. Cohesion comes from a shared MOOD, not from matching style tags!
-- Contrasting pieces with a unified attitude are more interesting than items that simply share the same labels.
-- You can combine tags, styles, and categories in unexpected ways to create a unique vibe, as long as the overall feeling is cohesive.
 
 SLOT DESCRIPTIONS:
 """
@@ -191,10 +219,10 @@ AVAILABLE PRODUCTS BY SLOT:
 """
 ${Object.entries(selection)
     .map(
-        ([slot, { products, required }]) =>
+        ([slot, { products, required, seed }]) =>
             products.length > 0 &&
             `
-${slot} (${required ? "REQUIRED" : "OPTIONAL"}):
+${slot} (${required ? "REQUIRED" : "OPTIONAL"}) ${seed ? "(SEED)" : ""}:
 ${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${product.description}`).join("\n")}`
     )
 
@@ -205,7 +233,7 @@ ${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${produc
 AVAILABLE MUSIC:
 """
 Select 1 music track that matches the vibe and style of the outfit.
-${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id}- ${music.description}`).join("\n")}
+${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
 """
 
 SHOWCASE PROMPTS REQUIREMENTS:
@@ -229,29 +257,25 @@ FORBIDDEN - ZERO TOLERANCE:
 ✗ Any reference to how the clothes look or feel
 
 ONLY describe composition, camera work, setting, and lighting - NEVER the clothing itself!
-
-Example showcase prompts:
-- Model standing in a bright, sun-drenched studio against a neutral backdrop, looking away with a soft, natural expression.
-- Outfit items arranged neatly on a light-colored wooden surface, captured from a top-down perspective with soft side-lighting.
-- Medium shot of the model walking through a minimalist urban park, natural motion capture.
-- A top-down flat lay on a stone floor, showcasing the ensemble arranged in a clean, geometric composition under even morning light.
-- Low-angle shot of a model in an industrial setting, with harsh sunlight creating sharp shadows.
 """
 `
 
 async function generatePostData(minProducts: number, maxProducts: number, overrideGender?: Gender) {
-    const MAX_PRODUCT_SELECTION_PER_SLOT = 8
-    const MAX_MUSIC_SELECTION = 6
+    const MAX_PRODUCT_SELECTION_PER_SLOT = 6
+    const MAX_MUSIC_SELECTION = 4
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
     const MAX_SHOWCASE_PROMPTS = 3
 
     const gender = overrideGender || (await getGender())
     const region = await getRegion()
+    const [seedProduct] = await recommendProducts(1, {
+        region,
+        gender
+    })
 
-    const [seedPreferenceTag] = await drawSeedTags()
-    const musicSelection = await getPostMusicSelection(region, null, MAX_MUSIC_SELECTION)
-    const productSelection = await getPostProductSelection(gender, region, null, MAX_PRODUCT_SELECTION_PER_SLOT)
+    const productSelection = await getPostProductSelection(gender, region, seedProduct, MAX_PRODUCT_SELECTION_PER_SLOT)
+    const musicSelection = await getPostMusicSelection(region, seedProduct, MAX_MUSIC_SELECTION)
 
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
@@ -274,7 +298,8 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
             .describe("Creative prompts for showcasing the outfit in the post's images. In English.")
     })
 
-    const prompt = generatePostProductsPrompt(
+    const prompt = await generatePostProductsPrompt(
+        seedProduct,
         productSelection,
         musicSelection,
         minProducts,
@@ -283,18 +308,15 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         MAX_SHOWCASE_PROMPTS
     )
 
-    console.log("Generated prompt for product selection:", prompt)
-
     const response = await generateText({
-        model: "anthropic/claude-sonnet-4",
+        model: "anthropic/claude-sonnet-4.6",
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
         prompt,
-        temperature: 1.3
     })
 
-    const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
+    const { products: productIds, caption, musicId, showcasePrompts } = response.output
 
     const products = await prisma.product.findMany({
         include: {
@@ -302,7 +324,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         },
         where: {
             id: {
-                in: prodcutsIds
+                in: productIds
             }
         }
     })
@@ -335,7 +357,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     }
 
     for (const [slot, { products, required }] of Object.entries(productSelection)) {
-        if (required && !products.some((product) => prodcutsIds.includes(product.id))) {
+        if (required && !products.some((product) => productIds.includes(product.id))) {
             throw new Error(`Required slot ${slot} does not have a selected product`)
         }
     }
@@ -348,7 +370,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         region,
         tags,
         gender,
-        seedPreferenceTag
+        seedProduct
     }
 }
 
@@ -400,22 +422,18 @@ async function generatePostImage(prompt: string, gender: Gender, products: Produ
 }
 
 export async function generatePost(overrideGender?: Gender) {
-    const MIN_PRODUCTS = 2
+    const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = randomInt(4, 6)
 
-    const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } =
+    const { products, caption, music, showcasePrompts, region, tags, gender, seedProduct } =
         await generatePostData(MIN_PRODUCTS, MAX_PRODUCTS, overrideGender)
 
-    console.log(
-        products.map((product) => product.url),
-        caption,
-        music,
-        showcasePrompts,
-        region,
-        seedPreferenceTag
+    console.log("[Temp]",
+        await getProductDescription(seedProduct),
+        showcasePrompts
     )
 
-    const prodcutImageBuffers = await Promise.all(
+    const productImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageId }) => {
             const file = await getFile(productOnlyImageId)
             const buffer = await readFileBuffer(file)
@@ -425,7 +443,7 @@ export async function generatePost(overrideGender?: Gender) {
 
     const uploadedImageIds = await Promise.all(
         showcasePrompts.map(async (prompt, index) => {
-            const image = await generatePostImage(prompt, gender, products, prodcutImageBuffers)
+            const image = await generatePostImage(prompt, gender, products, productImageBuffers)
             const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
             const uploadedImage = await uploadFile(imageFile, {
                 compress: true
@@ -433,10 +451,6 @@ export async function generatePost(overrideGender?: Gender) {
             return uploadedImage.id
         })
     )
-
-    if (!region || !music) {
-        throw new Error("No region or music found in database")
-    }
 
     const post = await prisma.post.create({
         data: {

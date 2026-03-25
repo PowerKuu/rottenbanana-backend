@@ -51,8 +51,6 @@ export function generateFakeHeaders() {
     if (dnt !== undefined) {
         headers.DNT = dnt
     }
-
-    //console.log("Generated fake headers:", headers)
-
+    
     return headers
 }

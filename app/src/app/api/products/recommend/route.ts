@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
             return new NextResponse("Invalid category", { status: 400 })
         }
 
-        const usePrefrenceTags = searchParams.get("usePrefrenceTags") !== "false"
+        const usePreferenceTags = searchParams.get("usePreferenceTags") !== "false"
         const excludeId = searchParams.get("excludeId") || undefined
 
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
             category,
             maxColorDistance,
             colorCIELAB,
-            usePrefrenceTags,
+            usePreferenceTags,
             excludeId
         })
 

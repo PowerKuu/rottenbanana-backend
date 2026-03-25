@@ -8,7 +8,7 @@ export async function recommendProducts(
     options: {
         user?: User
         colorCIELAB?: [number, number, number]
-        usePrefrenceTags?: boolean
+        usePreferenceTags?: boolean
         seedTags?: PreferenceTag[]
         maxColorDistance?: number
         gender?: Gender
@@ -21,7 +21,7 @@ export async function recommendProducts(
     } = {}
 ): Promise<Product[]> {
     const seedTags =
-        options.recursiveProducts || !options.usePrefrenceTags
+        options.recursiveProducts || !options.usePreferenceTags
             ? []
             : options.seedTags || (await drawSeedTags(options.seedTags || 3, options.user))
 

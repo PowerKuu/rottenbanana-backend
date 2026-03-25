@@ -1,58 +1,65 @@
 import { randomShuffle } from "@/lib/utils"
-import { Music, PreferenceTag, Prisma, Region } from "@/prisma/client"
+import { Music, PreferenceTag, Prisma, Region, User } from "@/prisma/client"
 import { prisma } from "@/server/database/prisma"
+import { drawSeedTags } from "./drawSeedTags"
 
-export async function recommendMusic(region: Region, tag: PreferenceTag | null, take: number): Promise<Music[]> {
-    const whereWithTag: Prisma.MusicWhereInput = {
-        ...(tag && {
-            preferenceTags: {
-                some: {
-                    preferenceTagId: tag.id
-                }
-            }
-        }),
-        regions: {
-            some: {
-                id: region.id
-            }
-        }
+export async function recommendMusic(
+    take: number,
+    options: {
+        user?: User
+        region?: Region
+        usePreferenceTags?: boolean
+        seedTags?: PreferenceTag[]
+        recursiveMusics?: Music[]
+    } = {}
+): Promise<Music[]> {
+    const seedTags =
+        options.recursiveMusics || !options.usePreferenceTags
+            ? []
+            : options.seedTags || (await drawSeedTags(3, options.user))
+
+    const whereConditions: Prisma.Sql[] = []
+
+    if (options.region) {
+        whereConditions.push(Prisma.sql`"Music".id IN (
+            SELECT "A" FROM "_MusicRegions" WHERE "B" = ${options.region.id}
+        )`)
     }
 
-    const countWithTag = await prisma.music.count({ where: whereWithTag })
-    const randomOffset = countWithTag > take ? Math.floor(Math.random() * (countWithTag - take)) : 0
+    if (seedTags.length > 0) {
+        const tagIds = seedTags.map((tag) => tag.id)
+        whereConditions.push(Prisma.sql`"Music".id IN (
+            SELECT "musicId" FROM "MusicPreferenceTag"
+            WHERE "preferenceTagId" IN (${Prisma.join(tagIds, ",")})
+        )`)
+    }
 
-    const musicWithTag = await prisma.music.findMany({
-        where: whereWithTag,
-        skip: randomOffset,
-        take
+    if (options.recursiveMusics && options.recursiveMusics.length > 0) {
+        const excludeIds = options.recursiveMusics.map((m) => m.id)
+        whereConditions.push(Prisma.sql`"Music".id NOT IN (${Prisma.join(excludeIds, ",")})`)
+    }
+
+    const whereClause =
+        whereConditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(whereConditions, " AND ")}` : Prisma.empty
+
+    const recommendedMusics: Music[] = await prisma.$queryRaw`
+        SELECT *
+        FROM "Music"
+        ${whereClause}
+        ORDER BY RANDOM()
+        LIMIT ${take}
+    `
+
+    const remainingTake = take - recommendedMusics.length
+
+    if (remainingTake <= 0 || options.recursiveMusics !== undefined) {
+        return recommendedMusics
+    }
+
+    const additionalMusics = await recommendMusic(remainingTake, {
+        ...options,
+        recursiveMusics: recommendedMusics
     })
 
-    const remainingTake = take - musicWithTag.length
-
-    if (remainingTake <= 0) {
-        return musicWithTag
-    }
-
-    const whereAdditional: Prisma.MusicWhereInput = {
-        id: {
-            notIn: musicWithTag.map((music) => music.id)
-        },
-        regions: {
-            some: {
-                id: region.id
-            }
-        }
-    }
-
-    const countAdditional = await prisma.music.count({ where: whereAdditional })
-    const randomOffsetAdditional =
-        countAdditional > remainingTake ? Math.floor(Math.random() * (countAdditional - remainingTake)) : 0
-
-    const additionalMusic = await prisma.music.findMany({
-        where: whereAdditional,
-        skip: randomOffsetAdditional,
-        take: remainingTake
-    })
-
-    return randomShuffle([...musicWithTag, ...additionalMusic])
+    return randomShuffle([...recommendedMusics, ...additionalMusics])
 }
