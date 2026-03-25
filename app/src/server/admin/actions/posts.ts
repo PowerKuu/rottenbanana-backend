@@ -160,3 +160,36 @@ export async function createPost(overrideGender?: Gender) {
     const post = await generatePost(overrideGender)
     return post
 }
+
+export async function deletePostImage(postId: string, imageId: string) {
+    if (!(await adminGuard())) {
+        throw new Error("Unauthorized: Admin access required")
+    }
+
+    const post = await prisma.post.findUnique({
+        where: { id: postId },
+        select: { mediaIds: true }
+    })
+
+    if (!post) {
+        throw new Error("Post not found")
+    }
+
+    if (!post.mediaIds.includes(imageId)) {
+        throw new Error("Image not found in post")
+    }
+
+    // Remove the image ID from the post's mediaIds array
+    const updatedMediaIds = post.mediaIds.filter((id) => id !== imageId)
+
+    // Update the post
+    await prisma.post.update({
+        where: { id: postId },
+        data: { mediaIds: updatedMediaIds }
+    })
+
+    // Delete the file from storage and database
+    await deleteFiles([imageId])
+
+    return { success: true, remainingImages: updatedMediaIds.length }
+}

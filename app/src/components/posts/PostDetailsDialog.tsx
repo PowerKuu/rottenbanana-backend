@@ -1,15 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { getPostById } from "@/server/admin/actions/posts"
+import { getPostById, deletePostImage } from "@/server/admin/actions/posts"
 import Image from "next/image"
 import Link from "next/link"
 import { format } from "date-fns"
-import { Heart, Package, Calendar, Tag, ChevronLeft, ChevronRight, Eye } from "lucide-react"
+import { Heart, Package, Calendar, Tag, ChevronLeft, ChevronRight, Eye, Trash2 } from "lucide-react"
 import { formatPrice, getFileUrl } from "@/lib/utils"
 
 export function PostDetailsDialog({
@@ -27,6 +27,9 @@ export function PostDetailsDialog({
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
     const [imageUrls, setImageUrls] = useState<string[]>([])
     const [productImageUrls, setProductImageUrls] = useState<{ [key: string]: string }>({})
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+    const [deleting, setDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState<string | null>(null)
 
     useEffect(() => {
         if (!open || !postId) {
@@ -78,6 +81,42 @@ export function PostDetailsDialog({
         fetchPost()
     }, [postId, open])
 
+    const handleDeleteImage = async () => {
+        if (!post || !postId) return
+
+        const imageIdToDelete = post.mediaIds[currentImageIndex]
+        setDeleting(true)
+        setDeleteError(null)
+
+        try {
+            const result = await deletePostImage(postId, imageIdToDelete)
+
+            // Update the post state
+            const updatedPost = {
+                ...post,
+                mediaIds: post.mediaIds.filter((_: string, index: number) => index !== currentImageIndex)
+            }
+            setPost(updatedPost)
+
+            // Update image URLs
+            const updatedImageUrls = imageUrls.filter((_, index) => index !== currentImageIndex)
+            setImageUrls(updatedImageUrls)
+
+            // Adjust current image index if needed
+            if (currentImageIndex >= updatedImageUrls.length && updatedImageUrls.length > 0) {
+                setCurrentImageIndex(updatedImageUrls.length - 1)
+            } else if (updatedImageUrls.length === 0) {
+                setCurrentImageIndex(0)
+            }
+
+            setDeleteConfirmOpen(false)
+        } catch (err) {
+            setDeleteError(err instanceof Error ? err.message : "Failed to delete image")
+        } finally {
+            setDeleting(false)
+        }
+    }
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90vh] w-[95vw] max-w-7xl overflow-y-auto">
@@ -119,6 +158,16 @@ export function PostDetailsDialog({
                                                 className="object-cover"
                                             />
                                         </div>
+
+                                        {/* Delete Image Button */}
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            className="absolute right-2 top-2 bg-destructive/80 backdrop-blur-sm hover:bg-destructive"
+                                            onClick={() => setDeleteConfirmOpen(true)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
 
                                         {imageUrls.length > 1 && (
                                             <>
@@ -276,6 +325,34 @@ export function PostDetailsDialog({
                     </>
                 ) : null}
             </DialogContent>
+
+            {/* Delete Image Confirmation Dialog */}
+            <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Delete Image</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this image? This action cannot be undone and will
+                            permanently remove the image from the post and from storage.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {deleteError && <div className="text-sm text-destructive">{deleteError}</div>}
+
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setDeleteConfirmOpen(false)}
+                            disabled={deleting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDeleteImage} disabled={deleting}>
+                            {deleting ? "Deleting..." : "Delete"}
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Dialog>
     )
 }
