@@ -69,12 +69,7 @@ async function getMusicDescription(music: Music) {
     return [music.name, music.description, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
-async function getPostProductSelection(
-    gender: Gender,
-    region: Region,
-    seedProduct: Product,
-    take: number
-) {
+async function getPostProductSelection(gender: Gender, region: Region, seedProduct: Product, take: number) {
     const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
@@ -161,9 +156,9 @@ async function getPostProductSelection(
     return productSelection
 }
 
-async function getPostMusicSelection(region: Region, seedProduct: Product, take: number) {    
+async function getPostMusicSelection(region: Region, seedProduct: Product, take: number) {
     const seedTags = await getProductPreferenceTags(seedProduct)
-    
+
     const music = await recommendMusic(take, {
         region,
         seedTags
@@ -313,7 +308,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
-        prompt,
+        prompt
     })
 
     const { products: productIds, caption, musicId, showcasePrompts } = response.output
@@ -425,13 +420,13 @@ export async function generatePost(overrideGender?: Gender) {
     const MIN_PRODUCTS = 3
     const MAX_PRODUCTS = randomInt(4, 6)
 
-    const { products, caption, music, showcasePrompts, region, tags, gender, seedProduct } =
-        await generatePostData(MIN_PRODUCTS, MAX_PRODUCTS, overrideGender)
-
-    console.log("[Temp]",
-        await getProductDescription(seedProduct),
-        showcasePrompts
+    const { products, caption, music, showcasePrompts, region, tags, gender, seedProduct } = await generatePostData(
+        MIN_PRODUCTS,
+        MAX_PRODUCTS,
+        overrideGender
     )
+
+    console.log("[Temp]", await getProductDescription(seedProduct), showcasePrompts)
 
     const productImageBuffers = await Promise.all(
         products.map(async ({ productOnlyImageId }) => {

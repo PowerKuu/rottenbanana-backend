@@ -340,11 +340,7 @@ export function PostDetailsDialog({
                     {deleteError && <div className="text-sm text-destructive">{deleteError}</div>}
 
                     <div className="flex justify-end gap-2">
-                        <Button
-                            variant="outline"
-                            onClick={() => setDeleteConfirmOpen(false)}
-                            disabled={deleting}
-                        >
+                        <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)} disabled={deleting}>
                             Cancel
                         </Button>
                         <Button variant="destructive" onClick={handleDeleteImage} disabled={deleting}>
