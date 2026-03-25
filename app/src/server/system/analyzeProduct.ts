@@ -92,11 +92,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         category: z
             .enum(avalilableCategories)
             .describe("Product category based on visual analysis of images (prioritize what you see over the title)"),
-        description: z
-            .string()
-            .describe(
-                "A concise description of the product (2-3 sentences), in English."
-            ),
+        description: z.string().describe("A concise description of the product (2-3 sentences), in English."),
         primaryColorHex: z
             .string()
             .regex(/^#([0-9A-F]{3}){1,2}$/i)
@@ -150,7 +146,6 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
             schema: AnalyzeProductSchema
         }),
         messages: [
-
             {
                 role: "user",
                 content: [

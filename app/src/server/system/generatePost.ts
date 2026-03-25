@@ -174,8 +174,6 @@ export async function getPostMusicSelection(region: Region, seedProduct: Product
     return randomShuffle(musicWithDescriptions)
 }
 
-
-
 async function generatePostData(minProducts: number, maxProducts: number, overrideGender?: Gender) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 6
     const MAX_MUSIC_SELECTION = 4

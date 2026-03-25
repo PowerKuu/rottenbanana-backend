@@ -11,11 +11,7 @@ export async function analyzeMusic(music: Buffer) {
         tags: z
             .array(z.enum(availableTags))
             .describe("Tags that capture the feelings and aesthetic vibe this music evokes"),
-        description: z
-            .string()
-            .describe(
-                "Brief description of the music (2-3 sentences), in English."
-            )
+        description: z.string().describe("Brief description of the music (2-3 sentences), in English.")
     })
 
     const response = await generateText({
