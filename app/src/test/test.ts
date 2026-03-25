@@ -32,7 +32,8 @@ async function testBGRM() {
 }
 
 async function testScraper() {
-    const URL = "https://dressmann.com/no/p/gensere-crews--sweatshirts-herre-collegegenser-brodert-motiv-navy/7377575_F583"
+    const URL =
+        "https://dressmann.com/no/p/gensere-crews--sweatshirts-herre-collegegenser-brodert-motiv-navy/7377575_F583"
     console.log("Testing scraper for URL:", URL)
     const scraper = scrapers.find((s) => s.scraperIdentifier === "dressmann")
     if (!scraper) {

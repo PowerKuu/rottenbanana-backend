@@ -89,9 +89,7 @@ export async function createPendingProduct({ url, imageUrl }: { url: string; ima
         select: { id: true, websiteIdentifiers: true }
     })
 
-    const store = stores.find((s) =>
-        s.websiteIdentifiers.some((identifier) => normalizedUrl.includes(identifier))
-    )
+    const store = stores.find((s) => s.websiteIdentifiers.some((identifier) => normalizedUrl.includes(identifier)))
 
     if (!store) {
         throw new Error(`No store found matching URL: ${normalizedUrl}`)

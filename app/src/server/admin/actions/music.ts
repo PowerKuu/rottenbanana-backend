@@ -176,8 +176,7 @@ export async function bulkCreateMusic({ music }: { music: BulkMusicInput[] }) {
         try {
             // Check if already exists
             if (existingMusicIdSet.has(musicItem.musicId)) {
-                const existingName =
-                    existingMusic.find((m) => m.musicId === musicItem.musicId)?.name || musicItem.name
+                const existingName = existingMusic.find((m) => m.musicId === musicItem.musicId)?.name || musicItem.name
                 results.duplicates.push(existingName)
                 continue
             }

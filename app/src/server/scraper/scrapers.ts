@@ -110,7 +110,7 @@ async function getHtmlBrowser(productUrl: string, waitForSelectors: string[]): P
         })
 
         const page = await context.newPage()
-        await page.goto(productUrl, { waitUntil: "load"})
+        await page.goto(productUrl, { waitUntil: "load" })
 
         await page.addScriptTag({
             content: `
@@ -341,7 +341,7 @@ export const scrapers: {
     {
         scraperIdentifier: "dressmann",
         scrape: createGenericScraper({
-                    useBrowser: true,
+            useBrowser: true,
             querySelectors: {
                 name: "h1.MuiTypography-h3",
                 priceGross: ".MuiTypography-price2",

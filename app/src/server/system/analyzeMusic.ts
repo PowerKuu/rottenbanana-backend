@@ -20,8 +20,14 @@ export async function analyzeMusic(music: Buffer) {
     const availableTags = tags.map(({ tag }) => tag)
 
     const AnalyzeMusicSchema = z.object({
-        tags: z.array(z.enum(availableTags)).describe("Tags that capture the feelings and aesthetic vibe this music evokes"),
-        description: z.string().describe("Brief description of the mood, atmosphere, and emotional qualities of this music (2-3 sentences), in English.")
+        tags: z
+            .array(z.enum(availableTags))
+            .describe("Tags that capture the feelings and aesthetic vibe this music evokes"),
+        description: z
+            .string()
+            .describe(
+                "Brief description of the mood, atmosphere, and emotional qualities of this music (2-3 sentences), in English."
+            )
     })
 
     const system = `You are a music analyst. Analyze music tracks and identify the feelings, moods, and atmospheric qualities they evoke.`

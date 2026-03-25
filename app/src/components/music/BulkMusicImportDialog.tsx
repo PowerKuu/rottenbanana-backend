@@ -144,11 +144,13 @@ export function BulkMusicImportDialog({
                 // Process this single track (this is where analyzeMusic happens and takes time)
                 try {
                     const result = await bulkCreateMusic({
-                        music: [{
-                            name: fileNameWithoutExt,
-                            musicId: uploadData.id,
-                            regionIds: selectedRegionIds
-                        }]
+                        music: [
+                            {
+                                name: fileNameWithoutExt,
+                                musicId: uploadData.id,
+                                regionIds: selectedRegionIds
+                            }
+                        ]
                     })
 
                     // Aggregate results
@@ -252,13 +254,11 @@ export function BulkMusicImportDialog({
                                 <Upload className="h-4 w-4 mr-2" />
                                 Select Files
                             </Button>
-                            <span className="text-sm text-muted-foreground">
-                                {audioFiles.length} file(s) selected
-                            </span>
+                            <span className="text-sm text-muted-foreground">{audioFiles.length} file(s) selected</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Supported formats: mp3, wav, m4a, ogg, flac (max 30MB each). Names will be auto-filled
-                            from filenames.
+                            Supported formats: mp3, wav, m4a, ogg, flac (max 30MB each). Names will be auto-filled from
+                            filenames.
                         </p>
                     </div>
 
