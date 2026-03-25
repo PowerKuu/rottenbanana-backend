@@ -129,7 +129,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         description: z
             .string()
             .describe(
-                "A concise description highlighting the product's key features, material, and style (2-3 sentences)"
+                "A concise description highlighting the product's key features, material, and style (2-3 sentences), in English."
             ),
         primaryColorHex: z
             .string()

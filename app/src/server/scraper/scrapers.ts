@@ -36,7 +36,7 @@ function createGenericScraper({
     return async (productUrl: string) => {
         const TIMEOUT = 30000
         const browser = await chromium.launch({
-            headless: true,
+            headless: false,
             args: ["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-setuid-sandbox"]
         })
 

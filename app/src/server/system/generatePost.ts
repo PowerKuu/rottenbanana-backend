@@ -236,14 +236,14 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         caption: z
             .string()
             .describe(
-                "A catchy caption for the post that highlights the outfit and its style. Don't include hashtags!"
+                "A catchy caption for the post that highlights the outfit and its style. Don't include hashtags! (2-3 sentences), in English."
             ),
         musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
         showcasePrompts: z
             .array(z.string())
             .min(MIN_SHOWCASE_PROMPTS)
             .max(MAX_SHOWCASE_PROMPTS)
-            .describe("Creative prompts for showcasing the outfit in the post's images.")
+            .describe("Creative prompts for showcasing the outfit in the post's images. In English.")
     })
 
     const prompt = generatePostProductsPrompt(
