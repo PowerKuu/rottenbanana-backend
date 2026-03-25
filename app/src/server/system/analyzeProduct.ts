@@ -3,7 +3,7 @@ import z from "zod"
 import { prisma } from "../database/prisma"
 import { generateText, Output } from "ai"
 import { ScrapedProduct } from "../scraper/types"
-import { PreferenceTag } from "@/prisma/client"
+import { analyzeProductPrompt } from "./prompts"
 
 export const productSlotDescriptions: Record<ProductSlot, string> = {
     [ProductSlot.UPPERBODY_LAYER_1]:
@@ -33,7 +33,7 @@ export const productSlotDescriptions: Record<ProductSlot, string> = {
     [ProductSlot.OTHER]: "Items that don't fit other categories."
 }
 
-const productCategoryDescriptions: Record<ProductCategory, string> = {
+export const productCategoryDescriptions: Record<ProductCategory, string> = {
     [ProductCategory.TSHIRTS_TOPS]: "Casual t-shirts, basic tops, graphic tees, and casual upper body wear",
     [ProductCategory.POLOS]: "Polo shirts with collars and button plackets",
     [ProductCategory.SHIRTS]: "Dress shirts, button-up shirts, Oxford shirts, and formal tops",
@@ -76,40 +76,6 @@ const productCategoryDescriptions: Record<ProductCategory, string> = {
     [ProductCategory.OTHER]: "Products that don't fit into other categories"
 }
 
-const analyzeProductPrompt = (scrapedProduct: ScrapedProduct, tags: PreferenceTag[]) => `
-ANALYZE THIS PRODUCT:
-Name: ${scrapedProduct.name}
-Gender: ${scrapedProduct.gender}
-${scrapedProduct.description ? `Description: ${scrapedProduct.description}` : ""}
-${scrapedProduct.brand ? `Brand: ${scrapedProduct.brand}` : ""}
-
-I will provide ${scrapedProduct.imageUrls.length} images below. Analyze and provide: tags, slot, description, color, which image shows the product without a model, and which images are close-ups/detail shots that should keep their background (only flag images showing zoomed details like labels or textures, not full product views).
-CRITICAL: You MUST identify the standalone product image (flat-lay, mannequin, or product-only shot) with 100% certainty. This must show ONLY the product itself with NO person wearing it. Only return null if you are absolutely certain EVERY image shows a person wearing the product.
-
-CATEGORY DESCRIPTIONS:
-"""
-${Object.entries(productCategoryDescriptions)
-    .map(([category, description]) => `${category}: ${description}`)
-    .join("\n")}
-
-IMPORTANT: When determining the category, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie). Always base your category selection on what you see in the images, not what the title says.
-"""
-
-SLOT DESCRIPTIONS:
-"""
-${Object.entries(productSlotDescriptions)
-    .map(([slot, description]) => `${slot}: ${description}`)
-    .join("\n")}
-
-IMPORTANT: When determining the slot, prioritize the visual appearance and actual product type from the images over the product title/name. Product titles can be misleading (e.g., "Sweatjakke" might be labeled as a jacket but is actually a hoodie = UPPERBODY_LAYER_2). Always base your slot selection on what you see in the images, not what the title says.
-"""
-
-TAG DESCRIPTIONS:
-"""
-${tags.map((tag) => `${tag.tag}: ${tag.description}`).join("\n")}
-"""
-`
-
 export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
     const tags = await prisma.preferenceTag.findMany()
     const avalilableTags = tags.map(({ tag }) => tag)
@@ -129,7 +95,7 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
         description: z
             .string()
             .describe(
-                "A concise description highlighting the product's key features, material, and style (2-3 sentences), in English."
+                "A concise description of the product (2-3 sentences), in English."
             ),
         primaryColorHex: z
             .string()
@@ -167,8 +133,6 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
             .describe("Index of the clearest back-facing image of a person wearing the product, or null if none exists")
     })
 
-    const system = `You are a fashion product analyzer. Analyze the provided product images and information to extract relevant metadata.`
-
     const imageContent = scrapedProduct.imageUrls.flatMap((url, index) => [
         {
             type: "text" as const,
@@ -186,10 +150,6 @@ export async function analyzeProduct(scrapedProduct: ScrapedProduct) {
             schema: AnalyzeProductSchema
         }),
         messages: [
-            {
-                role: "system",
-                content: system
-            },
 
             {
                 role: "user",

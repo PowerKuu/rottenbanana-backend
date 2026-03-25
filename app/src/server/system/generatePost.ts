@@ -7,9 +7,9 @@ import { generateImageGoogle } from "./generateImage"
 import { uploadFile } from "../uploads/upload"
 import { getFile, readFileBuffer } from "../uploads/read"
 import { randomInt, randomShuffle } from "@/lib/utils"
-import { productSlotDescriptions } from "./analyzeProduct"
 import { recommendProducts } from "./algorithm/recommendProducts"
 import { recommendMusic } from "./algorithm/recommendMusic"
+import { generatePostImagePrompt, generatePostProductsPrompt } from "./prompts"
 
 async function getProductPreferenceTags(product: Product) {
     const tags = await prisma.productPreferenceTag.findMany({
@@ -45,7 +45,7 @@ async function getGender() {
     return gender
 }
 
-async function getProductDescription(product: Product) {
+export async function getProductDescription(product: Product) {
     const tags = await getProductPreferenceTags(product)
     const tagFormatted = tags.length > 0 ? `(${tags.map((tag) => tag.tag).join(", ")})` : null
 
@@ -69,7 +69,7 @@ async function getMusicDescription(music: Music) {
     return [music.name, music.description, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
-async function getPostProductSelection(gender: Gender, region: Region, seedProduct: Product, take: number) {
+export async function getPostProductSelection(gender: Gender, region: Region, seedProduct: Product, take: number) {
     const requiredSlots: ProductSlot[] = [ProductSlot.UPPERBODY_LAYER_1, ProductSlot.LOWERBODY_LAYER_1]
 
     const additionalsSlotOptions: [ProductSlot, number?][] = [
@@ -156,7 +156,7 @@ async function getPostProductSelection(gender: Gender, region: Region, seedProdu
     return productSelection
 }
 
-async function getPostMusicSelection(region: Region, seedProduct: Product, take: number) {
+export async function getPostMusicSelection(region: Region, seedProduct: Product, take: number) {
     const seedTags = await getProductPreferenceTags(seedProduct)
 
     const music = await recommendMusic(take, {
@@ -174,86 +174,7 @@ async function getPostMusicSelection(region: Region, seedProduct: Product, take:
     return randomShuffle(musicWithDescriptions)
 }
 
-const generatePostProductsPrompt = async (
-    seedProduct: Product,
-    selection: Awaited<ReturnType<typeof getPostProductSelection>>,
-    musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
-    minProducts: number,
-    maxProducts: number,
-    minShowcasePrompts: number,
-    maxShowcasePrompts: number
-) => `
-You are a stylist selecting products for an outfit post.
 
-SEED PRODUCT (STARTING POINT):
-This outfit is built around: ${await getProductDescription(seedProduct)}
-Use the seed as inspiration to create a cohesive and stylish outfit.
-
-SELECTION GUIDELINES:
-Think to yourself: "Would someone actually wear this combination together? Does it create a cohesive style or vibe? For example, pairing a formal blazer with casual sneakers does not create a good look."
-If unsure leave out products! Must distinguish "editorial weird" vs "just bad"!
-
-SLOT SELECTION RULES:
-- The total number of products must be between ${minProducts} and ${maxProducts}
-- SEED slot: You MUST include the seed product in the outfit, it's the foundation of the look!
-- REQUIRED slots: You MUST pick exactly 1 product from each required slot!
-- OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot!
-- ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
-- Sometimes it's better to leave slots empty to create a cleaner look - use your creativity and fashion sense to decide!
-- Create natural variety: some outfits should be minimal and clean, others can have more layers or accessories depending on the style
-
-SLOT DESCRIPTIONS:
-"""
-${Object.entries(productSlotDescriptions)
-    .filter(([slot]) => Object.keys(selection).includes(slot))
-    .map(([slot, description]) => `${slot}: ${description}`)
-    .join("\n")}
-"""
-
-AVAILABLE PRODUCTS BY SLOT:
-"""
-${Object.entries(selection)
-    .map(
-        ([slot, { products, required, seed }]) =>
-            products.length > 0 &&
-            `
-${slot} (${required ? "REQUIRED" : "OPTIONAL"}) ${seed ? "(SEED)" : ""}:
-${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${product.description}`).join("\n")}`
-    )
-
-    .filter(Boolean)
-    .join("\n")}
-"""
-
-AVAILABLE MUSIC:
-"""
-Select 1 music track that matches the vibe and style of the outfit.
-${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
-"""
-
-SHOWCASE PROMPTS REQUIREMENTS:
-"""
-Generate exactly ${minShowcasePrompts}-${maxShowcasePrompts} creative prompts for showcasing the outfit.
-
-COMPOSITION RULES - WHAT TO INCLUDE:
-✓ Camera angles (top-down, low-angle, medium shot, close-up, etc.)
-✓ Setting/location (studio, urban park, stairwell, rooftop, etc.)
-✓ Lighting (harsh sunlight, soft morning light, golden hour, studio lighting)
-✓ Model positioning and pose (standing, walking, sitting, looking away)
-✓ Framing and composition (centered, geometric, minimalist)
-✓ Background elements (neutral backdrop, concrete walls, wooden surface)
-
-FORBIDDEN - ZERO TOLERANCE:
-✗ Mentioning textures or materials (fabric, cotton, leather, etc.)
-✗ Describing clothing features (collars, zips, cuts, fits, silhouettes)
-✗ Referencing colors or patterns of clothing
-✗ Talking about fabric movement or draping
-✗ Describing specific garment details
-✗ Any reference to how the clothes look or feel
-
-ONLY describe composition, camera work, setting, and lighting - NEVER the clothing itself!
-"""
-`
 
 async function generatePostData(minProducts: number, maxProducts: number, overrideGender?: Gender) {
     const MAX_PRODUCT_SELECTION_PER_SLOT = 6
@@ -368,37 +289,6 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
         seedProduct
     }
 }
-
-const generatePostImagePrompt = (prompt: string, gender: Gender, products: Product[]) => `
-Professional fashion photography. Gender: ${gender}
-
-PROMPT: ${prompt}
-
-${products.length} REFERENCE PRODUCTS:
-${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
-
-CORE RULES - REFERENCE FIDELITY:
-✓ Reproduce each reference product EXACTLY as shown in its image
-✓ Use EXACT colors, designs, patterns, and structures from references
-✓ Only show angles visible in reference images
-✓ Each product reference is independent - use only what appears in that specific reference
-✓ Professional lighting and composition following the prompt
-
-CLOTHING LAYER PHYSICS - NATURAL OCCLUSION:
-✓ Upper layers completely cover what's beneath them
-✓ When clothing overlaps, only the TOP layer is visible in the overlap area
-✓ Outer garments (jackets, coats) naturally obscure inner garments (shirts, undershirts)
-✓ Each layer exists independently - details from lower layers do NOT appear on upper layers
-✓ Respect natural fabric opacity - solid fabrics are opaque, covered areas stay hidden
-✓ Only the outermost visible surface shows in the final image
-
-DESIGN INTEGRITY:
-✓ Keep structural features unchanged (collar styles, zipper types, button placements remain as referenced)
-✓ Maintain original proportions and fit from references
-✓ Preserve exact design elements as they appear in each product's reference image
-
-Make no mistakes and follow the instructions precisely!!!
-`
 
 async function generatePostImage(prompt: string, gender: Gender, products: Product[], images: Buffer[]) {
     const image = await generateImageGoogle(
