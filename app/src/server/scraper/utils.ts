@@ -1,11 +1,10 @@
 import { randomDraw } from "@/lib/utils"
 
-// High-quality browser profiles that match real browsers
 const BROWSER_PROFILES = [
     {
         userAgent:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
-        secChUa: undefined, // Safari doesn't send sec-ch-ua
+        secChUa: undefined,
         platform: undefined
     }
 ]
@@ -51,6 +50,6 @@ export function generateFakeHeaders() {
     if (dnt !== undefined) {
         headers.DNT = dnt
     }
-    
+
     return headers
 }

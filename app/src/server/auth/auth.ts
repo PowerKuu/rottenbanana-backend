@@ -63,8 +63,6 @@ export const auth = betterAuth({
             if (ctx.path === "/sign-in/email") {
                 // Revoke any existing session before processing sign-in so that
                 // Better Auth cannot return an active session without validating
-                // the provided credentials (happens when a bearer token or session
-                // cookie is present in the request).
                 const authHeader = ctx.headers?.get("authorization") ?? ""
                 const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null
 
