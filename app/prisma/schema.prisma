@@ -373,8 +373,8 @@ model Post {
   regionId String
   region   Region @relation(fields: [regionId], references: [id], onDelete: Restrict)
 
-  musicId String
-  music   Music @relation(fields: [musicId], references: [id], onDelete: Restrict)
+  musicId String?
+  music   Music? @relation(fields: [musicId], references: [id], onDelete: SetNull)
 
   isOfficial Boolean @default(false)
 }

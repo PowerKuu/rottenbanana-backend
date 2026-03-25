@@ -3,8 +3,8 @@ import { prisma } from "../database/prisma"
 import { scrapeAndAnalyzeProduct, scrapeProduct } from "../scraper/scraper"
 import chalk from "chalk"
 
-const INTERVAL = 1000 // 1 second
-const MAX_CONCURRENCY = 3
+const INTERVAL = 2000
+const MAX_CONCURRENCY = 1
 
 const logPrefix = chalk.blue("[PendingProductsCronJob]")
 
@@ -69,7 +69,30 @@ async function tickPendingProducts() {
     }
 }
 
-export function startPendingProductsCronJob() {
+async function resetProcessingProducts() {
+    const processingCount = await prisma.pendingProduct.count({
+        where: {
+            status: PendingProductStatus.PROCESSING
+        }
+    })
+
+    if (processingCount > 0) {
+        console.log(`${logPrefix} Resetting ${processingCount} processing products to APPROVED status`)
+
+        await prisma.pendingProduct.updateMany({
+            where: {
+                status: PendingProductStatus.PROCESSING
+            },
+            data: {
+                status: PendingProductStatus.APPROVED
+            }
+        })
+    }
+}
+
+export async function startPendingProductsCronJob() {
+    await resetProcessingProducts()
+
     const tickJob = () => {
         setTimeout(() => tickPendingProducts().finally(tickJob), INTERVAL)
     }

@@ -11,6 +11,7 @@ import { productSlotDescriptions } from "./analyzeProduct"
 import { drawSeedTags } from "./algorithm/drawSeedTags"
 import { recommendProducts } from "./algorithm/recommendProducts"
 import { recommendMusic } from "./algorithm/recommendMusic"
+import { randomInt, randomUUID } from "crypto"
 
 async function getRegion() {
     const regions = await prisma.region.findMany({
@@ -51,6 +52,19 @@ async function getProductDescription(product: Product) {
     return [product.name, product.gender, product.primaryColorHex, metaDescription, tagDescriptionsFormatted]
         .filter(Boolean)
         .join(" - ")
+}
+
+async function getMusicDescription(music: Music) {
+    const tags = await prisma.musicPreferenceTag.findMany({
+        where: { musicId: music.id },
+        include: {
+            preferenceTag: true
+        }
+    })
+    const tagDescriptions = tags.map((tag) => tag.preferenceTag.tag).join(", ")
+    const tagDescriptionsFormatted = tagDescriptions ? `(${tagDescriptions})` : null
+
+    return [music.name, music.description, tagDescriptionsFormatted].filter(Boolean).join(" - ")
 }
 
 async function getPostProductSelection(
@@ -128,24 +142,42 @@ async function getPostProductSelection(
     return productSelection
 }
 
+async function getPostMusicSelection(region: Region, seedPreferenceTag: PreferenceTag | null = null, take: number) {
+    const music = await recommendMusic(region, seedPreferenceTag, take)
+
+    const musicWithDescriptions = await Promise.all(
+        music.map(async (music) => ({
+            id: music.id,
+            description: await getMusicDescription(music)
+        }))
+    )
+
+    return randomShuffle(musicWithDescriptions)
+}
+
 const generatePostProductsPrompt = (
     selection: Awaited<ReturnType<typeof getPostProductSelection>>,
-    musicSelection: Music[],
+    musicSelection: Awaited<ReturnType<typeof getPostMusicSelection>>,
     minProducts: number,
     maxProducts: number,
     minShowcasePrompts: number,
     maxShowcasePrompts: number
 ) => `
-You are a creative fashion stylist selecting products for an inspiring outfit post. Create a complete, stylish look using ${minProducts}-${maxProducts} products and matching music.
+Random seed: "${randomUUID()}"
+
+You are a creative fashion stylist selecting products for an outfit post.
+Decide a random theme before choosing
 
 SLOT SELECTION RULES:
-- REQUIRED slots: You MUST pick exactly 1 product from each required slot
-- OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot
-- ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
 - The total number of products must be between ${minProducts} and ${maxProducts}
+- REQUIRED slots: You MUST pick exactly 1 product from each required slot!
+- OPTIONAL slots: You MAY pick 0 or 1 product from each optional slot!
+- ONLY one product can be selected per slot, but multiple layers of the same type (e.g. upperbody layer 1 and 2) can work well together
+- Sometimes it's better to leave slots empty to create a cleaner look - use your creativity and fashion sense to decide!
 - Create natural variety: some outfits should be minimal and clean, others can have more layers or accessories depending on the style
-- Choose what feels right for a cohesive look - not every outfit needs maximum products or layers
-- Select products that create a cohesive outfit based on their descriptions and style
+- Create a look with a clear point of view. Cohesion comes from a shared MOOD, not from matching style tags!
+- Contrasting pieces with a unified attitude are more interesting than items that simply share the same labels.
+- You can combine tags, styles, and categories in unexpected ways to create a unique vibe, as long as the overall feeling is cohesive.
 
 SLOT DESCRIPTIONS:
 """
@@ -173,7 +205,7 @@ ${products.map((product, index) => `  ${index + 1}. ID: ${product.id} - ${produc
 AVAILABLE MUSIC:
 """
 Select 1 music track that matches the vibe and style of the outfit.
-${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id} - ${music.description}`).join("\n")}
+${musicSelection.map((music, index) => `  ${index + 1}. ID: ${music.id}- ${music.description}`).join("\n")}
 """
 
 SHOWCASE PROMPTS REQUIREMENTS:
@@ -208,7 +240,7 @@ Example showcase prompts:
 `
 
 async function generatePostData(minProducts: number, maxProducts: number, overrideGender?: Gender) {
-    const MAX_PRODUCT_SELECTION_PER_SLOT = 3
+    const MAX_PRODUCT_SELECTION_PER_SLOT = 8
     const MAX_MUSIC_SELECTION = 6
     const MAX_TAGS = 3
     const MIN_SHOWCASE_PROMPTS = 2
@@ -218,13 +250,9 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     const region = await getRegion()
 
     const [seedPreferenceTag] = await drawSeedTags()
-    const musicSelection = await recommendMusic(region, seedPreferenceTag, MAX_MUSIC_SELECTION)
-    const productSelection = await getPostProductSelection(
-        gender,
-        region,
-        seedPreferenceTag,
-        MAX_PRODUCT_SELECTION_PER_SLOT
-    )
+    const musicSelection = await getPostMusicSelection(region, null, MAX_MUSIC_SELECTION)
+    const productSelection = await getPostProductSelection(gender, region, null, MAX_PRODUCT_SELECTION_PER_SLOT)
+
     const possibleProducts = Object.values(productSelection).filter(({ products }) => products.length > 0).length
 
     if (possibleProducts < minProducts) {
@@ -238,7 +266,7 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
             .describe(
                 "A catchy caption for the post that highlights the outfit and its style. Don't include hashtags! (2-3 sentences), in English."
             ),
-        musicId: z.string().describe("The selected music track ID that matches the outfit vibe"),
+        musicId: z.string().describe("The selected music track ID that matches the outfit vibe, only ID!"),
         showcasePrompts: z
             .array(z.string())
             .min(MIN_SHOWCASE_PROMPTS)
@@ -258,11 +286,12 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     console.log("Generated prompt for product selection:", prompt)
 
     const response = await generateText({
-        model: "google/gemini-3-flash",
+        model: "anthropic/claude-sonnet-4",
         output: Output.object({
             schema: GeneratePostProductsSchema
         }),
-        prompt
+        prompt,
+        temperature: 1.3
     })
 
     const { products: prodcutsIds, caption, musicId, showcasePrompts } = response.output
@@ -331,24 +360,25 @@ PROMPT: ${prompt}
 ${products.length} REFERENCE PRODUCTS:
 ${products.map((product, index) => `- Image ${index + 1}: ${product.category}`).join("\n")}
 
-ABSOLUTE RULES - REPRODUCE REFERENCES EXACTLY:
-✓ Match reference images with precision
-✓ Professional lighting and composition
-✓ Reference images are sole truth source
+CORE RULES - REFERENCE FIDELITY:
+✓ Reproduce each reference product EXACTLY as shown in its image
+✓ Use EXACT colors, designs, patterns, and structures from references
+✓ Only show angles visible in reference images
+✓ Each product reference is independent - use only what appears in that specific reference
+✓ Professional lighting and composition following the prompt
 
-FORBIDDEN - ZERO TOLERANCE:
-✗ DO NOT: Bleed logos through layers of other pieces of clothing!!!
-✗ DO NOT: Force visibility of obscured products!!!
-✗ DO NOT: Altering colors (use EXACT reference colors)
-✗ DO NOT: Changing design/structure (keep quarter-zips as quarter-zips, not full zips)
-✗ DO NOT: Transferring/moving logos between products or from original positions
-✗ DO NOT: Hallucinating logos/branding not in specific product's reference
-✗ DO NOT: Showing hidden angles (no back view if reference shows only front)
-✗ DO NOT: Applying lower layer logos onto upper layers (shirt logos stay hidden under jackets)
+CLOTHING LAYER PHYSICS - NATURAL OCCLUSION:
+✓ Upper layers completely cover what's beneath them
+✓ When clothing overlaps, only the TOP layer is visible in the overlap area
+✓ Outer garments (jackets, coats) naturally obscure inner garments (shirts, undershirts)
+✓ Each layer exists independently - details from lower layers do NOT appear on upper layers
+✓ Respect natural fabric opacity - solid fabrics are opaque, covered areas stay hidden
+✓ Only the outermost visible surface shows in the final image
 
-PERMITTED:
-• DO: Hiding hidden/covered products
-• DO: Hiding obscured logos under layers
+DESIGN INTEGRITY:
+✓ Keep structural features unchanged (collar styles, zipper types, button placements remain as referenced)
+✓ Maintain original proportions and fit from references
+✓ Preserve exact design elements as they appear in each product's reference image
 
 Make no mistakes and follow the instructions precisely!!!
 `
@@ -370,8 +400,8 @@ async function generatePostImage(prompt: string, gender: Gender, products: Produ
 }
 
 export async function generatePost(overrideGender?: Gender) {
-    const MIN_PRODUCTS = 3
-    const MAX_PRODUCTS = 6
+    const MIN_PRODUCTS = 2
+    const MAX_PRODUCTS = randomInt(4, 6)
 
     const { products, caption, music, showcasePrompts, region, tags, gender, seedPreferenceTag } =
         await generatePostData(MIN_PRODUCTS, MAX_PRODUCTS, overrideGender)
@@ -398,7 +428,7 @@ export async function generatePost(overrideGender?: Gender) {
             const image = await generatePostImage(prompt, gender, products, prodcutImageBuffers)
             const imageFile = new File([new Uint8Array(image)], `post-image-${index}.jpeg`, { type: "image/jpeg" })
             const uploadedImage = await uploadFile(imageFile, {
-                compress: false
+                compress: true
             })
             return uploadedImage.id
         })

@@ -4,9 +4,10 @@ import { generateText, Output } from "ai"
 import { PreferenceTag } from "@/prisma/client"
 
 const analyzeMusicPrompt = (tags: PreferenceTag[]) => `
-Analyze this music and identify what fashion styles and clothing it matches.
+Listen to this music and describe what it feels like. What emotions and atmosphere does it create? What feminine/masculine energy, if any, does it give?
+Focus on feelings, not whether they are positive or negative.
 
-Select tags representing clothing items, fashion styles, and aesthetics this music would complement.
+Choose tags that match the feeling and vibe of this music.
 
 TAG DESCRIPTIONS:
 """
@@ -19,11 +20,11 @@ export async function analyzeMusic(music: Buffer) {
     const availableTags = tags.map(({ tag }) => tag)
 
     const AnalyzeMusicSchema = z.object({
-        tags: z.array(z.enum(availableTags)).describe("Tags for fashion items and styles this music matches"),
-        description: z.string().describe("Brief description of the fashion vibe this music complements (2-3 sentences), in English.")
+        tags: z.array(z.enum(availableTags)).describe("Tags that capture the feelings and aesthetic vibe this music evokes"),
+        description: z.string().describe("Brief description of the mood, atmosphere, and emotional qualities of this music (2-3 sentences), in English.")
     })
 
-    const system = `You are a fashion-music stylist. Analyze music tracks and identify what fashion styles, clothing items, and aesthetics they complement.`
+    const system = `You are a music analyst. Analyze music tracks and identify the feelings, moods, and atmospheric qualities they evoke.`
 
     const response = await generateText({
         model: "google/gemini-2.5-flash",

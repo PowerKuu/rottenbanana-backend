@@ -101,15 +101,24 @@ export function BulkMusicImportDialog({
         setLoading(true)
         setProgress(0)
 
+        const results = {
+            created: [] as string[],
+            duplicates: [] as string[],
+            errors: [] as { name: string; error: string }[]
+        }
+
         try {
-            // Upload all files first
-            const uploadedFiles: Array<{ name: string; musicId: string }> = []
+            const totalFiles = audioFiles.length
 
             for (let i = 0; i < audioFiles.length; i++) {
                 const file = audioFiles[i]
-                setCurrentFile(file.name)
-                setProgress(((i + 1) / (audioFiles.length + 1)) * 100)
+                const fileNameWithoutExt = file.name.slice(0, file.name.lastIndexOf("."))
 
+                // Update progress: uploading
+                setCurrentFile(`Uploading ${file.name}...`)
+                setProgress((i / totalFiles) * 100)
+
+                // Upload file
                 const formData = new FormData()
                 formData.append("file", file)
 
@@ -121,29 +130,44 @@ export function BulkMusicImportDialog({
                 const uploadData = await uploadResponse.json()
 
                 if (uploadData.error) {
-                    throw new Error(`Failed to upload ${file.name}: ${uploadData.error}`)
+                    results.errors.push({
+                        name: fileNameWithoutExt,
+                        error: `Upload failed: ${uploadData.error}`
+                    })
+                    continue
                 }
 
-                // Extract name from filename (without extension)
-                const fileNameWithoutExt = file.name.slice(0, file.name.lastIndexOf("."))
+                // Update progress: analyzing
+                setCurrentFile(`Analyzing ${file.name}...`)
+                setProgress(((i + 0.5) / totalFiles) * 100)
 
-                uploadedFiles.push({
-                    name: fileNameWithoutExt,
-                    musicId: uploadData.id
-                })
+                // Process this single track (this is where analyzeMusic happens and takes time)
+                try {
+                    const result = await bulkCreateMusic({
+                        music: [{
+                            name: fileNameWithoutExt,
+                            musicId: uploadData.id,
+                            regionIds: selectedRegionIds
+                        }]
+                    })
+
+                    // Aggregate results
+                    results.created.push(...result.created)
+                    results.duplicates.push(...result.duplicates)
+                    results.errors.push(...result.errors)
+                } catch (err) {
+                    results.errors.push({
+                        name: fileNameWithoutExt,
+                        error: err instanceof Error ? err.message : "Analysis failed"
+                    })
+                }
+
+                // Update progress: completed this file
+                setProgress(((i + 1) / totalFiles) * 100)
             }
 
-            // Now create music entries with rate limiting on the backend
-            setCurrentFile("Analyzing music...")
-            const results = await bulkCreateMusic({
-                music: uploadedFiles.map((file) => ({
-                    name: file.name,
-                    musicId: file.musicId,
-                    regionIds: selectedRegionIds
-                }))
-            })
-
             setProgress(100)
+            setCurrentFile("Complete!")
 
             let message = `Created ${results.created.length} music track(s)`
             if (results.duplicates.length > 0) {

@@ -32,9 +32,9 @@ async function testBGRM() {
 }
 
 async function testScraper() {
-    const URL = "https://www.zalando.no/calvin-klein-golf-bullet-regular-fit-stretch-trouser-bukse-navy-ck442e004-k11.html"
+    const URL = "https://dressmann.com/no/p/gensere-crews--sweatshirts-herre-collegegenser-brodert-motiv-navy/7377575_F583"
     console.log("Testing scraper for URL:", URL)
-    const scraper = scrapers.find((s) => s.scraperIdentifier === "zalando")
+    const scraper = scrapers.find((s) => s.scraperIdentifier === "dressmann")
     if (!scraper) {
         console.error("No scraper found for the given URL")
         return

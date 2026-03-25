@@ -73,3 +73,7 @@ export function getExternalFileUrl(id: string): string {
     const url = process.env.BASE_URL
     return `${url}/api/uploads/${id}`
 }
+
+export function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
