@@ -33,9 +33,9 @@ async function testBGRM() {
 
 async function testScraper() {
     const URL =
-        "https://dressmann.com/no/p/gensere-crews--sweatshirts-herre-collegegenser-brodert-motiv-navy/7377575_F583"
+        "https://junkyard.com/no/p/adidas-samba-og-sneakers-hvit-sko-sneakers-unisex/7228135_F900"
     console.log("Testing scraper for URL:", URL)
-    const scraper = scrapers.find((s) => s.scraperIdentifier === "dressmann")
+    const scraper = scrapers.find((s) => s.scraperIdentifier === "varner")
     if (!scraper) {
         console.error("No scraper found for the given URL")
         return

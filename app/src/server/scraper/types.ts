@@ -18,6 +18,6 @@ export type ScrapedProduct = {
 
 export type Scraper = (productUrl: string) => Promise<ScrapedProduct>
 
-export type Transformer<T = string> = (element: Element, text: string) => T
+export type Transformer<T = string> = (element: Element, text: string, url: string) => T
 
 export type ScraperIdentifier = (typeof SCRAPER_IDENTIFIERS)[number]

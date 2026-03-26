@@ -1,1 +1,1 @@
-export const SCRAPER_IDENTIFIERS = ["zalando", "dressmann"] as const
+export const SCRAPER_IDENTIFIERS = ["zalando", "varner"] as const

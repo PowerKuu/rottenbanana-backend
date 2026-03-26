@@ -8,6 +8,8 @@ import axios from "axios"
 
 async function getHtmlBrowser(productUrl: string, waitForSelectors: string[]): Promise<string> {
     const TIMEOUT = 30000
+    const HEADLESS = false
+
     const resolutions = [
         { width: 1920, height: 1080 },
         { width: 1920, height: 1200 },
@@ -48,7 +50,7 @@ async function getHtmlBrowser(productUrl: string, waitForSelectors: string[]): P
               : "en-GB,en;q=0.9,en-US;q=0.8"
 
     const browser = await chromium.launch({
-        headless: true,
+        headless: HEADLESS,
         args: [
             // Disable automation flags
             "--disable-blink-features=AutomationControlled",
@@ -164,13 +166,13 @@ function createGenericScraper({
     }
     transformers: {
         gender: Transformer<Gender>
-        name?: Transformer
-        priceGross?: Transformer
-        images?: Transformer
-        currency?: Transformer
-        description?: Transformer
-        brand?: Transformer
-        originalPriceGross?: Transformer
+        name?: Transformer<string>
+        priceGross?: Transformer<string>
+        images?: Transformer<string>
+        currency?: Transformer<string>
+        description?: Transformer<string | null>
+        brand?: Transformer<string | null>
+        originalPriceGross?: Transformer<string | null>
     }
 }): Scraper {
     return async (productUrl: string) => {
@@ -204,12 +206,12 @@ function createGenericScraper({
 
         const nameElement = getElement(querySelectors.name)
         const nameText = getText(querySelectors.name)
-        const name = transformers.name ? transformers.name(nameElement!, nameText!) : nameText
+        const name = transformers.name ? transformers.name(nameElement!, nameText!, productUrl) : nameText
 
         const priceElement = getElement(querySelectors.priceGross)
         const priceText = getText(querySelectors.priceGross)
         const priceGross = transformers.priceGross
-            ? extractPrice(transformers.priceGross(priceElement!, priceText!))
+            ? extractPrice(transformers.priceGross(priceElement!, priceText!, productUrl))
             : priceText
               ? extractPrice(priceText)
               : undefined
@@ -217,14 +219,16 @@ function createGenericScraper({
         const descriptionElement = querySelectors.description ? getElement(querySelectors.description) : undefined
         const descriptionText = querySelectors.description ? getText(querySelectors.description) : undefined
         const description =
-            transformers.description && descriptionElement && descriptionText
-                ? transformers.description(descriptionElement, descriptionText)
-                : descriptionText
+            (transformers.description && descriptionElement && descriptionText
+                ? (transformers.description(descriptionElement, descriptionText, productUrl) ?? undefined)
+                : descriptionText) || undefined
 
         const brandElement = querySelectors.brand ? getElement(querySelectors.brand) : undefined
         const brandText = querySelectors.brand ? getText(querySelectors.brand) : undefined
         const brand =
-            transformers.brand && brandElement && brandText ? transformers.brand(brandElement, brandText) : brandText
+            (transformers.brand && brandElement && brandText
+                ? (transformers.brand(brandElement, brandText, productUrl) ?? undefined)
+                : brandText) || undefined
 
         const originalPriceElement = querySelectors.originalPriceGross
             ? getElement(querySelectors.originalPriceGross)
@@ -232,12 +236,11 @@ function createGenericScraper({
         const originalPriceText = querySelectors.originalPriceGross
             ? getText(querySelectors.originalPriceGross)
             : undefined
-        const originalPriceGross =
+        const transformedOriginalPrice =
             transformers.originalPriceGross && originalPriceElement && originalPriceText
-                ? extractPrice(transformers.originalPriceGross(originalPriceElement, originalPriceText))
+                ? transformers.originalPriceGross(originalPriceElement, originalPriceText, productUrl)
                 : originalPriceText
-                  ? extractPrice(originalPriceText)
-                  : undefined
+        const originalPriceGross = transformedOriginalPrice ? extractPrice(transformedOriginalPrice) : undefined
 
         const metadata: { [key: string]: string } = {}
         if (querySelectors.metadata) {
@@ -251,12 +254,12 @@ function createGenericScraper({
 
         const genderElement = getElement(querySelectors.gender)
         const genderText = getText(querySelectors.gender)
-        const gender = transformers.gender(genderElement!, genderText!)
+        const gender = transformers.gender(genderElement!, genderText!, productUrl)
 
         const currencyElement = getElement(querySelectors.currency)
         const currencyText = getText(querySelectors.currency)
         const currency = transformers.currency
-            ? extractCurrency(transformers.currency(currencyElement!, currencyText!))
+            ? extractCurrency(transformers.currency(currencyElement!, currencyText!, productUrl))
             : currencyText
               ? extractCurrency(currencyText)
               : ""
@@ -282,7 +285,7 @@ function createGenericScraper({
         }
 
         const imageUrls = images.map((image) =>
-            transformers.images ? transformers.images(image.element, image.url) : image.url
+            transformers.images ? transformers.images(image.element, image.url, productUrl) : image.url
         )
 
         if (!name || !priceGross || imageUrls.length === 0) {
@@ -338,7 +341,7 @@ export const scrapers: {
         })
     },
     {
-        scraperIdentifier: "dressmann",
+        scraperIdentifier: "varner",
         scrape: createGenericScraper({
             useBrowser: true,
             querySelectors: {
@@ -346,14 +349,31 @@ export const scrapers: {
                 priceGross: ".MuiTypography-price2",
                 originalPriceGross: ".MuiTypography-price2:nth-of-type(3)",
                 images: ".swiper-slide img, .css-97yw9n-StyledSingleImageWrapper img",
-                gender: "body",
+                gender: `.MuiTypography-caption.css-1em2w48-StyledLabel, .MuiBreadcrumbs-ol :nth-child(3) a[href*="herre"], .MuiBreadcrumbs-ol :nth-child(3) a[href*="dame"]`,
                 currency: "body",
                 brand: "body"
             },
             transformers: {
-                gender: () => Gender.MALE,
+                gender: (_, text, url) => {
+                    if (url.includes("dressmann")) return Gender.MALE
+                    if (url.includes("bikbok")) return Gender.FEMALE
+
+                    const gender = text.toLowerCase()
+                    const male = ["herre", "master", "male"]
+                    const female = ["dame", "lady", "female"]
+
+                    if (male.some((m) => gender.includes(m))) return Gender.MALE
+                    if (female.some((f) => gender.includes(f))) return Gender.FEMALE
+                    
+                    return Gender.UNISEX
+                },
                 currency: () => "kr",
-                brand: () => "Dressmann",
+                brand: (_, __, url) => {
+                    if (url.includes("bikbok")) return "Bik Bok"
+                    if (url.includes("junkyard")) return "Junkyard"
+                    if (url.includes("dressmann")) return "Dressmann"
+                    else return null
+                },
                 images: (_, url) => {
                     const highResUrl = new URL(url)
                     highResUrl.searchParams.set("w", "1800")
