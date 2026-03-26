@@ -186,9 +186,18 @@ function createGenericScraper({
             return dom.window.document.querySelector(selector)
         }
 
+        const getElements = (selector: string) => {
+            return Array.from(dom.window.document.querySelectorAll(selector))
+        }
+
         const getText = (selector: string) => {
             const element = getElement(selector)
             return element ? element.textContent?.trim() : undefined
+        }
+
+        const getTexts = (selector: string) => {
+            const elements = getElements(selector)
+            return elements.map((el) => el.textContent?.trim() || "")
         }
 
         const extractPrice = (text: string) => {
@@ -206,12 +215,28 @@ function createGenericScraper({
 
         const nameElement = getElement(querySelectors.name)
         const nameText = getText(querySelectors.name)
-        const name = transformers.name ? transformers.name(nameElement!, nameText!, productUrl) : nameText
+        const name = transformers.name
+            ? transformers.name({
+                  element: nameElement!,
+                  text: nameText!,
+                  elements: getElements(querySelectors.name),
+                  texts: getTexts(querySelectors.name),
+                  url: productUrl
+              })
+            : nameText
 
         const priceElement = getElement(querySelectors.priceGross)
         const priceText = getText(querySelectors.priceGross)
         const priceGross = transformers.priceGross
-            ? extractPrice(transformers.priceGross(priceElement!, priceText!, productUrl))
+            ? extractPrice(
+                  transformers.priceGross({
+                      element: priceElement!,
+                      text: priceText!,
+                      elements: getElements(querySelectors.priceGross),
+                      texts: getTexts(querySelectors.priceGross),
+                      url: productUrl
+                  })
+              )
             : priceText
               ? extractPrice(priceText)
               : undefined
@@ -220,14 +245,26 @@ function createGenericScraper({
         const descriptionText = querySelectors.description ? getText(querySelectors.description) : undefined
         const description =
             (transformers.description && descriptionElement && descriptionText
-                ? (transformers.description(descriptionElement, descriptionText, productUrl) ?? undefined)
+                ? (transformers.description({
+                      element: descriptionElement,
+                      text: descriptionText,
+                      elements: querySelectors.description ? getElements(querySelectors.description) : [],
+                      texts: querySelectors.description ? getTexts(querySelectors.description) : [],
+                      url: productUrl
+                  }) ?? undefined)
                 : descriptionText) || undefined
 
         const brandElement = querySelectors.brand ? getElement(querySelectors.brand) : undefined
         const brandText = querySelectors.brand ? getText(querySelectors.brand) : undefined
         const brand =
             (transformers.brand && brandElement && brandText
-                ? (transformers.brand(brandElement, brandText, productUrl) ?? undefined)
+                ? (transformers.brand({
+                      element: brandElement,
+                      text: brandText,
+                      elements: querySelectors.brand ? getElements(querySelectors.brand) : [],
+                      texts: querySelectors.brand ? getTexts(querySelectors.brand) : [],
+                      url: productUrl
+                  }) ?? undefined)
                 : brandText) || undefined
 
         const originalPriceElement = querySelectors.originalPriceGross
@@ -238,7 +275,13 @@ function createGenericScraper({
             : undefined
         const transformedOriginalPrice =
             transformers.originalPriceGross && originalPriceElement && originalPriceText
-                ? transformers.originalPriceGross(originalPriceElement, originalPriceText, productUrl)
+                ? transformers.originalPriceGross({
+                      element: originalPriceElement,
+                      text: originalPriceText,
+                      elements: querySelectors.originalPriceGross ? getElements(querySelectors.originalPriceGross) : [],
+                      texts: querySelectors.originalPriceGross ? getTexts(querySelectors.originalPriceGross) : [],
+                      url: productUrl
+                  })
                 : originalPriceText
         const originalPriceGross = transformedOriginalPrice ? extractPrice(transformedOriginalPrice) : undefined
 
@@ -254,12 +297,26 @@ function createGenericScraper({
 
         const genderElement = getElement(querySelectors.gender)
         const genderText = getText(querySelectors.gender)
-        const gender = transformers.gender(genderElement!, genderText!, productUrl)
+        const gender = transformers.gender({
+            element: genderElement!,
+            text: genderText!,
+            elements: getElements(querySelectors.gender),
+            texts: getTexts(querySelectors.gender),
+            url: productUrl
+        })
 
         const currencyElement = getElement(querySelectors.currency)
         const currencyText = getText(querySelectors.currency)
         const currency = transformers.currency
-            ? extractCurrency(transformers.currency(currencyElement!, currencyText!, productUrl))
+            ? extractCurrency(
+                  transformers.currency({
+                      element: currencyElement!,
+                      text: currencyText!,
+                      elements: getElements(querySelectors.currency),
+                      texts: getTexts(querySelectors.currency),
+                      url: productUrl
+                  })
+              )
             : currencyText
               ? extractCurrency(currencyText)
               : ""
@@ -285,7 +342,15 @@ function createGenericScraper({
         }
 
         const imageUrls = images.map((image) =>
-            transformers.images ? transformers.images(image.element, image.url, productUrl) : image.url
+            transformers.images
+                ? transformers.images({
+                      element: image.element,
+                      text: image.url,
+                      elements: getElements(querySelectors.images),
+                      texts: getTexts(querySelectors.images),
+                      url: productUrl
+                  })
+                : image.url
         )
 
         if (!name || !priceGross || imageUrls.length === 0) {
@@ -328,15 +393,15 @@ export const scrapers: {
                 currency: `[data-testid="pdp-price-container"] span:nth-last-of-type(2)`
             },
             transformers: {
-                gender: (_, text) =>
+                gender: ({ text }) =>
                     ["Dame"].includes(text) ? Gender.FEMALE : ["Herre"].includes(text) ? Gender.MALE : Gender.UNISEX,
-                images: (_, url) => {
+                images: ({ text: url }) => {
                     const highResUrl = new URL(url)
                     highResUrl.search = ""
                     highResUrl.searchParams.set("imwidth", "1800")
                     return highResUrl.toString()
                 },
-                currency: (_, text) => text.toLowerCase()
+                currency: ({ text }) => text.toLowerCase()
             }
         })
     },
@@ -348,33 +413,38 @@ export const scrapers: {
                 name: "h1.MuiTypography-h3",
                 priceGross: ".MuiTypography-price2",
                 originalPriceGross: ".MuiTypography-price2:nth-of-type(3)",
-                images: ".swiper-slide img, .css-97yw9n-StyledSingleImageWrapper img",
-                gender: `.MuiTypography-caption.css-1em2w48-StyledLabel, .MuiBreadcrumbs-ol :nth-child(3) a[href*="herre"], .MuiBreadcrumbs-ol :nth-child(3) a[href*="dame"]`,
+                images: ".swiper-slide div:not(.css-yr0wjw-StyledProductColorItem) img, .css-97yw9n-StyledSingleImageWrapper img",
+                gender: `.MuiTypography-caption.css-1em2w48-StyledLabel, .MuiBreadcrumbs-ol :nth-child(3)`,
                 currency: "body",
                 brand: "body"
             },
             transformers: {
-                gender: (_, text, url) => {
-                    if (url.includes("dressmann")) return Gender.MALE
-                    if (url.includes("bikbok")) return Gender.FEMALE
+                gender: ({ texts, url }) => {
+                    const hostname = new URL(url).hostname
+                    if (hostname.includes("dressmann")) return Gender.MALE
+                    if (hostname.includes("bikbok")) return Gender.FEMALE
 
-                    const gender = text.toLowerCase()
+                    const genders = texts.reverse().map((t) => t.toLowerCase())
                     const male = ["herre", "master", "male"]
                     const female = ["dame", "lady", "female"]
+                    const unisex = ["unisex"]
 
-                    if (male.some((m) => gender.includes(m))) return Gender.MALE
-                    if (female.some((f) => gender.includes(f))) return Gender.FEMALE
-                    
+                    for (const gender of genders) {
+                        if (male.some((m) => gender.includes(m))) return Gender.MALE
+                        if (female.some((f) => gender.includes(f))) return Gender.FEMALE
+                        if (unisex.some((u) => gender.includes(u))) return Gender.UNISEX
+                    }
+
                     return Gender.UNISEX
                 },
                 currency: () => "kr",
-                brand: (_, __, url) => {
+                brand: ({ url }) => {
                     if (url.includes("bikbok")) return "Bik Bok"
                     if (url.includes("junkyard")) return "Junkyard"
                     if (url.includes("dressmann")) return "Dressmann"
                     else return null
                 },
-                images: (_, url) => {
+                images: ({ text: url }) => {
                     const highResUrl = new URL(url)
                     highResUrl.searchParams.set("w", "1800")
                     highResUrl.searchParams.set("q", "80")

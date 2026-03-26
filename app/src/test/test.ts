@@ -33,7 +33,7 @@ async function testBGRM() {
 
 async function testScraper() {
     const URL =
-        "https://junkyard.com/no/p/adidas-samba-og-sneakers-hvit-sko-sneakers-unisex/7228135_F900"
+        "https://junkyard.com/no/p/junkyard-raglan-print-hettegenser-multi-gensere-hettegenser-til-dame/7378183_F002"
     console.log("Testing scraper for URL:", URL)
     const scraper = scrapers.find((s) => s.scraperIdentifier === "varner")
     if (!scraper) {
