@@ -16,7 +16,9 @@ export async function recommendProducts(
         slot?: ProductSlot
         category?: ProductCategory
         search?: string
-        excludeId?: string
+        excludeIds?: string[]
+        seed?: number
+        offset?: number
         recursiveProducts?: Product[]
     } = {}
 ): Promise<Product[]> {
@@ -56,8 +58,8 @@ export async function recommendProducts(
         )`)
     }
 
-    if (options.excludeId) {
-        whereConditions.push(Prisma.sql`"Product".id != ${options.excludeId}`)
+    if (options.excludeIds && options.excludeIds.length > 0) {
+        whereConditions.push(Prisma.sql`"Product".id NOT IN (${Prisma.join(options.excludeIds, ",")})`)
     }
 
     if (options.recursiveProducts && options.recursiveProducts.length > 0) {
@@ -70,6 +72,7 @@ export async function recommendProducts(
 
     let recommendedProducts: Product[]
     const CHROMA_HUE_WEIGHT = 3
+    const offset = options.offset || 0
 
     if (options.colorCIELAB) {
         const [L, A, B] = options.colorCIELAB
@@ -77,6 +80,10 @@ export async function recommendProducts(
             options.maxColorDistance !== undefined
                 ? Prisma.sql`WHERE distance <= ${options.maxColorDistance}`
                 : Prisma.empty
+
+        const orderClause = options.seed !== undefined
+            ? Prisma.sql`ORDER BY distance, hashtext(id || ${options.seed.toString()})`
+            : Prisma.sql`ORDER BY distance`
 
         recommendedProducts = await prisma.$queryRaw`
             SELECT * FROM (
@@ -90,16 +97,22 @@ export async function recommendProducts(
                 ${whereClause}
             ) AS subq
             ${distanceFilter}
-            ORDER BY distance
+            ${orderClause}
             LIMIT ${take}
+            OFFSET ${offset}
         `
     } else {
+        const orderClause = options.seed !== undefined
+            ? Prisma.sql`ORDER BY hashtext(id || ${options.seed.toString()})`
+            : Prisma.sql`ORDER BY RANDOM()`
+
         recommendedProducts = await prisma.$queryRaw`
             SELECT *
             FROM "Product"
             ${whereClause}
-            ORDER BY RANDOM()
+            ${orderClause}
             LIMIT ${take}
+            OFFSET ${offset}
         `
     }
 

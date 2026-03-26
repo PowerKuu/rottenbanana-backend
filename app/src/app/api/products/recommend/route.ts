@@ -1,7 +1,6 @@
 import { recommendProducts } from "@/server/system/algorithm/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
-import { getFile, readFileBuffer } from "@/server/uploads/read"
 import { NextRequest, NextResponse } from "next/server"
 import { ProductCategory } from "@/prisma/client"
 import { hexToCIELAB } from "@/lib/utils"
@@ -41,7 +40,10 @@ export async function GET(request: NextRequest) {
         }
 
         const usePreferenceTags = searchParams.get("usePreferenceTags") !== "false"
-        const excludeId = searchParams.get("excludeId") || undefined
+        const excludeIdsParam = searchParams.get("excludeIds")
+        const excludeIds = excludeIdsParam ? excludeIdsParam.split(",") : undefined
+        const seed = searchParams.get("seed") ? Number(searchParams.get("seed")) : undefined
+        const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined
 
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
             user,
@@ -50,7 +52,9 @@ export async function GET(request: NextRequest) {
             maxColorDistance,
             colorCIELAB,
             usePreferenceTags,
-            excludeId
+            excludeIds,
+            seed,
+            offset
         })
 
         return NextResponse.json({ productsIds: recommendedProducts.map((product) => product.id) })

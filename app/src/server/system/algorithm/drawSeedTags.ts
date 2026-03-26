@@ -2,9 +2,7 @@ import { randomShuffle } from "@/lib/utils"
 import { User } from "@/prisma/client"
 import { prisma } from "@/server/database/prisma"
 
-export async function drawSeedTags(n: number = 1, user?: User) {
-    const PREFERENCE_BIAS = 0.05 // 0 = equal distribution, 1 = strong bias toward top items
-
+export async function drawSeedTags(n: number = 1, user?: User, prefrenceBias = 0.05) {
     const userTags = await prisma.userPreferenceTag.groupBy({
         by: "preferenceTagId",
         where: {
@@ -44,7 +42,7 @@ export async function drawSeedTags(n: number = 1, user?: User) {
         .sort((a, b) => b.score - a.score)
 
     const tagProbabilities = tagScores.map((tag, index) => {
-        const probability = Math.exp(-PREFERENCE_BIAS * index)
+        const probability = Math.exp(-prefrenceBias * index)
         return {
             ...tag,
             probability

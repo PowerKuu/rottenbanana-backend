@@ -8,7 +8,7 @@ import axios from "axios"
 
 async function getHtmlBrowser(productUrl: string, waitForSelectors: string[]): Promise<string> {
     const TIMEOUT = 30000
-    const HEADLESS = false
+    const HEADLESS = true
 
     const resolutions = [
         { width: 1920, height: 1080 },
@@ -116,10 +116,10 @@ async function getHtmlBrowser(productUrl: string, waitForSelectors: string[]): P
         await page.addScriptTag({
             content: `
                 (async () => {
-                    let lastHeight = 0;
-                    while (lastHeight !== document.body.scrollHeight) {
-                        lastHeight = document.body.scrollHeight;
-                        window.scrollTo(0, document.body.scrollHeight);
+                    let currentPosition = 0;
+                    while (currentPosition < document.body.scrollHeight) {
+                        currentPosition += 100;
+                        window.scrollTo(0, currentPosition);
                         await new Promise(resolve => setTimeout(resolve, 500));
                     }
                 })();
