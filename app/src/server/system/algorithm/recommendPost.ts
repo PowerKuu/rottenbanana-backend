@@ -10,10 +10,7 @@ export async function recommendPost(
         recursivePosts?: Post[]
     } = {}
 ): Promise<Post[]> {
-    const seedTags =
-        options.recursivePosts || !options.user
-            ? []
-            : await drawSeedTags(3, options.user)
+    const seedTags = options.recursivePosts || !options.user ? [] : await drawSeedTags(3, options.user)
 
     const whereConditions: Prisma.Sql[] = []
 

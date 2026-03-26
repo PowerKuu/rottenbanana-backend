@@ -32,8 +32,7 @@ async function testBGRM() {
 }
 
 async function testScraper() {
-    const URL =
-        "https://dressmann.com/no/p/skjorter-fritidsskjorter-herre-bomullskjorte-seersucker-turkis/7375456_F621"
+    const URL = "https://dressmann.com/no/p/skjorter-fritidsskjorter-herre-bomullskjorte-seersucker-turkis/7375456_F621"
     console.log("Testing scraper for URL:", URL)
     const scraper = scrapers.find((s) => s.scraperIdentifier === "varner")
     if (!scraper) {

@@ -81,9 +81,10 @@ export async function recommendProducts(
                 ? Prisma.sql`WHERE distance <= ${options.maxColorDistance}`
                 : Prisma.empty
 
-        const orderClause = options.seed !== undefined
-            ? Prisma.sql`ORDER BY distance, hashtext(id || ${options.seed.toString()})`
-            : Prisma.sql`ORDER BY distance`
+        const orderClause =
+            options.seed !== undefined
+                ? Prisma.sql`ORDER BY distance, hashtext(id || ${options.seed.toString()})`
+                : Prisma.sql`ORDER BY distance`
 
         recommendedProducts = await prisma.$queryRaw`
             SELECT * FROM (
@@ -102,9 +103,10 @@ export async function recommendProducts(
             OFFSET ${offset}
         `
     } else {
-        const orderClause = options.seed !== undefined
-            ? Prisma.sql`ORDER BY hashtext(id || ${options.seed.toString()})`
-            : Prisma.sql`ORDER BY RANDOM()`
+        const orderClause =
+            options.seed !== undefined
+                ? Prisma.sql`ORDER BY hashtext(id || ${options.seed.toString()})`
+                : Prisma.sql`ORDER BY RANDOM()`
 
         recommendedProducts = await prisma.$queryRaw`
             SELECT *
