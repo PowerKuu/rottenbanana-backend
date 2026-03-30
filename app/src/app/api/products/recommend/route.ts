@@ -24,7 +24,6 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url)
         const search = searchParams.get("search") || undefined
-        const category = (searchParams.get("category") as ProductCategory) || undefined
         const colorHex = searchParams.get("color")
         const maxColorDistance = searchParams.get("maxColorDistance")
             ? Number(searchParams.get("maxColorDistance"))
@@ -35,9 +34,24 @@ export async function GET(request: NextRequest) {
             return new NextResponse("Invalid color format", { status: 400 })
         }
 
-        if (category && !Object.values(ProductCategory).includes(category)) {
-            return new NextResponse("Invalid category", { status: 400 })
+
+        const categoriesParam = searchParams.get("categories")
+        const categoryParam = searchParams.get("category") as ProductCategory | null
+        const categories = categoriesParam
+            ? categoriesParam.split(",") as ProductCategory[]
+            : categoryParam
+                ? [categoryParam]
+                : undefined
+
+        if (categories) {
+            const invalid = categories.find(c => !Object.values(ProductCategory).includes(c))
+            if (invalid) {
+                return new NextResponse(`Invalid category: ${invalid}`, { status: 400 })
+            }
         }
+
+        const storeIdsParam = searchParams.get("storeIds")
+        const storeIds = storeIdsParam ? storeIdsParam.split(",") : undefined
 
         const usePreferenceTags = searchParams.get("usePreferenceTags") !== "false"
         const excludeIdsParam = searchParams.get("excludeIds")
@@ -48,7 +62,8 @@ export async function GET(request: NextRequest) {
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
             user,
             search,
-            category,
+            categories,
+            storeIds,
             maxColorDistance,
             colorCIELAB,
             usePreferenceTags,

@@ -14,7 +14,8 @@ export async function recommendProducts(
         gender?: Gender
         region?: Region
         slot?: ProductSlot
-        category?: ProductCategory
+        categories?: ProductCategory[]
+        storeIds?: string[]
         search?: string
         excludeIds?: string[]
         seed?: number
@@ -33,14 +34,21 @@ export async function recommendProducts(
         const gender = options.gender || options.user?.gender
         whereConditions.push(Prisma.sql`gender IN (${gender}, ${Gender.UNISEX})`)
     }
-    if (options.category) {
-        whereConditions.push(Prisma.sql`category = ${options.category}`)
+    if (options.categories && options.categories.length > 0) {
+        if (options.categories.length === 1) {
+            whereConditions.push(Prisma.sql`category = ${options.categories[0]}`)
+        } else {
+            whereConditions.push(Prisma.sql`category::text IN (${Prisma.join(options.categories)})`)
+        }
     }
     if (options.region || options.user?.regionId) {
         const region = options.region?.id || options.user?.regionId
         whereConditions.push(Prisma.sql`"Product"."storeId" IN (
             SELECT "B" FROM "_RegionToStore" WHERE "A" = ${region}
         )`)
+    }
+    if (options.storeIds && options.storeIds.length > 0) {
+        whereConditions.push(Prisma.sql`"Product"."storeId" IN (${Prisma.join(options.storeIds)})`)
     }
     if (options.slot) {
         whereConditions.push(Prisma.sql`slot = ${options.slot}`)
