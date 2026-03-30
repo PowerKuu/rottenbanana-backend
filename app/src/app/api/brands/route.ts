@@ -27,25 +27,20 @@ export async function GET(request: NextRequest) {
             ? [user.gender, Gender.UNISEX]
             : undefined
 
-    const stores = await prisma.store.findMany({
+    const products = await prisma.product.findMany({
         where: {
-            regions: {
-                some: { id: user.regionId }
-            },
-            ...(genders && {
-                products: {
-                    some: { gender: { in: genders } }
+            brand: { not: null },
+            store: {
+                regions: {
+                    some: { id: user.regionId }
                 }
-            }),
+            },
+            ...(genders && { gender: { in: genders } }),
         },
-        select: {
-            id: true,
-            name: true,
-            displayName: true,
-            displayColorHex: true,
-        },
-        orderBy: { name: "asc" }
+        select: { brand: true },
+        distinct: ["brand"],
+        orderBy: { brand: "asc" }
     })
 
-    return NextResponse.json(stores)
+    return NextResponse.json(products.map((p) => p.brand))
 }

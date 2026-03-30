@@ -1,9 +1,11 @@
-import { recommendProducts } from "@/server/system/algorithm/recommendProducts"
+import { recommendProducts, type SortOption } from "@/server/system/algorithm/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { NextRequest, NextResponse } from "next/server"
-import { ProductCategory } from "@/prisma/client"
+import { Gender, ProductCategory } from "@/prisma/client"
 import { hexToCIELAB } from "@/lib/utils"
+
+const VALID_SORT_OPTIONS: SortOption[] = ["random", "price_asc", "price_desc", "newest"]
 
 export async function GET(request: NextRequest) {
     const RECOMMEND_AMOUNT = 50
@@ -53,6 +55,31 @@ export async function GET(request: NextRequest) {
         const storeIdsParam = searchParams.get("storeIds")
         const storeIds = storeIdsParam ? storeIdsParam.split(",") : undefined
 
+        const gendersParam = searchParams.get("genders")
+        const genders = gendersParam ? gendersParam.split(",") as Gender[] : undefined
+        if (genders) {
+            const invalid = genders.find(g => !Object.values(Gender).includes(g))
+            if (invalid) {
+                return new NextResponse(`Invalid gender: ${invalid}`, { status: 400 })
+            }
+        }
+
+        const brandsParam = searchParams.get("brands")
+        const brands = brandsParam ? brandsParam.split(",") : undefined
+
+        const onSale = searchParams.get("onSale") === "true"
+
+        const minPriceParam = searchParams.get("minPrice")
+        const minPrice = minPriceParam ? Number(minPriceParam) : undefined
+        const maxPriceParam = searchParams.get("maxPrice")
+        const maxPrice = maxPriceParam ? Number(maxPriceParam) : undefined
+
+        const sortByParam = searchParams.get("sortBy") as SortOption | null
+        if (sortByParam && !VALID_SORT_OPTIONS.includes(sortByParam)) {
+            return new NextResponse(`Invalid sortBy: ${sortByParam}`, { status: 400 })
+        }
+        const sortBy = sortByParam || undefined
+
         const usePreferenceTags = searchParams.get("usePreferenceTags") !== "false"
         const excludeIdsParam = searchParams.get("excludeIds")
         const excludeIds = excludeIdsParam ? excludeIdsParam.split(",") : undefined
@@ -64,6 +91,12 @@ export async function GET(request: NextRequest) {
             search,
             categories,
             storeIds,
+            genders,
+            brands,
+            onSale: onSale || undefined,
+            minPrice,
+            maxPrice,
+            sortBy,
             maxColorDistance,
             colorCIELAB,
             usePreferenceTags,
