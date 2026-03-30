@@ -7,6 +7,7 @@ const statusConfig = {
     REJECTED: { label: "Rejected", variant: "destructive" as const },
     PROCESSING: { label: "Processing", variant: "outline" as const },
     COMPLETED: { label: "Completed", variant: "default" as const },
+    SKIPPED: { label: "Skipped", variant: "outline" as const },
     FAILED: { label: "Failed", variant: "destructive" as const }
 }
 

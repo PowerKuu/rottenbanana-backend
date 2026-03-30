@@ -38,8 +38,8 @@ export async function scrapeAndAnalyzeProduct(url: string) {
 
     const analyzedProduct = await analyzeProduct(scrapedProduct)
 
-    if (analyzedProduct.productOnlyImageIndex === null) {
-        throw new Error("AI analysis did not return a product only image index")
+    if (analyzedProduct.productOnlyImageIndex === null || analyzedProduct.isInappropriate) {
+        return null
     }
 
     const MAX_IMAGES = 3

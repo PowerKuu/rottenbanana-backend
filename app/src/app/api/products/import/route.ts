@@ -26,6 +26,11 @@ export async function POST(request: NextRequest) {
         }
 
         const product = await scrapeAndAnalyzeProduct(normalizedUrl)
+        
+        if (!product) {
+            return NextResponse.json({ error: "Product is not eligible" }, { status: 400 })
+        }
+
         return NextResponse.json({ success: true, product })
     } catch (error) {
         console.error(error)

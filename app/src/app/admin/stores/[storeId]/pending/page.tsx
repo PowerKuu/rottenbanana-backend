@@ -181,6 +181,7 @@ export default function StorePendingProductsPage() {
                             <SelectItem value="REJECTED">Rejected</SelectItem>
                             <SelectItem value="PROCESSING">Processing</SelectItem>
                             <SelectItem value="COMPLETED">Completed</SelectItem>
+                            <SelectItem value="SKIPPED">Skipped</SelectItem>
                             <SelectItem value="FAILED">Failed</SelectItem>
                         </SelectContent>
                     </Select>

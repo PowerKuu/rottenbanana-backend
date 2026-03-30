@@ -46,13 +46,13 @@ async function tickPendingProducts() {
 
     for (const job of jobsToProcess) {
         scrapeAndAnalyzeProduct(job.url)
-            .then(async () => {
+            .then(async (product) => {
                 console.log(`${logPrefix} Successfully processed product ${job.url}`)
 
                 await prisma.pendingProduct.update({
                     where: { id: job.id },
                     data: {
-                        status: PendingProductStatus.COMPLETED
+                        status: product ? PendingProductStatus.COMPLETED : PendingProductStatus.SKIPPED
                     }
                 })
             })
