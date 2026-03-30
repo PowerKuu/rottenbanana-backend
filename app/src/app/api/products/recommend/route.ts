@@ -1,9 +1,11 @@
-import { recommendProducts } from "@/server/system/algorithm/recommendProducts"
+import { recommendProducts, type SortOption } from "@/server/system/algorithm/recommendProducts"
 import { getSession } from "@/server/auth/session"
 import { prisma } from "@/server/database/prisma"
 import { NextRequest, NextResponse } from "next/server"
-import { ProductCategory } from "@/prisma/client"
+import { Gender, ProductCategory } from "@/prisma/client"
 import { hexToCIELAB } from "@/lib/utils"
+
+const VALID_SORT_OPTIONS: SortOption[] = ["random", "price_asc", "price_desc", "newest"]
 
 export async function GET(request: NextRequest) {
     const RECOMMEND_AMOUNT = 50
@@ -24,7 +26,6 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url)
         const search = searchParams.get("search") || undefined
-        const category = (searchParams.get("category") as ProductCategory) || undefined
         const colorHex = searchParams.get("color")
         const maxColorDistance = searchParams.get("maxColorDistance")
             ? Number(searchParams.get("maxColorDistance"))
@@ -35,9 +36,49 @@ export async function GET(request: NextRequest) {
             return new NextResponse("Invalid color format", { status: 400 })
         }
 
-        if (category && !Object.values(ProductCategory).includes(category)) {
-            return new NextResponse("Invalid category", { status: 400 })
+
+        const categoriesParam = searchParams.get("categories")
+        const categoryParam = searchParams.get("category") as ProductCategory | null
+        const categories = categoriesParam
+            ? categoriesParam.split(",") as ProductCategory[]
+            : categoryParam
+                ? [categoryParam]
+                : undefined
+
+        if (categories) {
+            const invalid = categories.find(c => !Object.values(ProductCategory).includes(c))
+            if (invalid) {
+                return new NextResponse(`Invalid category: ${invalid}`, { status: 400 })
+            }
         }
+
+        const storeIdsParam = searchParams.get("storeIds")
+        const storeIds = storeIdsParam ? storeIdsParam.split(",") : undefined
+
+        const gendersParam = searchParams.get("genders")
+        const genders = gendersParam ? gendersParam.split(",") as Gender[] : undefined
+        if (genders) {
+            const invalid = genders.find(g => !Object.values(Gender).includes(g))
+            if (invalid) {
+                return new NextResponse(`Invalid gender: ${invalid}`, { status: 400 })
+            }
+        }
+
+        const brandsParam = searchParams.get("brands")
+        const brands = brandsParam ? brandsParam.split(",") : undefined
+
+        const onSale = searchParams.get("onSale") === "true"
+
+        const minPriceParam = searchParams.get("minPrice")
+        const minPrice = minPriceParam ? Number(minPriceParam) : undefined
+        const maxPriceParam = searchParams.get("maxPrice")
+        const maxPrice = maxPriceParam ? Number(maxPriceParam) : undefined
+
+        const sortByParam = searchParams.get("sortBy") as SortOption | null
+        if (sortByParam && !VALID_SORT_OPTIONS.includes(sortByParam)) {
+            return new NextResponse(`Invalid sortBy: ${sortByParam}`, { status: 400 })
+        }
+        const sortBy = sortByParam || undefined
 
         const usePreferenceTags = searchParams.get("usePreferenceTags") !== "false"
         const excludeIdsParam = searchParams.get("excludeIds")
@@ -48,7 +89,14 @@ export async function GET(request: NextRequest) {
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
             user,
             search,
-            category,
+            categories,
+            storeIds,
+            genders,
+            brands,
+            onSale: onSale || undefined,
+            minPrice,
+            maxPrice,
+            sortBy,
             maxColorDistance,
             colorCIELAB,
             usePreferenceTags,

@@ -3,6 +3,8 @@ import { prisma } from "../../database/prisma"
 import { drawSeedTags } from "./drawSeedTags"
 import { randomShuffle } from "@/lib/utils"
 
+export type SortOption = "random" | "price_asc" | "price_desc" | "newest"
+
 export async function recommendProducts(
     take: number,
     options: {
@@ -12,10 +14,17 @@ export async function recommendProducts(
         seedTags?: PreferenceTag[]
         maxColorDistance?: number
         gender?: Gender
+        genders?: Gender[]
         region?: Region
         slot?: ProductSlot
-        category?: ProductCategory
+        categories?: ProductCategory[]
+        storeIds?: string[]
+        brands?: string[]
         search?: string
+        onSale?: boolean
+        minPrice?: number
+        maxPrice?: number
+        sortBy?: SortOption
         excludeIds?: string[]
         seed?: number
         offset?: number
@@ -29,12 +38,18 @@ export async function recommendProducts(
 
     const whereConditions: Prisma.Sql[] = []
 
-    if (options.gender || options.user?.gender) {
+    if (options.genders && options.genders.length > 0) {
+        whereConditions.push(Prisma.sql`gender::text IN (${Prisma.join(options.genders)})`)
+    } else if (options.gender || options.user?.gender) {
         const gender = options.gender || options.user?.gender
         whereConditions.push(Prisma.sql`gender IN (${gender}, ${Gender.UNISEX})`)
     }
-    if (options.category) {
-        whereConditions.push(Prisma.sql`category = ${options.category}`)
+    if (options.categories && options.categories.length > 0) {
+        if (options.categories.length === 1) {
+            whereConditions.push(Prisma.sql`category = ${options.categories[0]}`)
+        } else {
+            whereConditions.push(Prisma.sql`category::text IN (${Prisma.join(options.categories)})`)
+        }
     }
     if (options.region || options.user?.regionId) {
         const region = options.region?.id || options.user?.regionId
@@ -42,12 +57,27 @@ export async function recommendProducts(
             SELECT "B" FROM "_RegionToStore" WHERE "A" = ${region}
         )`)
     }
+    if (options.storeIds && options.storeIds.length > 0) {
+        whereConditions.push(Prisma.sql`"Product"."storeId" IN (${Prisma.join(options.storeIds)})`)
+    }
     if (options.slot) {
         whereConditions.push(Prisma.sql`slot = ${options.slot}`)
     }
     if (options.search) {
         const searchPattern = `%${options.search}%`
         whereConditions.push(Prisma.sql`(name ILIKE ${searchPattern} OR description ILIKE ${searchPattern})`)
+    }
+    if (options.brands && options.brands.length > 0) {
+        whereConditions.push(Prisma.sql`brand::text IN (${Prisma.join(options.brands)})`)
+    }
+    if (options.onSale) {
+        whereConditions.push(Prisma.sql`"originalPriceGross" IS NOT NULL AND "originalPriceGross" > "priceGross"`)
+    }
+    if (options.minPrice !== undefined) {
+        whereConditions.push(Prisma.sql`"priceGross" >= ${options.minPrice}`)
+    }
+    if (options.maxPrice !== undefined) {
+        whereConditions.push(Prisma.sql`"priceGross" <= ${options.maxPrice}`)
     }
 
     if (seedTags.length > 0) {
@@ -103,10 +133,18 @@ export async function recommendProducts(
             OFFSET ${offset}
         `
     } else {
-        const orderClause =
-            options.seed !== undefined
-                ? Prisma.sql`ORDER BY hashtext(id || ${options.seed.toString()})`
-                : Prisma.sql`ORDER BY RANDOM()`
+        let orderClause: Prisma.Sql
+        if (options.sortBy === "price_asc") {
+            orderClause = Prisma.sql`ORDER BY "priceGross" ASC`
+        } else if (options.sortBy === "price_desc") {
+            orderClause = Prisma.sql`ORDER BY "priceGross" DESC`
+        } else if (options.sortBy === "newest") {
+            orderClause = Prisma.sql`ORDER BY "createdAt" DESC`
+        } else if (options.seed !== undefined) {
+            orderClause = Prisma.sql`ORDER BY hashtext(id || ${options.seed.toString()})`
+        } else {
+            orderClause = Prisma.sql`ORDER BY RANDOM()`
+        }
 
         recommendedProducts = await prisma.$queryRaw`
             SELECT *
@@ -129,6 +167,9 @@ export async function recommendProducts(
         recursiveProducts: recommendedProducts
     })
 
+    if (options.sortBy && options.sortBy !== "random") {
+        return [...recommendedProducts, ...additionalProducts]
+    }
     return randomShuffle([...recommendedProducts, ...additionalProducts])
 }
 

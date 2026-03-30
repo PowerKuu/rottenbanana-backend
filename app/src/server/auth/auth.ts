@@ -5,7 +5,7 @@ import { bearer } from "better-auth/plugins/bearer"
 import { prisma } from "@/server/database/prisma"
 import { resend } from "../mail/resend"
 import { emailTemplates } from "../mail/templates"
-export const ALLOWED_ORIGINS = ["http://localhost:8081", "fithappens://", "exp://"]
+export const ALLOWED_ORIGINS = ["http://localhost:8081", "fithappens://", "exp://", "plagg://", "https://appleid.apple.com"]
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -47,6 +47,13 @@ export const auth = betterAuth({
                 input: false
             }
         }
+    },
+    socialProviders: {
+        apple: {
+            clientId: process.env.APPLE_CLIENT_ID!,
+            clientSecret: process.env.APPLE_CLIENT_SECRET!,
+            appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER!,
+        },
     },
     plugins: [bearer()],
     hooks: {
