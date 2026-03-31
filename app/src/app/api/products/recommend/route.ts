@@ -85,6 +85,7 @@ export async function GET(request: NextRequest) {
         const excludeIds = excludeIdsParam ? excludeIdsParam.split(",") : undefined
         const seed = searchParams.get("seed") ? Number(searchParams.get("seed")) : undefined
         const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined
+        const useRecursive = searchParams.get("useRecursive") !== "false"
 
         const recommendedProducts = await recommendProducts(RECOMMEND_AMOUNT, {
             user,
@@ -102,7 +103,8 @@ export async function GET(request: NextRequest) {
             usePreferenceTags,
             excludeIds,
             seed,
-            offset
+            offset,
+            useRecursive
         })
 
         return NextResponse.json({ productsIds: recommendedProducts.map((product) => product.id) })

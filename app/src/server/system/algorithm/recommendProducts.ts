@@ -13,7 +13,6 @@ export async function recommendProducts(
         usePreferenceTags?: boolean
         seedTags?: PreferenceTag[]
         maxColorDistance?: number
-        gender?: Gender
         genders?: Gender[]
         region?: Region
         slot?: ProductSlot
@@ -29,10 +28,11 @@ export async function recommendProducts(
         seed?: number
         offset?: number
         recursiveProducts?: Product[]
+        useRecursive?: boolean
     } = {}
 ): Promise<Product[]> {
     const seedTags =
-        options.recursiveProducts || !options.usePreferenceTags
+        !options.usePreferenceTags
             ? []
             : options.seedTags || (await drawSeedTags(options.seedTags || 3, options.user))
 
@@ -40,8 +40,8 @@ export async function recommendProducts(
 
     if (options.genders && options.genders.length > 0) {
         whereConditions.push(Prisma.sql`gender::text IN (${Prisma.join(options.genders)})`)
-    } else if (options.gender || options.user?.gender) {
-        const gender = options.gender || options.user?.gender
+    } else if (options.user?.gender) {
+        const gender =  options.user.gender
         whereConditions.push(Prisma.sql`gender IN (${gender}, ${Gender.UNISEX})`)
     }
     if (options.categories && options.categories.length > 0) {
@@ -158,13 +158,14 @@ export async function recommendProducts(
 
     const remainingTake = take - recommendedProducts.length
 
-    if (remainingTake <= 0 || options.recursiveProducts !== undefined) {
+    if (remainingTake <= 0 || options.useRecursive === false || options.recursiveProducts !== undefined) {
         return recommendedProducts
     }
 
     const additionalProducts = await recommendProducts(remainingTake, {
         ...options,
-        recursiveProducts: recommendedProducts
+        recursiveProducts: recommendedProducts,
+        usePreferenceTags: false
     })
 
     if (options.sortBy && options.sortBy !== "random") {

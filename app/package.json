@@ -12,6 +12,7 @@
         "seed": "bun ./src/test/seed.ts"
     },
     "dependencies": {
+        "@better-auth/expo": "^1.5.6",
         "@huggingface/transformers": "^3.8.1",
         "@prisma/adapter-pg": "^7.5.0",
         "@prisma/client": "^7.5.0",

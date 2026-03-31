@@ -134,7 +134,7 @@ export async function getPostProductSelection(gender: Gender, region: Region, se
         const products = await recommendProducts(take, {
             slot,
             region,
-            gender,
+            genders: [gender],
             seedTags
         })
 
@@ -185,7 +185,8 @@ async function generatePostData(minProducts: number, maxProducts: number, overri
     const region = await getRegion()
     const [seedProduct] = await recommendProducts(1, {
         region,
-        gender
+                    genders: [gender],
+
     })
 
     const productSelection = await getPostProductSelection(gender, region, seedProduct, MAX_PRODUCT_SELECTION_PER_SLOT)
