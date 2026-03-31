@@ -240,6 +240,7 @@ enum PendingProductStatus {
   REJECTED
   PROCESSING
   COMPLETED
+  SKIPPED
   FAILED
 }
 
