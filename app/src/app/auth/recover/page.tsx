@@ -20,7 +20,7 @@ export default function RecoverPage() {
         try {
             const { data, error } = await authClient.requestPasswordReset({
                 email,
-                redirectTo: "/auth/reset-password"
+                redirectTo: "/auth/recover-password"
             })
 
             if (error) {

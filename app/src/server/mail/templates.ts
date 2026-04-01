@@ -1,6 +1,10 @@
+function escapeHtml(str: string) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+}
+
 export const emailTemplates = {
     resetPassword: (resetUrl: string) => ({
-        subject: "Rottenbanana - Reset your password",
+        subject: "Plagg - Reset your password",
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2>Reset Your Password</h2>
@@ -13,7 +17,7 @@ export const emailTemplates = {
                     </a>
                 </div>
                 <p>Or copy and paste this link into your browser:</p>
-                <p style="color: #666; word-break: break-all;">${resetUrl}</p>
+                <p style="color: #666; word-break: break-all;">${escapeHtml(resetUrl)}</p>
                 <p style="margin-top: 30px; color: #666; font-size: 14px;">
                     If you didn't request a password reset, you can safely ignore this email.
                 </p>
@@ -22,7 +26,7 @@ export const emailTemplates = {
     }),
 
     verifyEmail: (verificationUrl: string) => ({
-        subject: "Rottenbanana - Verify your email",
+        subject: "Plagg - Verify your email",
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2>Verify Your Email Address</h2>
@@ -35,7 +39,7 @@ export const emailTemplates = {
                     </a>
                 </div>
                 <p>Or copy and paste this link into your browser:</p>
-                <p style="color: #666; word-break: break-all;">${verificationUrl}</p>
+                <p style="color: #666; word-break: break-all;">${escapeHtml(verificationUrl)}</p>
                 <p style="margin-top: 30px; color: #666; font-size: 14px;">
                     If you didn't create an account, you can safely ignore this email.
                 </p>
